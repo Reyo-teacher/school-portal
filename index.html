@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Образовательный портал — Логунов Г.В.</title>
+    <style>
+        :root {
+            --bg-dark: #070f1e;
+            --card-bg: rgba(15, 23, 42, 0.9);
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(56, 189, 248, 0.25);
+        }
+
+        /* Научно-математическая сетка */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Шапка */
+        header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 20px; font-weight: 700; color: var(--accent); margin: 0; }
+        .teacher-title { font-size: 14px; color: var(--text-muted); margin: 5px 0 0 0; }
+
+        /* Две колонки */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        /* Сетка плиток каталога */
+        .grid-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        /* Плитки-ссылки */
+        .tile-link {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1.5px solid var(--border-color);
+            padding: 18px 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: all 0.2s;
+            display: block;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .tile-link:hover, .tile-link:active {
+            background: var(--accent);
+            color: #0f172a;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Правая колонка: нововведения */
+        .news-item {
+            font-size: 13px;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .news-item:last-child { border-bottom: none; }
+        .news-date { font-size: 11px; color: var(--accent); font-weight: bold; }
+
+        /* Цитаты */
+        .quotes-section {
+            margin-top: 25px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+        }
+        .quote-box {
+            background: rgba(30, 41, 59, 0.5);
+            border-left: 4px solid var(--accent);
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+        }
+        .quote-author { font-size: 12px; color: var(--text-muted); text-align: right; margin-top: 5px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Шапка -->
+    <header>
+        <h1 class="teacher-name">Логунов Григорий Владимирович</h1>
+        <p class="teacher-title">Учитель математики, информатики и робототехники</p>
+    </header>
+
+    <div class="main-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: Каталог предметов -->
+        <div>
+            <div class="card">
+                <h2>Каталог предметов</h2>
+                <p style="font-size:14px; color:var(--text-muted);">Выберите нужное направление для перехода к материалам и тестам:</p>
+                <div class="grid-tiles">
+                    <a href="math.html" class="tile-link">📐 Математика</a>
+                    <a href="inf.html" class="tile-link">💻 Информатика</a>
+                    <a href="rob.html" class="tile-link">🤖 Робототехника</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: Нововведения -->
+        <div>
+            <div class="card">
+                <h2>🚀 Что нового</h2>
+                <div class="news-item">
+                    <div class="news-date">Октябрь 2026</div>
+                    <div>Запущен новый мультистраничный образовательный портал!</div>
+                </div>
+                <div class="news-item">
+                    <div class="news-date">Обновление</div>
+                    <div>Улучшена скорость загрузки и адаптивность под мобильные устройства.</div>
+                </div>
+                <div class="news-item">
+                    <div class="news-date">В планах</div>
+                    <div>Загрузка полных банков тестов ЕНТ и практических заданий по Python.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Цитаты внизу -->
+    <div class="quotes-section">
+        <h2>💡 Мудрость точных наук</h2>
+        <div class="quote-box">
+            <span>«Математику уже затем учить следует, что она ум в порядок приводит.»</span>
+            <div class="quote-author">— Михаил Ломоносов</div>
+        </div>
+        <div class="quote-box">
+            <span>«Информатика — это не столько наука о компьютерах, сколько геометрия мышления и логика.»</span>
+            <div class="quote-author">— Харолд Абельсон</div>
+        </div>
+        <div class="quote-box">
+            <span>«Робототехника объединяет механику, электронику и код, воплощая абстрактную логику в реальном мире.»</span>
+            <div class="quote-author">— Инженерное кредо</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
