@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неделя 10: Теория вероятностей — ЕНТ</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --gold: #d97706;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-light);
+            background-image: 
+                linear-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        .back-btn {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .back-btn:hover { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+
+        .inp-name {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .inp-name:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+
+        .question-box {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .q-title { font-weight: 600; margin-bottom: 10px; color: var(--text-main); font-size: 15px; }
+
+        .visual-box {
+            display: flex;
+            justify-content: center;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .options { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+        .opt-label {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .opt-label:hover { background: #e0f2fe; border-color: var(--accent); }
+        .opt-label input { margin-right: 12px; transform: scale(1.2); }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--accent-hover); }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leaderboard-table th { color: var(--accent); font-weight: 600; }
+        .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
+
+        #resultContainer { display: none; }
+        .score-card {
+            background: #f0fdf4;
+            border: 1px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .score-card h3 { color: var(--success); margin: 0 0 10px 0; font-size: 22px; }
+
+        .review-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--border-color);
+        }
+        .review-item.correct { border-left-color: var(--success); }
+        .review-item.incorrect { border-left-color: var(--danger); }
+        
+        .rev-q { font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .rev-ans { font-size: 13px; margin: 4px 0; color: var(--text-main); }
+        .solution-box {
+            margin-top: 10px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border: 1px dashed var(--border-color);
+        }
+        .solution-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="teacher-name">Математическая грамотность — Неделя 10</h1>
+    </header>
+
+    <div class="main-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: Тест -->
+        <div>
+            <div class="card" id="testCard">
+                <a href="ml-tests.html" class="back-btn">← К списку недель</a>
+                <h2>Тест: Вероятность событий в реальных ситуациях</h2>
+                <p style="font-size: 14px; color: var(--text-muted);">Случайная выборка 20 вопросов из базы данных.</p>
+                
+                <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
+
+                <div id="questionsForm">
+                    <!-- Загружаются вопросы -->
+                </div>
+
+                <button class="btn-submit" onclick="submitTest()">Завершить тест и проверить</button>
+            </div>
+
+            <!-- Блок результатов -->
+            <div id="resultContainer" class="card">
+                <div class="score-card">
+                    <h3>Результат тестирования</h3>
+                    <p id="scoreText" style="font-size: 18px; margin: 0;"></p>
+                </div>
+                
+                <h2>Работа над ошибками и разбор решений</h2>
+                <div id="reviewList"></div>
+                
+                <button class="back-btn" style="width:100%; text-align:center; margin-top:15px;" onclick="location.reload()">Пройти тест заново</button>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: Рейтинг -->
+        <div>
+            <div class="card">
+                <h2>🏆 Топ-10 результатов</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Лучшие результаты недели 10:</p>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ученик</th>
+                            <th style="text-align: right;">Баллы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Динамически заполняется -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionPool = [
+        {
+            q: "1. В урне 6 белых и 4 черных шара. Наугад извлекают один шар. Какова вероятность того, что вытянутый шар окажется белым?",
+            svg: `<svg width="160" height="60" viewBox="0 0 160 60"><rect x="10" y="15" width="140" height="30" rx="4" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/><text x="80" y="35" font-size="12" fill="#0284c7" text-anchor="middle" font-weight="bold">6 б. + 4 ч. = 10 шаров</text></svg>`,
+            o: ["0,4", "0,5", "0,6", "0,75"],
+            a: "0,6",
+            sol: "Общее число шаров N = 6 + 4 = 10. Количество благоприятных исходов m = 6 (белые). Вероятность P = 6 / 10 = 0,6."
+        },
+        {
+            q: "2. Бросают одну стандартную игральную кость (кубик). Какова вероятность того, что выпадет четное число очков?",
+            o: ["1/6", "1/3", "1/2", "2/3"],
+            a: "1/2",
+            sol: "Всего исходов N = 6 (1, 2, 3, 4, 5, 6). Четных очков m = 3 (2, 4, 6). Вероятность P = 3 / 6 = 1/2."
+        },
+        {
+            q: "3. Бросают две монеты. Какова вероятность того, что на обеих монетах выпадет 'орел'?",
+            o: ["0,25", "0,33", "0,5", "0,75"],
+            a: "0,25",
+            sol: "Все возможные исходы: ОО, ОР, РО, РР (всего N = 4). Благоприятный исход один: ОО (m = 1). Вероятность P = 1 / 4 = 0,25."
+        },
+        {
+            q: "4. В классе 25 учеников, из них 10 мальчиков и 15 девочек. По жребию выбирают одного дежурного. Какова вероятность того, что дежурным будет девочка?",
+            o: ["2/5", "3/5", "1/2", "3/8"],
+            a: "3/5",
+            sol: "N = 25, m = 15. Вероятность P = 15 / 25 = 3/5 (или 0,6)."
+        },
+        {
+            q: "5. Вероятность того, что новый электрический чайник прослужит больше года, равна 0,92. Какова вероятность того, что чайник выйдет из строя в течение первого года?",
+            o: ["0,02", "0,08", "0,12", "0,18"],
+            a: "0,08",
+            sol: "Это противоположные события. Сумма их вероятностей равна 1. P = 1 - 0,92 = 0,08."
+        },
+        {
+            q: "6. В соревновании участвуют 20 спортсменов: 8 из Казахстана, 7 из Узбекистана и 5 из Кыргызстана. Порядок выступлений определяется жребием. Какова вероятность того, что первым будет выступать спортсмен из Казахстана?",
+            o: ["0,25", "0,35", "0,4", "0,5"],
+            a: "0,4",
+            sol: "N = 20, m = 8. Вероятность P = 8 / 20 = 0,4."
+        },
+        {
+            q: "7. Из колоды в 36 карт наугад извлекают одну карту. Какова вероятность того, что эта карта окажется тузом?",
+            o: ["1/36", "1/9", "1/4", "4/9"],
+            a: "1/9",
+            sol: "В колоде 36 карт, тузов всего 4. P = 4 / 36 = 1/9."
+        },
+        {
+            q: "8. Бросают игральный кубик. Какова вероятность выпадения числа очков, кратного 3?",
+            o: ["1/6", "1/3", "1/2", "2/3"],
+            a: "1/3",
+            sol: "Всего исходов 6. Числа, кратные 3 — это 3 и 6 (всего m = 2). Вероятность P = 2 / 6 = 1/3."
+        },
+        {
+            q: "9. В магазине из 100 батареек 5 оказались бракованными. Покупатель берет одну батарейку. Какова вероятность того, что она окажется исправной?",
+            o: ["0,05", "0,85", "0,9", "0,95"],
+            a: "0,95",
+            sol: "Исправных батареек m = 100 - 5 = 95. Вероятность P = 95 / 100 = 0,95."
+        },
+        {
+            q: "10. На экзамене 30 билетов, студент выучил 24 из них. Какова вероятность того, что ему попадется выученный билет?",
+            o: ["0,6", "0,75", "0,8", "0,85"],
+            a: "0,8",
+            sol: "P = 24 / 30 = 4 / 5 = 0,8."
+        },
+        {
+            q: "11. В лотерее выпущено 1000 билетов, из которых 50 являются выигрышными. Куплен один билет. Какова вероятность того, что он НЕ выигрышный?",
+            o: ["0,05", "0,9", "0,95", "0,99"],
+            a: "0,95",
+            sol: "Невыигрышных билетов: 1000 - 50 = 950. Вероятность P = 950 / 1000 = 0,95."
+        },
+        {
+            q: "12. Какова вероятность того, что при одном броске игрального кубика выпадет число очков, меньшее 5?",
+            o: ["1/3", "1/2", "2/3", "5/6"],
+            a: "2/3",
+            sol: "Числа меньше 5 — это 1, 2, 3, 4 (всего m = 4). P = 4 / 6 = 2/3."
+        },
+        {
+            q: "13. Из букв слова 'МАНИПУЛЯЦИЯ' наугад выбирается одна буква. Какова вероятность того, что эта буква — гласная?",
+            o: ["5/11", "6/11", "1/2", "7/11"],
+            a: "6/11",
+            sol: "В слове 'МАНИПУЛЯЦИЯ' 11 букв (N = 11). Гласные буквы: А, И, У, Я, И, Я (всего m = 6). Вероятность P = 6 / 11."
+        },
+        {
+            q: "14. Какова вероятность того, что случайно выбранное двузначное число делится на 10?",
+            o: ["1/10", "1/9", "9/100", "1/11"],
+            a: "1/10",
+            sol: "Всего двузначных чисел от 10 до 99 ровно N = 90. Числа, делящиеся на 10: 10, 20, 30, ..., 90 (всего m = 9). P = 9 / 90 = 1/10."
+        },
+        {
+            q: "15. Стрелок попадает в мишень с вероятностью 0,85 при каждом выстреле. Какова вероятность того, что при одном выстреле он промахнется?",
+            o: ["0,05", "0,15", "0,25", "0,35"],
+            a: "0,15",
+            sol: "P(промах) = 1 - P(попадание) = 1 - 0,85 = 0,15."
+        },
+        {
+            q: "16. Бросают две игральные кости. Какова вероятность того, что в сумме выпадет 12 очков?",
+            o: ["1/36", "1/18", "1/12", "1/6"],
+            a: "1/36",
+            sol: "Всего комбинаций N = 6 × 6 = 36. Сумма 12 получается только в одном случае: (6, 6) (m = 1). Вероятность P = 1 / 36."
+        },
+        {
+            q: "17. Бросают две игральные кости. Какова вероятность того, что в сумме выпадет 7 очков?",
+            o: ["1/12", "1/6", "5/36", "7/36"],
+            a: "1/6",
+            sol: "Сумму 7 дают комбинации: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) — всего m = 6. P = 6 / 36 = 1/6."
+        },
+        {
+            q: "18. В коробке лежат 3 красных, 5 синих и 2 зеленых карандаша. Какова вероятность вытащить НЕ красный карандаш?",
+            o: ["0,3", "0,5", "0,7", "0,8"],
+            a: "0,7",
+            sol: "Всего карандашей N = 3 + 5 + 2 = 10. Не красных карандашей m = 5 + 2 = 7. Вероятность P = 7 / 10 = 0,7."
+        },
+        {
+            q: "19. Какова вероятность того, что при броске монеты три раза подряд все три раза выпадет 'орел'?",
+            o: ["1/3", "1/4", "1/6", "1/8"],
+            a: "1/8",
+            sol: "Общее число исходов при 3 бросках N = 2³ = 8. Исходи (ООО) только 1 (m = 1). P = 1 / 8."
+        },
+        {
+            q: "20. В пакете лежат 10 конфет с шоколадной начинкой и 15 с фруктовой. Ребенок наугад достает одну конфету. Найти вероятность того, что конфета с шоколадной начинкой.",
+            o: ["2/5", "3/5", "1/3", "2/3"],
+            a: "2/5",
+            sol: "Всего конфет N = 10 + 15 = 25. Шоколадных m = 10. Вероятность P = 10 / 25 = 2/5 (или 0,4)."
+        }
+    ];
+
+    let activeQuestions = [];
+    const STORAGE_KEY = 'leaderboard_ml_w10';
+
+    window.onload = function() {
+        let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+        activeQuestions = shuffled.slice(0, 20);
+
+        let container = document.getElementById('questionsForm');
+        let html = '';
+
+        activeQuestions.forEach((item, idx) => {
+            html += `<div class="question-box" data-index="${idx}">`;
+            html += `<div class="q-title">${idx + 1}. ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            if (item.svg) {
+                html += `<div class="visual-box">${item.svg}</div>`;
+            }
+            html += `<div class="options">`;
+            let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+        loadLeaderboard();
+    };
+
+    function submitTest() {
+        let nameInput = document.getElementById('studentName');
+        let studentName = nameInput ? nameInput.value.trim() : '';
+        if (!studentName) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+
+        let score = 0;
+        let reviewHtml = '';
+
+        activeQuestions.forEach((item, idx) => {
+            let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+            let userAns = selected ? selected.value : "Не отвечено";
+            let isCorrect = (selected && selected.value === item.a);
+
+            if (isCorrect) score++;
+
+            reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b> ${isCorrect ? '✅' : '❌'}</div>`;
+            if (!isCorrect) {
+                reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
+            }
+            reviewHtml += `<div class="solution-box">`;
+            reviewHtml += `<div class="solution-title">💡 Решение и разбор:</div>`;
+            reviewHtml += `${item.sol}`;
+            reviewHtml += `</div></div>`;
+        });
+
+        saveToLeaderboard(studentName, score);
+
+        document.getElementById('testCard').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        document.getElementById('scoreText').innerHTML = `${studentName}, ваш результат: <b>${score} из ${activeQuestions.length}</b> правильных ответов (${Math.round((score/activeQuestions.length)*100)}%).`;
+        document.getElementById('reviewList').innerHTML = reviewHtml;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveToLeaderboard(name, score) {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        board.push({ name: name, score: score, date: new Date().toLocaleDateString() });
+        board.sort((a, b) => b.score - a.score);
+        board = board.slice(0, 10);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+        loadLeaderboard();
+    }
+
+    function loadLeaderboard() {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let tbody = document.getElementById('leaderboardBody');
+        
+        if (!tbody) return;
+
+        if (board.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        board.forEach((item, index) => {
+            let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+            html += `<tr>`;
+            html += `<td>${medal}${index + 1}</td>`;
+            html += `<td style="font-weight: 500;">${item.name}</td>`;
+            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
+            html += `</tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
