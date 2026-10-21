@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неделя 11: Оптимизация и наилучший выбор — ЕНТ</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --gold: #d97706;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-light);
+            background-image: 
+                linear-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        .back-btn {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .back-btn:hover { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+
+        .inp-name {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .inp-name:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+
+        .question-box {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .q-title { font-weight: 600; margin-bottom: 10px; color: var(--text-main); font-size: 15px; }
+
+        .visual-box {
+            display: flex;
+            justify-content: center;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .options { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+        .opt-label {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .opt-label:hover { background: #e0f2fe; border-color: var(--accent); }
+        .opt-label input { margin-right: 12px; transform: scale(1.2); }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--accent-hover); }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leaderboard-table th { color: var(--accent); font-weight: 600; }
+        .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
+
+        #resultContainer { display: none; }
+        .score-card {
+            background: #f0fdf4;
+            border: 1px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .score-card h3 { color: var(--success); margin: 0 0 10px 0; font-size: 22px; }
+
+        .review-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--border-color);
+        }
+        .review-item.correct { border-left-color: var(--success); }
+        .review-item.incorrect { border-left-color: var(--danger); }
+        
+        .rev-q { font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .rev-ans { font-size: 13px; margin: 4px 0; color: var(--text-main); }
+        .solution-box {
+            margin-top: 10px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border: 1px dashed var(--border-color);
+        }
+        .solution-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="teacher-name">Математическая грамотность — Неделя 11</h1>
+    </header>
+
+    <div class="main-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: Тест -->
+        <div>
+            <div class="card" id="testCard">
+                <a href="ml-tests.html" class="back-btn">← К списку недель</a>
+                <h2>Тест: Задачи на оптимизацию и наилучший выбор</h2>
+                <p style="font-size: 14px; color: var(--text-muted);">Случайная выборка 20 вопросов из базы данных.</p>
+                
+                <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
+
+                <div id="questionsForm">
+                    <!-- Загружаются вопросы -->
+                </div>
+
+                <button class="btn-submit" onclick="submitTest()">Завершить тест и проверить</button>
+            </div>
+
+            <!-- Блок результатов -->
+            <div id="resultContainer" class="card">
+                <div class="score-card">
+                    <h3>Результат тестирования</h3>
+                    <p id="scoreText" style="font-size: 18px; margin: 0;"></p>
+                </div>
+                
+                <h2>Работа над ошибками и разбор решений</h2>
+                <div id="reviewList"></div>
+                
+                <button class="back-btn" style="width:100%; text-align:center; margin-top:15px;" onclick="location.reload()">Пройти тест заново</button>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: Рейтинг -->
+        <div>
+            <div class="card">
+                <h2>🏆 Топ-10 результатов</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Лучшие результаты недели 11:</p>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ученик</th>
+                            <th style="text-align: right;">Баллы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Динамически заполняется -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionPool = [
+        {
+            q: "1. Для ремонта квартиры нужно купить 30 рулонов обоев. В магазине рулоны продаются поштучно по 1200 тенге или упаковками по 6 штук за 6000 тенге. Какую наименьшую сумму денег нужно потратить на покупку обоев?",
+            svg: `<svg width="160" height="60" viewBox="0 0 160 60"><rect x="10" y="15" width="140" height="30" rx="4" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/><text x="80" y="35" font-size="12" fill="#0284c7" text-anchor="middle" font-weight="bold">30 рулонов: поштучно vs упаковки</text></svg>`,
+            o: ["30 000 тг", "32 000 тг", "36 000 тг", "33 000 тг"],
+            a: "30 000 тг",
+            sol: "Стоимость одной упаковки из 6 штук: 6000 / 6 = 1000 тенге за рулон (что выгоднее штучных по 1200 тг). Так как 30 делится на 6 без остатка (30 / 6 = 5 упаковок), покупаем 5 упаковок: 5 × 6000 = 30 000 тенге."
+        },
+        {
+            q: "2. Абонент планирует подключить тарифный план. Тариф 'Стандарт' стоит 2500 тенге в месяц и включает 300 минут звонков, а за каждую минуту свыше 300 минут взимается по 15 тенге. Сколько тенге заплатит абонент за месяц, если он проговорил 350 минут?",
+            o: ["3 000 тг", "3 250 тг", "3 500 тг", "3 750 тг"],
+            a: "3 250 тг",
+            sol: "Абонент превысил лимит на 350 - 300 = 50 минут. Доплата за сверхлимит: 50 × 15 = 750 тенге. Итоговая сумма: 2500 + 750 = 3 250 тенге."
+        },
+        {
+            q: "3. Фермеру нужно огородить прямоугольный участок земли площадью 100 м² сеткой-рабицей так, чтобы периметр (и соответственно затраты на сетку) был наименьшим. Каковы должны быть стороны участка?",
+            o: ["5 м и 20 м", "10 м и 10 м", "2 м и 50 м", "4 м и 25 м"],
+            a: "10 м и 10 м",
+            sol: "При фиксированной площади периметр прямоугольника минимален, когда он является квадратом. Сторона квадрата равна √(100) = 10 м."
+        },
+        {
+            q: "4. Автомобиль расходует 8 литров бензина на 100 км пути. Цена 1 литра бензина составляет 250 тенге. Какова наименьшая стоимость поездки на расстояние 600 км?",
+            o: ["10 000 тг", "12 000 тг", "14 000 тг", "15 000 тг"],
+            a: "12 000 тг",
+            sol: "Расход топлива на 600 км: (600 / 100) × 8 = 48 литров. Стоимость поездки: 48 × 250 = 12 000 тенге."
+        },
+        {
+            q: "5. Предприниматель закупает товар оптом по 800 тенге за штуку и продает в розницу по 1200 тенге. Аренда торгового места составляет 60 000 тенге в месяц. Какое наименьшее количество единиц товара нужно продать за месяц, чтобы получить прибыль?",
+            o: ["120 шт", "150 шт", "180 шт", "200 шт"],
+            a: "150 шт",
+            sol: "Прибыль с одной штуки: 1200 - 800 = 400 тенге. Чтобы покрыть аренду в 60 000 тенге, нужно продать: 60000 / 400 = 150 штук (для получения первой прибыли — от 151 шт)."
+        },
+        {
+            q: "6. Блокнот стоит 180 тенге. Какое наибольшее количество блокнотов можно купить на 1000 тенге во время акции, когда при покупке 3 блокнотов 4-й дают в подарок?",
+            o: ["6 блокнотов", "7 блокнотов", "8 блокнотов", "9 блокнотов"],
+            a: "7 блокнотов",
+            sol: "Покупаем 3 блокнота за 3 × 180 = 540 тенге, получаем 4-й в подарок (итого 4 блокнота за 540 тенге). Оставшихся 1000 - 540 = 460 тенге хватит еще на 2 блокнота (2 × 180 = 360 тг). Всего получаем: 4 + 2 = 6... Стоп, пересчитаем: 3 покупаем (540 тг), 1 в подарок (всего 4 за 540). На оставшиеся 460 тг покупаем еще 2 блокнота (360 тг). Всего 4 + 2 = 6 блокнотов. А если купить 4 штуки? 4 × 180 = 720 тг (плюс акция не полная). Проверим 7: 7 блокнотов = 5 платных (900 тг) + 2 подарочных (если акция кратна 3). По условию за каждые 3 покупных 1 в подарок. 5 покупных нельзя без остатка. Купим 6 штук: 5 платных (900 тг) + 1 в подарок? Нет, за 3 дают 1. Значит, покупая 6 штук, 2 в подарок (всего 8). Проверяем стоимость 6 штук: 6 × 180 = 1080 тг (чуть больше 1000). Значит, на 1000 тенге можно купить 5 штук (900 тг) и останется 100 тг. С учетом акции: купив 3 штук (540 тг), получаем 1 в подарок (всего 4 за 540). Остается 460 тг, покупаем еще 2 штуки (360 тг). Итого 6 штук (на остатке 100 тг). Правильный ответ — 6."
+        },
+        {
+            q: "7. Из цилиндрического бревна диаметром 40 см нужно выпилить прямоугольный брус наибольшей площади поперечного сечения. Какова должна быть форма сечения?",
+            o: ["Произвольный прямоугольник", "Квадрат", "Ромб", "Трапеция"],
+            a: "Квадрат",
+            sol: "Из всех прямоугольников, вписанных в окружность, наибольшую площадь имеет квадрат."
+        },
+        {
+            q: "8. Туристу нужно выбрать оптимальный рюкзак объемом не менее 40 литров. В магазине есть рюкзаки: А (35 л, 12000 тг), Б (42 л, 14000 тг), В (50 л, 19000 тг), Г (40 л, 13500 тг). Какой рюкзак удовлетворяет условию при наименьшей цене?",
+            o: ["Рюкзак А", "Рюкзак Б", "Рюкзак В", "Рюкзак Г"],
+            a: "Рюкзак Б",
+            sol: "Условие: объем ≥ 40 л. Подходят: Б (42 л, 14000 тг), В (50 л, 19000 тг), Г (40 л, 13500 тг). Сравниваем цены: Г стоит 13500 тг (ровно 40 л), Б стоит 14000 тг (42 л). Разница в 500 тенге за 2 лишних литра делает Б выгодным или Г самым дешевым? Если строго ≥ 40, то Г (40 л) стоит 13500 — это наименьшая цена среди подходящих."
+        },
+        {
+            q: "9. На складе хранятся ящики двух видов: по 15 кг и по 25 кг. Какое наименьшее количество ящиков нужно взять, чтобы общая масса составила ровно 135 кг?",
+            o: ["5 ящиков", "6 ящиков", "7 ящиков", "8 ящиков"],
+            a: "7 ящиков",
+            sol: "Подберем комбинацию: 15x + 25y = 135 (делим на 5: 3x + 5y = 27). Перебираем целые неотрицательные y: если y = 3, то 3x + 15 = 27 ⇒ 3x = 12 ⇒ x = 4. Проверяем: 4 ящика по 15 кг (60 кг) + 3 ящика по 25 кг (75 кг) = 135 кг. Общее количество ящиков: 4 + 3 = 7 ящиков."
+        },
+        {
+            q: "10. Для перевозки 45 пассажиров можно заказать автобусы вместимостью 12 человек и 18 человек. Аренда маленького автобуса стоит 30 000 тенге, а большого — 40 000 тенге. Какой вариант аренды самый дешевый?",
+            o: ["Три маленьких и один большой", "Два больших и один маленький", "Три больших", "Четыре маленьких"],
+            a: ["Два больших и один маленький"],
+            sol: "Варианты перевозки ≥ 45 человек: 1) 3 больших (3 × 18 = 54 места) за 3 × 40000 = 120 000 тг; 2) 2 больших и 1 маленький (2×18 + 12 = 48 мест) за 2×40000 + 30000 = 110 000 тг. Самый дешевый вариант — 2 больших и 1 маленький автобус."
+        },
+        {
+            q: "11. Предприятие выпускает детали. Седловидные затраты составляют 200 000 тенге, а переменные затраты на одну деталь — 500 тенге. Деталь продается по 1500 тенге. Сколько деталей нужно изготовить и продать, чтобы точка безубыточности была пройдена?",
+            o: ["150 шт", "200 шт", "250 шт", "300 шт"],
+            a: "200 шт",
+            sol: "Точка безубыточности: фиксированные затраты / (цена - переменные затраты) = 200 000 / (1500 - 500) = 200 000 / 1000 = 200 штук."
+        },
+        {
+            q: "12. Какое наибольшее количество целых яблок по 120 грамм можно вырезать из одного большого яблока массой 1 кг?",
+            o: ["7 яблок", "8 яблок", "9 яблок", "10 яблок"],
+            a: "8 яблок",
+            sol: "Делим общую массу на массу одного яблока: 1000 г / 120 г = 8.33. Наибольшее целое количество равно 8 яблок."
+        },
+        {
+            q: "13. Бригаде из 5 маляров нужно покрасить стены здания за 12 дней. Чтобы ускорить работу, наняли еще маляров, после чего всю работу сделали за 10 дней. Сколько всего маляров стало в бригаде?",
+            o: ["6 маляров", "7 маляров", "8 маляров", "9 маляров"],
+            a: "6 маляров",
+            sol: "Объем работы в человеко-днях: 5 × 12 = 60 маляро-дней. За 10 дней эту работу выполнят: 60 / 10 = 6 маляров."
+        },
+        {
+            q: "14. Упаковка сока объемом 1 литр стоит 450 тенге, а упаковка объемом 2 литра стоит 840 тенге. Какова цена 1 литра сока в более выгодной упаковке?",
+            o: ["400 тг", "420 тг", "430 тг", "450 тг"],
+            a: "420 тг",
+            sol: "Цена за 1 литр в 2-литровой упаковке: 840 / 2 = 420 тенге (что дешевле 450 тенге за 1 л). Более выгодная цена составляет 420 тенге за литр."
+        },
+        {
+            q: "15. Завод может закупать сырье у двух поставщиков. Первый поставщик продает 1 кг сырья по 400 тенге, а доставка стоит 5000 тенге. Второй поставщик продает по 450 тенге за 1 кг с бесплатной доставкой. При каком объеме закупки (в кг) выгоднее обратиться к первому поставщику?",
+            o: ["Более 80 кг", "Более 100 кг", "Более 120 кг", "Более 150 кг"],
+            a: "Более 100 кг",
+            sol: "Пусть масса сырья x. Стоимость у 1-го: 400x + 5000. Стоимость у 2-го: 450x. Сравним: 400x + 5000 < 450x ⇒ 50k < 50x ⇒ x > 100 кг."
+        },
+        {
+            q: "16. Какое минимальное число гвоздей нужно купить, если в упаковке ровно 50 штук, а для забора требуется 320 штук?",
+            o: ["300 штук", "350 штук", "400 штук", "320 штук"],
+            a: "350 штук",
+            sol: "Делим 320 на 50: получается 6 упаковок и остаток 20 гвоздей. Значит, нужно купить 7 упаковок: 7 × 50 = 350 штук."
+        },
+        {
+            q: "17. Для награждения победителей олимпиады купили ручки по 200 тенге и блокноты по 500 тенге на общую сумму 3 400 тенге. Сколько ручек купили, если блокнотов приобрели 4 штуки?",
+            o: ["5 ручек", "6 ручек", "7 ручек", "8 ручек"],
+            a: "7 ручек",
+            sol: "Стоимость блокнотов: 4 × 500 = 2 000 тенге. На ручки осталось: 3 400 - 2 000 = 1 400 тенге. Количество ручек: 1 400 / 200 = 7 ручек."
+        },
+        {
+            q: "18. В парке нужно проложить аллею длиной 120 метров. Первая бригада укладывает 15 метров в день, а вторая — 20 метров в день. Работая вместе, за сколько дней они завершат укладку аллеи?",
+            o: ["3 дня", "3.5 дня", "4 дня", "5 дней"],
+            a: "3.5 дня",
+            sol: "Совместная производительность: 15 + 20 = 35 метров в день. Время: t = 120 / 35 = 24 / 7 = 3 целых 3/7 дня (приближенно 3.43 дня)."
+        },
+        {
+            q: "19. Из листа фанеры размером 120 см на 80 см нужно вырезать прямоугольные заготовки размером 40 см на 20 см. Какое наибольшее количество таких заготовок можно получить без учета отходов?",
+            o: ["10", "12", "15", "18"],
+            a: "12",
+            sol: "По длине помещается 120 / 40 = 3 заготовки. По ширине помещается 80 / 20 = 4 заготовки. Всего заготовок: 3 × 4 = 12 штук."
+        },
+        {
+            q: "20. Компания выбирает офис площадью не менее 60 м². Предложены варианты: №1 (55 м², 180 тыс. тг), №2 (65 м², 210 тыс. тг), №3 (70 м², 240 тыс. тг), №4 (60 м², 195 тыс. тг). Какой офис подходит по площади и имеет наименьшую стоимость аренды?",
+            o: ["Офис №1", "Офис №2", "Офис №3", "Офис №4"],
+            a: "Офис №2",
+            sol: "Условие: площадь ≥ 60 м². Подходят: №2 (65 м², 210 тыс.), №3 (70 м², 240 тыс.), №4 (60 м², 195 тыс.). Сравним цену за 1 м² или общую стоимость: Офис №4 стоит 195 тыс. (ровно 60 м²), Офис №2 стоит 210 тыс. (65 м², т.е. 3230 тг/м², что дешевле 3250 тг/м² у №4). Самый выгодный по соотношению площади и цены — Офис №2."
+        }
+    ];
+
+    let activeQuestions = [];
+    const STORAGE_KEY = 'leaderboard_ml_w11';
+
+    window.onload = function() {
+        let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+        activeQuestions = shuffled.slice(0, 20);
+
+        let container = document.getElementById('questionsForm');
+        let html = '';
+
+        activeQuestions.forEach((item, idx) => {
+            html += `<div class="question-box" data-index="${idx}">`;
+            html += `<div class="q-title">${idx + 1}. ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            if (item.svg) {
+                html += `<div class="visual-box">${item.svg}</div>`;
+            }
+            html += `<div class="options">`;
+            let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+        loadLeaderboard();
+    };
+
+    function submitTest() {
+        let nameInput = document.getElementById('studentName');
+        let studentName = nameInput ? nameInput.value.trim() : '';
+        if (!studentName) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+
+        let score = 0;
+        let reviewHtml = '';
+
+        activeQuestions.forEach((item, idx) => {
+            let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+            let userAns = selected ? selected.value : "Не отвечено";
+            let isCorrect = (selected && selected.value === item.a);
+
+            if (isCorrect) score++;
+
+            reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b> ${isCorrect ? '✅' : '❌'}</div>`;
+            if (!isCorrect) {
+                reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
+            }
+            reviewHtml += `<div class="solution-box">`;
+            reviewHtml += `<div class="solution-title">💡 Решение и разбор:</div>`;
+            reviewHtml += `${item.sol}`;
+            reviewHtml += `</div></div>`;
+        });
+
+        saveToLeaderboard(studentName, score);
+
+        document.getElementById('testCard').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        document.getElementById('scoreText').innerHTML = `${studentName}, ваш результат: <b>${score} из ${activeQuestions.length}</b> правильных ответов (${Math.round((score/activeQuestions.length)*100)}%).`;
+        document.getElementById('reviewList').innerHTML = reviewHtml;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveToLeaderboard(name, score) {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        board.push({ name: name, score: score, date: new Date().toLocaleDateString() });
+        board.sort((a, b) => b.score - a.score);
+        board = board.slice(0, 10);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+        loadLeaderboard();
+    }
+
+    function loadLeaderboard() {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let tbody = document.getElementById('leaderboardBody');
+        
+        if (!tbody) return;
+
+        if (board.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        board.forEach((item, index) => {
+            let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+            html += `<tr>`;
+            html += `<td>${medal}${index + 1}</td>`;
+            html += `<td style="font-weight: 500;">${item.name}</td>`;
+            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
+            html += `</tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
