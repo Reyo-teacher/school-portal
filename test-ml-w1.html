@@ -391,11 +391,96 @@
 
         activeQuestions.forEach((item, idx) => {
             html += `<div class="question-box" data-index="${idx}">`;
-            html += `<div class="q-title">${idx + 1}.${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            html += `<div class="q-title">${idx + 1}. ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
             if (item.svg) {
                 html += `<div class="visual-box">${item.svg}</div>`;
             }
             html += `<div class="options">`;
             let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
             shuffledOpts.forEach(opt => {
-                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt
+                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+        loadLeaderboard();
+    };
+
+    function submitTest() {
+        let nameInput = document.getElementById('studentName');
+        let studentName = nameInput.value.trim();
+        if (!nameInput) return;
+        if (!studentName) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            nameInput.focus();
+            return;
+        }
+
+        let score = 0;
+        let reviewHtml = '';
+
+        activeQuestions.forEach((item, idx) => {
+            let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+            let userAns = selected ? selected.value : "Не отвечено";
+            let isCorrect = (selected && selected.value === item.a);
+
+            if (isCorrect) score++;
+
+            reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b> ${isCorrect ? '✅' : '❌'}</div>`;
+            if (!isCorrect) {
+                reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
+            }
+            reviewHtml += `<div class="solution-box">`;
+            reviewHtml += `<div class="solution-title">💡 Решение и разбор:</div>`;
+            reviewHtml += `${item.sol}`;
+            reviewHtml += `</div></div>`;
+        });
+
+        // Сохранение в рейтинг (localStorage)
+        saveToLeaderboard(studentName, score);
+
+        document.getElementById('testCard').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        document.getElementById('scoreText').innerHTML = `${studentName}, ваш результат: <b>${score} из ${activeQuestions.length}</b> правильных ответов (${Math.round((score/activeQuestions.length)*100)}%).`;
+        document.getElementById('reviewList').innerHTML = reviewHtml;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveToLeaderboard(name, score) {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        board.push({ name: name, score: score, date: new Date().toLocaleDateString() });
+        // Сортировка по убыванию баллов
+        board.sort((a, b) => b.score - a.score);
+        // Оставляем топ-10
+        board = board.slice(0, 10);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+        loadLeaderboard();
+    }
+
+    function loadLeaderboard() {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let tbody = document.getElementById('leaderboardBody');
+        
+        if (board.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        board.forEach((item, index) => {
+            let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+            html += `<tr>`;
+            html += `<td>${medal}${index + 1}</td>`;
+            html += `<td style="font-weight: 500;">${item.name}</td>`;
+            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
+            html += `</tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
