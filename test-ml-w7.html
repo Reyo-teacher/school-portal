@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неделя 7: Пространственное мышление — ЕНТ</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --gold: #d97706;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-light);
+            background-image: 
+                linear-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        .back-btn {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .back-btn:hover { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+
+        .inp-name {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .inp-name:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+
+        .question-box {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .q-title { font-weight: 600; margin-bottom: 10px; color: var(--text-main); font-size: 15px; }
+
+        .visual-box {
+            display: flex;
+            justify-content: center;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .options { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+        .opt-label {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .opt-label:hover { background: #e0f2fe; border-color: var(--accent); }
+        .opt-label input { margin-right: 12px; transform: scale(1.2); }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--accent-hover); }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leaderboard-table th { color: var(--accent); font-weight: 600; }
+        .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
+
+        #resultContainer { display: none; }
+        .score-card {
+            background: #f0fdf4;
+            border: 1px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .score-card h3 { color: var(--success); margin: 0 0 10px 0; font-size: 22px; }
+
+        .review-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--border-color);
+        }
+        .review-item.correct { border-left-color: var(--success); }
+        .review-item.incorrect { border-left-color: var(--danger); }
+        
+        .rev-q { font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .rev-ans { font-size: 13px; margin: 4px 0; color: var(--text-main); }
+        .solution-box {
+            margin-top: 10px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border: 1px dashed var(--border-color);
+        }
+        .solution-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="teacher-name">Математическая грамотность — Неделя 7</h1>
+    </header>
+
+    <div class="main-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: Тест -->
+        <div>
+            <div class="card" id="testCard">
+                <a href="ml-tests.html" class="back-btn">← К списку недель</a>
+                <h2>Тест: Пространственное мышление и геометрия граней</h2>
+                <p style="font-size: 14px; color: var(--text-muted);">Случайная выборка 20 вопросов из базы данных.</p>
+                
+                <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
+
+                <div id="questionsForm">
+                    <!-- Загружаются вопросы -->
+                </div>
+
+                <button class="btn-submit" onclick="submitTest()">Завершить тест и проверить</button>
+            </div>
+
+            <!-- Блок результатов -->
+            <div id="resultContainer" class="card">
+                <div class="score-card">
+                    <h3>Результат тестирования</h3>
+                    <p id="scoreText" style="font-size: 18px; margin: 0;"></p>
+                </div>
+                
+                <h2>Работа над ошибками и разбор решений</h2>
+                <div id="reviewList"></div>
+                
+                <button class="back-btn" style="width:100%; text-align:center; margin-top:15px;" onclick="location.reload()">Пройти тест заново</button>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: Рейтинг -->
+        <div>
+            <div class="card">
+                <h2>🏆 Топ-10 результатов</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Лучшие результаты недели 7:</p>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ученик</th>
+                            <th style="text-align: right;">Баллы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Динамически заполняется -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionPool = [
+        {
+            q: "1. Куб размером 3×3×3 покрасили снаружи красной краской и распилили на 27 одинаковых маленьких кубиков. Сколько кубиков имеют ровно ТРИ окрашенные грани?",
+            svg: `<svg width="120" height="110" viewBox="0 0 100 100"><polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="#f8fafc" stroke="#0284c7" stroke-width="2"/><polyline points="50,10 50,50 90,30" fill="none" stroke="#0284c7" stroke-width="2"/><polyline points="50,50 10,30" fill="none" stroke="#0284c7" stroke-width="2"/><polyline points="50,50 50,90" fill="none" stroke="#0284c7" stroke-width="2"/></svg>`,
+            o: ["4", "6", "8", "12"],
+            a: "8",
+            sol: "Кубики с 3 окрашенными гранями находятся исключительно в вершинах (углах) большого куба. У любого куба ровно 8 вершин, следовательно, таких кубиков 8."
+        },
+        {
+            q: "2. Куб размером 3×3×3 покрасили снаружи и распилили на 27 кубиков. Сколько кубиков имеют ровно ДВЕ окрашенные грани?",
+            o: ["6", "8", "12", "18"],
+            a: "12",
+            sol: "Кубики с 2 окрашенными гранями расположены на рёбрах куба (исключая вершины). У куба 12 рёбер, на каждом ребре 3 - 2 = 1 такой кубик. Всего: 12 × 1 = 12."
+        },
+        {
+            q: "3. Куб размером 3×3×3 покрасили снаружи и распилили на 27 кубиков. Сколько кубиков имеют ровно ОДНУ окрашенную грань?",
+            o: ["6", "8", "12", "1"],
+            a: "6",
+            sol: "Кубики с 1 окрашенной гранью находятся в центре каждой из 6 граней большого куба. У куба 6 граней, поэтому таких кубиков 6 × 1 = 6."
+        },
+        {
+            q: "4. Куб размером 3×3×3 покрасили снаружи и распилили на 27 кубиков. Сколько кубиков НЕ имеют ни одной окрашенной грани?",
+            o: ["0", "1", "2", "4"],
+            a: "1",
+            sol: "Неокрашенный кубик находится строго в самом центре большого куба. Формула для внутреннего слоя: (n - 2)³ = (3 - 2)³ = 1³ = 1 кубик."
+        },
+        {
+            q: "5. Какое наибольшее количество граней куба можно увидеть одновременно, смотря на него с одной точки пространства?",
+            o: ["1 грань", "2 грани", "3 грани", "4 грани"],
+            a: "3 грани",
+            sol: "С любой точки пространства максимум можно одновременно увидеть три грани куба, сходящиеся в одной вершине."
+        },
+        {
+            q: "6. Сколько рёбер у пятиугольной призмы?",
+            o: ["10", "12", "15", "20"],
+            a: "15",
+            sol: "У n-угольной призмы 3n рёбер (n в верхнем основании, n в нижнем и n боковых). Для n = 5 получаем: 3 × 5 = 15 рёбер."
+        },
+        {
+            q: "7. Сколько граней у шестиугольной пирамиды?",
+            o: ["6", "7", "8", "12"],
+            a: "7",
+            sol: "У n-угольной пирамиды (n + 1) граней (1 основание и n боковых граней). Для n = 6: 6 + 1 = 7 граней."
+        },
+        {
+            q: "8. По теореме Эйлера для выпуклых многогранников сумма количества вершин (В) и граней (Г) равна количеству рёбер (Р) плюс:",
+            o: ["1", "2", "3", "4"],
+            a: "2",
+            sol: "Формула Эйлера: В + Г - Р = 2, или В + Г = Р + 2."
+        },
+        {
+            q: "9. Многогранник имеет 12 вершин и 30 рёбер. Сколько граней у этого многогранника?",
+            o: ["18", "20", "22", "24"],
+            a: "20",
+            sol: "По формуле Эйлера В + Г = Р + 2: 12 + Г = 30 + 2 ⇒ 12 + Г = 32 ⇒ Г = 20."
+        },
+        {
+            q: "10. Какая фигура получается в сечении куба плоскостью, проходящей через три его вершины, не лежащие на одной грани?",
+            o: ["Квадрат", "Правильный треугольник", "Прямоугольник", "Трапеция"],
+            a: "Правильный треугольник",
+            sol: "Сечение, проходящее через три диагонали смежных граней куба, образует равносторонний (правильный) треугольник."
+        },
+        {
+            q: "11. Длина ребра куба равна 4 см. Найдите площадь полной поверхности куба.",
+            o: ["64 см²", "80 см²", "96 см²", "128 см²"],
+            a: "96 см²",
+            sol: "Площадь поверхности куба S = 6a² = 6 × 4² = 6 × 16 = 96 см²."
+        },
+        {
+            q: "12. Из скольких единичных кубиков (1×1×1) состоит прямоугольный параллелепипед размером 4×5×3?",
+            o: ["35", "47", "60", "75"],
+            a: "60",
+            sol: "Общее количество единичных кубиков равно объёму V = a × b × c = 4 × 5 × 3 = 60 кубиков."
+        },
+        {
+            q: "13. Какое наименьшее количество разверток плоских квадратов нужно соединить, чтобы сложить закрытый куб?",
+            o: ["4", "5", "6", "8"],
+            a: "6",
+            sol: "Куб состоит из 6 одинаковых квадратных граней."
+        },
+        {
+            q: "14. Длины всех рёбер прямоугольного параллелепипеда равны 3 см, 4 см и 5 см. Найдите сумму длин всех его рёбер.",
+            o: ["24 см", "36 см", "48 см", "60 см"],
+            a: "48 см",
+            sol: "У параллелепипеда по 4 рёбра каждой длины: L = 4 × (a + b + c) = 4 × (3 + 4 + 5) = 4 × 12 = 48 см."
+        },
+        {
+            q: "15. Если ребро куба увеличить в 2 раза, то во сколько раз увеличится его объём?",
+            o: ["В 2 раза", "В 4 раза", "В 6 раз", "В 8 раз"],
+            a: "В 8 раз",
+            sol: "Объём V = a³. При увеличении ребра в 2 раза объём становится (2a)³ = 8a³, то есть увеличивается в 8 раз."
+        },
+        {
+            q: "16. Если ребро куба увеличить в 3 раза, то во сколько раз увеличится площадь его поверхности?",
+            o: ["В 3 раза", "В 6 раз", "В 9 раз", "В 27 раз"],
+            a: "В 9 раз",
+            sol: "Площадь поверхности S = 6a². При увеличении a в 3 раза площадь становится 6 × (3a)² = 9 × (6a²), т.е. увеличивается в 9 раз."
+        },
+        {
+            q: "17. Сколько диагоналей у куба?",
+            o: ["4", "6", "8", "12"],
+            a: "4",
+            sol: "У куба 4 пространственные диагонали, соединяющие противоположные вершины."
+        },
+        {
+            q: "18. Деревянный брусок размером 2×3×4 распилили на кубики 1×1×1. Сколько распилов потребовалось сделать, если распиливать по одному бруску за раз?",
+            o: ["6", "7", "9", "23"],
+            a: "6",
+            sol: "Чтобы разрезать измерение 2 требуется (2 - 1) = 1 распил, измерение 3 — (3 - 1) = 2 распила, измерение 4 — (4 - 1) = 3 распила. Всего 1 + 2 + 3 = 6 распилов."
+        },
+        {
+            q: "19. Какой многоугольник НЕ может получиться в сечении куба плоскостью?",
+            o: ["Треугольник", "Шестиугольник", "Семиугольник", "Трапеция"],
+            a: "Семиугольник",
+            sol: "Плоскость может пересекать не более 6 граней куба, поэтому сечение не может иметь больше 6 сторон (семиугольник получить невозможно)."
+        },
+        {
+            q: "20. Сколько граней у усечённой четырехугольной пирамиды?",
+            o: ["4", "5", "6", "8"],
+            a: "6",
+            sol: "Усечённая четырехугольная пирамида имеет 2 основания (верхнее и нижнее) и 4 боковые грани (трапеции). Всего 2 + 4 = 6 граней."
+        }
+    ];
+
+    let activeQuestions = [];
+    const STORAGE_KEY = 'leaderboard_ml_w7';
+
+    window.onload = function() {
+        let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+        activeQuestions = shuffled.slice(0, 20);
+
+        let container = document.getElementById('questionsForm');
+        let html = '';
+
+        activeQuestions.forEach((item, idx) => {
+            html += `<div class="question-box" data-index="${idx}">`;
+            html += `<div class="q-title">${idx + 1}. ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            if (item.svg) {
+                html += `<div class="visual-box">${item.svg}</div>`;
+            }
+            html += `<div class="options">`;
+            let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+        loadLeaderboard();
+    };
+
+    function submitTest() {
+        let nameInput = document.getElementById('studentName');
+        let studentName = nameInput ? nameInput.value.trim() : '';
+        if (!studentName) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+
+        let score = 0;
+        let reviewHtml = '';
+
+        activeQuestions.forEach((item, idx) => {
+            let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+            let userAns = selected ? selected.value : "Не отвечено";
+            let isCorrect = (selected && selected.value === item.a);
+
+            if (isCorrect) score++;
+
+            reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b> ${isCorrect ? '✅' : '❌'}</div>`;
+            if (!isCorrect) {
+                reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
+            }
+            reviewHtml += `<div class="solution-box">`;
+            reviewHtml += `<div class="solution-title">💡 Решение и разбор:</div>`;
+            reviewHtml += `${item.sol}`;
+            reviewHtml += `</div></div>`;
+        });
+
+        saveToLeaderboard(studentName, score);
+
+        document.getElementById('testCard').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        document.getElementById('scoreText').innerHTML = `${studentName}, ваш результат: <b>${score} из ${activeQuestions.length}</b> правильных ответов (${Math.round((score/activeQuestions.length)*100)}%).`;
+        document.getElementById('reviewList').innerHTML = reviewHtml;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveToLeaderboard(name, score) {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        board.push({ name: name, score: score, date: new Date().toLocaleDateString() });
+        board.sort((a, b) => b.score - a.score);
+        board = board.slice(0, 10);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+        loadLeaderboard();
+    }
+
+    function loadLeaderboard() {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let tbody = document.getElementById('leaderboardBody');
+        
+        if (!tbody) return;
+
+        if (board.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        board.forEach((item, index) => {
+            let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+            html += `<tr>`;
+            html += `<td>${medal}${index + 1}</td>`;
+            html += `<td style="font-weight: 500;">${item.name}</td>`;
+            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
+            html += `</tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
