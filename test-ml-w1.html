@@ -44,7 +44,6 @@
         }
         .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
 
-        /* Двухколоночная сетка */
         .main-layout {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -141,7 +140,6 @@
         }
         .btn-submit:hover { background: var(--accent-hover); }
 
-        /* Таблица рейтинга */
         .leaderboard-table {
             width: 100%;
             border-collapse: collapse;
@@ -156,7 +154,6 @@
         .leaderboard-table th { color: var(--accent); font-weight: 600; }
         .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
 
-        /* Результаты и разбор */
         #resultContainer { display: none; }
         .score-card {
             background: #f0fdf4;
@@ -211,7 +208,7 @@
                 <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
 
                 <div id="questionsForm">
-                    <!-- Сюда загружаются вопросы -->
+                    <!-- Сюда динамически загружаются вопросы -->
                 </div>
 
                 <button class="btn-submit" onclick="submitTest()">Завершить тест и проверить</button>
@@ -245,7 +242,7 @@
                         </tr>
                     </thead>
                     <tbody id="leaderboardBody">
-                        <!-- Динамически заполняется из localStorage -->
+                        <!-- Динамически заполняется -->
                     </tbody>
                 </table>
             </div>
@@ -408,11 +405,10 @@
 
     function submitTest() {
         let nameInput = document.getElementById('studentName');
-        let studentName = nameInput.value.trim();
-        if (!nameInput) return;
+        let studentName = nameInput ? nameInput.value.trim() : '';
         if (!studentName) {
             alert('Пожалуйста, введите ваши Фамилию и Имя!');
-            nameInput.focus();
+            if (nameInput) nameInput.focus();
             return;
         }
 
@@ -460,6 +456,8 @@
         let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
         let tbody = document.getElementById('leaderboardBody');
         
+        if (!tbody) return;
+
         if (board.length === 0) {
             tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
             return;
