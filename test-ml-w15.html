@@ -157,70 +157,82 @@
 
         #resultContainer { display: none; }
         
-        /* СТИЛЬ ПРОФЕССИОНАЛЬНОГО СЕРТИФИКАТА КАК НА ОБРАЗЦЕ */
-        .certificate-sheet {
-            background: #ffffff;
-            border: 6px solid var(--accent);
-            padding: 35px 30px;
-            border-radius: 10px;
+        /* СТИЛЬ СЕРТИФИКАТА С ФОНОВОЙ КАРТИНКОЙ */
+        .certificate-container {
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background: #fef3c7; /* Запасной фон, если картинка грузится */
+        }
+        
+        .certificate-bg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Наложенный текст с данными ученика */
+        .certificate-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
             text-align: center;
         }
-        .cert-header-title { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: 1.5px; margin: 0; }
-        .cert-header-sub { font-size: 20px; font-weight: 700; color: var(--accent); margin: 5px 0 10px 0; letter-spacing: 1px; }
-        .cert-header-desc { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 25px; }
-        
-        .cert-issued-to { font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-        .cert-name-line { 
-            font-size: 24px; 
-            font-weight: 700; 
-            color: #0f172a; 
-            border-bottom: 2px solid var(--border-color); 
-            display: inline-block; 
-            padding: 0 40px 8px 40px; 
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-        .cert-body-text { font-size: 14px; color: var(--text-main); margin-bottom: 30px; line-height: 1.6; }
-        .cert-score-box { font-size: 24px; font-weight: bold; color: var(--accent); margin-bottom: 5px; }
-        .cert-status-text { font-size: 14px; font-weight: 600; margin-bottom: 35px; }
 
-        .cert-footer {
+        .cert-title { font-size: 28px; font-weight: 900; color: #1e3a8a; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
+        .cert-subtitle { font-size: 14px; font-weight: 700; color: #475569; letter-spacing: 1px; margin-bottom: 25px; text-transform: uppercase; }
+        
+        .cert-to { font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        .cert-name { 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: #0f172a; 
+            border-bottom: 3px solid #0284c7; 
+            padding: 0 30px 5px 30px; 
+            margin-bottom: 20px;
+            font-family: Georgia, serif;
+        }
+        
+        .cert-text { font-size: 13px; color: #334155; max-width: 600px; line-height: 1.5; margin-bottom: 30px; }
+        
+        .cert-details {
+            width: 100%;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border-color);
-            padding-top: 20px;
-            text-align: left;
-            font-size: 12px;
-            color: var(--text-muted);
+            align-items: flex-end;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
-        .cert-footer-col { flex: 1; }
-        .cert-footer-col.center { text-align: center; }
-        .cert-footer-col.right { text-align: right; }
-        .cert-sign-line { border-bottom: 1px solid var(--text-muted); width: 130px; display: inline-block; margin-bottom: 4px; }
-        
-        /* Стилизованная печать */
-        .fake-stamp {
-            width: 85px;
-            height: 85px;
-            border: 3px dashed #dc2626;
+
+        .cert-signature { text-align: left; font-size: 12px; color: #334155; }
+        .cert-date { text-align: right; font-size: 12px; color: #334155; }
+
+        .stamp-badge {
+            width: 75px;
+            height: 75px;
+            border: 3px dashed #b91c1c;
             border-radius: 50%;
-            display: inline-flex;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #dc2626;
-            font-size: 9px;
+            color: #b91c1c;
+            font-size: 8px;
             font-weight: bold;
-            text-transform: uppercase;
-            transform: rotate(-12deg);
-            opacity: 0.85;
-            padding: 5px;
-            box-sizing: border-box;
-            background: rgba(220, 38, 38, 0.02);
+            transform: rotate(-10deg);
+            background: rgba(185, 28, 28, 0.03);
         }
 
         .analytics-box {
@@ -277,48 +289,46 @@
                 
                 <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
 
-                <div id="questionsForm">
-                    <!-- Загружаются вопросы -->
-                </div>
+                <div id="questionsForm"></div>
 
                 <button class="btn-submit" onclick="submitTest()">Завершить финальный экзамен</button>
             </div>
 
-            <!-- Блок результатов и официального сертификата -->
+            <!-- БЛОК РЕЗУЛЬТАТОВ И КАРТИНОЧНОГО СЕРТИФИКАТА -->
             <div id="resultContainer" class="card">
                 
-                <!-- ОФИЦИАЛЬНЫЙ БЛАНК СЕРТИФИКАТА -->
-                <div class="certificate-sheet">
-                    <div class="cert-header-title">СЕРТИФИКАТ</div>
-                    <div class="cert-header-sub">ОБ УСПЕШНОМ ОКОНЧАНИИ КУРСА</div>
-                    <div class="cert-header-desc">по подготовке к ЕНТ по предмету «Математическая грамотность»</div>
+                <!-- Контейнер сертификата с фоновой картинкой -->
+                <div class="certificate-container">
+                    <!-- Замените "certificate-bg.png" на имя вашей картинки-шаблона в репозитории -->
+                    <img src="certificate-bg.png" alt="Сертификат" class="certificate-bg" onerror="this.style.display='none'">
                     
-                    <div class="cert-issued-to">ВЫДАН</div>
-                    <div class="cert-name-line" id="certStudentName"></div>
-                    
-                    <div class="cert-body-text">
-                        Подтверждает, что ученик(ца) успешно прошел(а) полный 15-недельный курс обучения на образовательном портале под руководством учителя <b>Логунова Г. В.</b> и успешно сдал(а) итоговый симуляционный экзамен ЕНТ.
-                    </div>
-
-                    <div class="cert-score-box" id="certScoreText"></div>
-                    <div class="cert-status-text" id="certStatusBadge"></div>
-
-                    <!-- НИЖНИЙ БЛОК: Подпись, Дата, Печать -->
-                    <div class="cert-footer">
-                        <div class="cert-footer-col">
-                            <div><span class="cert-sign-line"></span></div>
-                            <div><b>Преподаватель:</b> Логунов Г.В.</div>
+                    <div class="certificate-overlay">
+                        <div class="cert-title">Сертификат</div>
+                        <div class="cert-subtitle">Об успешном завершении курса ЕНТ</div>
+                        
+                        <div class="cert-to">Выдан</div>
+                        <div class="cert-name" id="certStudentName">Иванов Иван</div>
+                        
+                        <div class="cert-text">
+                            Настоящим подтверждается, что ученик(ца) прошел(а) подготовку по предмету <b>«Математическая грамотность»</b> на образовательном портале под руководством учителя <b>Логунова Г. В.</b> и успешно сдал(а) итоговый экзамен.
                         </div>
-                        <div class="cert-footer-col center">
-                            <div class="fake-stamp">
+
+                        <div class="cert-details">
+                            <div class="cert-signature">
+                                <div><b>Преподаватель:</b> Логунов Г.В.</div>
+                                <div style="margin-top: 5px; font-size: 11px; color: #64748b;" id="certScoreText">Результат: 30/30</div>
+                            </div>
+                            
+                            <div class="stamp-badge">
                                 <span>ШКОЛЬНЫЙ</span>
                                 <b>ПОРТАЛ</b>
                                 <span>ЕНТ 2026</span>
                             </div>
-                        </div>
-                        <div class="cert-footer-col right">
-                            <div><b>Дата выдачи:</b> <span id="certDate"></span></div>
-                            <div style="margin-top: 5px;"><b>Код сертификата:</b> <span id="certCode"></span></div>
+
+                            <div class="cert-date">
+                                <div><b>Дата:</b> <span id="certDate">01.06.2026</span></div>
+                                <div style="margin-top: 5px; font-size: 11px; color: #64748b;" id="certCode">Код: ENT-777</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -326,9 +336,7 @@
                 <!-- Блок аналитики компетенций -->
                 <div class="analytics-box">
                     <div class="analytics-title">📊 Экспресс-анализ готовности по разделам:</div>
-                    <div id="analyticsContent">
-                        <!-- Динамический вывод рекомендаций -->
-                    </div>
+                    <div id="analyticsContent"></div>
                 </div>
                 
                 <h2>Разбор решений и работа над ошибками</h2>
@@ -351,9 +359,7 @@
                             <th style="text-align: right;">Баллы</th>
                         </tr>
                     </thead>
-                    <tbody id="leaderboardBody">
-                        <!-- Динамически заполняется -->
-                    </tbody>
+                    <tbody id="leaderboardBody"></tbody>
                 </table>
             </div>
         </div>
@@ -472,14 +478,6 @@
         saveToLeaderboard(studentName, score);
 
         let pct = Math.round((score / activeQuestions.length) * 100);
-        let badgeText = '';
-        if (score >= 26) {
-            badgeText = '🟢 Высокий уровень (Отличная готовность к ЕНТ!)';
-        } else if (score >= 20) {
-            badgeText = '🟡 Хороший результат (Есть небольшие пробелы)';
-        } else {
-            badgeText = '🔴 Требуется повторение слабых тем курса';
-        }
 
         let analyticsHtml = '';
         for (let cat in categoryStats) {
@@ -495,7 +493,6 @@
         
         document.getElementById('certStudentName').innerHTML = studentName;
         document.getElementById('certScoreText').innerHTML = `Результат: ${score} из ${activeQuestions.length} (${pct}%)`;
-        document.getElementById('certStatusBadge').innerHTML = badgeText;
         document.getElementById('certDate').innerHTML = new Date().toLocaleDateString();
         document.getElementById('certCode').innerHTML = 'ENT-' + Math.floor(100000 + Math.random() * 900000);
         
