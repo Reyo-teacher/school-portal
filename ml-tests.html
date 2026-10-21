@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мат. Грамотность — Тесты 15 Недель</title>
+    <style>
+        :root {
+            --bg-dark: #070f1e;
+            --card-bg: rgba(15, 23, 42, 0.9);
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(56, 189, 248, 0.25);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper { max-width: 900px; margin: 0 auto; }
+
+        header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        .weeks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .week-link {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1.5px solid var(--border-color);
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .week-link:hover, .week-link:active {
+            background: var(--accent);
+            color: #0f172a;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+        .week-tag {
+            font-size: 12px;
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .week-link:hover .week-tag {
+            background: #0f172a;
+            color: var(--accent);
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .back-btn:hover { background: var(--accent); color: #0f172a; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="teacher-name">Математическая грамотность — Тесты ЕНТ</h1>
+    </header>
+
+    <div class="card">
+        <a href="ml-format.html" class="back-btn">← К выбору формата</a>
+        <h2>Выберите неделю для прохождения теста (по 20 вопросов)</h2>
+        
+        <div class="weeks-list">
+            <a href="test-ml-w1.html" class="week-link"><span>Неделя 1: Логические задачи и истинность утверждений</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w2.html" class="week-link"><span>Неделя 2: Задачи на переливания, взвешивания и переправы</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w3.html" class="week-link"><span>Неделя 3: Таблицы, диаграммы и графический анализ</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w4.html" class="week-link"><span>Неделя 4: Анализ данных, среднее значение и медиана</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w5.html" class="week-link"><span>Неделя 5: Проценты, пропорции и части в реальной жизни</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w6.html" class="week-link"><span>Неделя 6: Комбинаторика и правило умножения</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w7.html" class="week-link"><span>Неделя 7: Пространственное мышление и геометрия граней</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w8.html" class="week-link"><span>Неделя 8: Текстовые задачи на движение и работу</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w9.html" class="week-link"><span>Неделя 9: Числовые последовательности и закономерности</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w10.html" class="week-link"><span>Неделя 10: Вероятность событий в реальных ситуациях</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w11.html" class="week-link"><span>Неделя 11: Задачи на оптимизацию и наилучший выбор</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w12.html" class="week-link"><span>Неделя 12: Площади и периметры сложных фигур</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w13.html" class="week-link"><span>Неделя 13: Задачи с часами, календарями и временем</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w14.html" class="week-link"><span>Неделя 14: Текстовые задачи на смеси и сплавы</span> <span class="week-tag">20 задач</span></a>
+            <a href="test-ml-w15.html" class="week-link"><span>Неделя 15: Итоговый генеральный тест по матграмотности</span> <span class="week-tag">20 задач</span></a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
