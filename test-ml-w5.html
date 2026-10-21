@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неделя 5: Проценты и пропорции — ЕНТ</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --gold: #d97706;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-light);
+            background-image: 
+                linear-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        .back-btn {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .back-btn:hover { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+
+        .inp-name {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .inp-name:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+
+        .question-box {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .q-title { font-weight: 600; margin-bottom: 10px; color: var(--text-main); font-size: 15px; }
+
+        .visual-box {
+            display: flex;
+            justify-content: center;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .options { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+        .opt-label {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .opt-label:hover { background: #e0f2fe; border-color: var(--accent); }
+        .opt-label input { margin-right: 12px; transform: scale(1.2); }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--accent-hover); }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leaderboard-table th { color: var(--accent); font-weight: 600; }
+        .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
+
+        #resultContainer { display: none; }
+        .score-card {
+            background: #f0fdf4;
+            border: 1px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .score-card h3 { color: var(--success); margin: 0 0 10px 0; font-size: 22px; }
+
+        .review-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--border-color);
+        }
+        .review-item.correct { border-left-color: var(--success); }
+        .review-item.incorrect { border-left-color: var(--danger); }
+        
+        .rev-q { font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .rev-ans { font-size: 13px; margin: 4px 0; color: var(--text-main); }
+        .solution-box {
+            margin-top: 10px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border: 1px dashed var(--border-color);
+        }
+        .solution-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="teacher-name">Математическая грамотность — Неделя 5</h1>
+    </header>
+
+    <div class="main-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: Тест -->
+        <div>
+            <div class="card" id="testCard">
+                <a href="ml-tests.html" class="back-btn">← К списку недель</a>
+                <h2>Тест: Проценты, пропорции и части в реальной жизни</h2>
+                <p style="font-size: 14px; color: var(--text-muted);">Случайная выборка 20 вопросов из базы данных.</p>
+                
+                <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
+
+                <div id="questionsForm">
+                    <!-- Загружаются вопросы -->
+                </div>
+
+                <button class="btn-submit" onclick="submitTest()">Завершить тест и проверить</button>
+            </div>
+
+            <!-- Блок результатов -->
+            <div id="resultContainer" class="card">
+                <div class="score-card">
+                    <h3>Результат тестирования</h3>
+                    <p id="scoreText" style="font-size: 18px; margin: 0;"></p>
+                </div>
+                
+                <h2>Работа над ошибками и разбор решений</h2>
+                <div id="reviewList"></div>
+                
+                <button class="back-btn" style="width:100%; text-align:center; margin-top:15px;" onclick="location.reload()">Пройти тест заново</button>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: Рейтинг -->
+        <div>
+            <div class="card">
+                <h2>🏆 Топ-10 результатов</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Лучшие результаты недели 5:</p>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ученик</th>
+                            <th style="text-align: right;">Баллы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Динамически заполняется -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionPool = [
+        {
+            q: "1. Товар стоил 12 000 тенге. Во время распродажи его цену снизили на 15%. Какова новая цена товара?",
+            svg: `<svg width="160" height="60" viewBox="0 0 160 60"><rect x="10" y="15" width="140" height="30" rx="4" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/><text x="80" y="35" font-size="12" fill="#0284c7" text-anchor="middle" font-weight="bold">12 000 тг - 15%</text></svg>`,
+            o: ["9 800 тг", "10 200 тг", "10 500 тг", "10 800 тг"],
+            a: "10 200 тг",
+            sol: "Скидка составляет: 12 000 × 0,15 = 1 800 тенге. Новая цена: 12 000 - 1 800 = 10 200 тенге."
+        },
+        {
+            q: "2. В классе 30 учеников, из них 18 девочек. Какой процент от общего числа учеников составляют девочки?",
+            o: ["50%", "55%", "60%", "65%"],
+            a: "60%",
+            sol: "Процент девочек = (18 / 30) × 100% = 0,6 × 100% = 60%."
+        },
+        {
+            q: "3. Число 45 составляет 30% от неизвестного числа X. Найдите число X.",
+            o: ["120", "135", "150", "160"],
+            a: "150",
+            sol: "Находим целое по его части: X = 45 / 0,3 = 150."
+        },
+        {
+            q: "4. Цена куртки сначала повысилась на 20%, а затем снизилась на 20%. Как изменилась первоначальная цена куртки?",
+            o: ["Не изменилась", "Уменьшилась на 4%", "Увеличилась на 4%", "Уменьшилась на 2%"],
+            a: "Уменьшилась на 4%",
+            sol: "Пусть исходная цена была 100%. После повышения: 100% × 1,2 = 120%. После снижения: 120% × 0,8 = 96%. Итого цена уменьшилась на 100% - 96% = 4%."
+        },
+        {
+            q: "5. Для приготовления раствора смешали 40 г соли и 160 г воды. Какова массовая доля соли в полученном растворе?",
+            o: ["15%", "20%", "25%", "30%"],
+            a: "20%",
+            sol: "Масса всего раствора: 40 + 160 = 200 г. Массовая доля соли = (40 / 200) × 100% = 20%."
+        },
+        {
+            q: "6. За 4 одинаковые тетради заплатили 600 тенге. Сколько стоят 7 таких же тетрадей?",
+            o: ["950 тг", "1 050 тг", "1 100 тг", "1 200 тг"],
+            a: "1 050 тг",
+            sol: "Цена одной тетради: 600 / 4 = 150 тенге. Стоимость 7 тетрадей: 7 × 150 = 1 050 тенге."
+        },
+        {
+            q: "7. Из 80 г семян проросло 64. Найдите процент всхожести семян.",
+            o: ["75%", "80%", "82%", "85%"],
+            a: "80%",
+            sol: "Процент всхожести = (64 / 80) × 100% = 0,8 × 100% = 80%."
+        },
+        {
+            q: "8. Вклад в банке под 10% годовых (простые проценты) составил 500 000 тенге. Какой доход получит вкладчик через 3 года?",
+            o: ["100 000 тг", "120 000 тг", "150 000 тг", "165 500 тг"],
+            a: "150 000 тг",
+            sol: "Годовой доход: 500 000 × 0,10 = 50 000 тенге. Доход за 3 года: 3 × 50 000 = 150 000 тенге."
+        },
+        {
+            q: "9. Трое рабочих разделили заработок пропорционально отработанным часам: 3, 4 и 5 часов. Найдите долю второго рабочего, если весь заработок составил 120 000 тенге.",
+            o: ["30 000 тг", "40 000 тг", "50 000 тг", "60 000 тг"],
+            a: "40 000 тг",
+            sol: "Всего частей: 3 + 4 + 5 = 12 частей. Стоимость одной части: 120 000 / 12 = 10 000 тенге. Второй рабочий за 4 часа получит: 4 × 10 000 = 40 000 тенге."
+        },
+        {
+            q: "10. Прямоугольный участок имеет длину 40 м и ширину 25 м. Длину увеличили на 10%, а ширину — на 20%. На сколько процентов увеличилась площадь участка?",
+            o: ["30%", "32%", "35%", "40%"],
+            a: "32%",
+            sol: "Новая длина: 1,1 × L. Новая ширина: 1,2 × W. Новая площадь: S_new = 1,1 × 1,2 × S_old = 1,32 × S_old. Площадь увеличилась на 32%."
+        },
+        {
+            q: "11. В сплаве меди и цинка масса меди относится к массе цинка как 3 : 2. Сколько килограммов меди содержит 25 кг такого сплава?",
+            o: ["10 кг", "12 кг", "15 кг", "18 кг"],
+            a: "15 кг",
+            sol: "Всего частей в сплаве: 3 + 2 = 5 частей. Масса одной части: 25 / 5 = 5 кг. Масса меди (3 части): 3 × 5 = 15 кг."
+        },
+        {
+            q: "12. Какое число нужно подставить вместо X в пропорцию: 5 / 8 = X / 40?",
+            o: ["20", "25", "30", "35"],
+            a: "25",
+            sol: "По основному свойству пропорции: X = (5 × 40) / 8 = 200 / 8 = 25."
+        },
+        {
+            q: "13. Заводу требовалось выполнить заказ за 20 дней. Коллектив перевыполнял норму на 25% каждый день. За сколько дней был выполнен заказ?",
+            o: ["15 дней", "16 дней", "17 дней", "18 дней"],
+            a: "16 дней",
+            sol: "Производительность стала 1,25 (или 5/4) от плановой. Время выполнения обратно пропорционально производительности: T = 20 / 1,25 = 16 дней."
+        },
+        {
+            q: "14. При сушке яблоки теряют 84% своей массы. Сколько свежих яблок нужно взять, чтобы получить 16 кг сушеных?",
+            o: ["80 кг", "100 кг", "120 кг", "160 кг"],
+            a: "100 кг",
+            sol: "Сушеные яблоки составляют 100% - 84% = 16% массы свежих. Свежих яблок требуется: 16 / 0,16 = 100 кг."
+        },
+        {
+            q: "15. Турист прошел 12 км, что составило 40% всего маршрута. Какова протяженность всего маршрута?",
+            o: ["24 км", "28 км", "30 км", "36 км"],
+            a: "30 км",
+            sol: "Длина маршрута = 12 / 0,40 = 30 км."
+        },
+        {
+            q: "16. Число A составляет 200% от числа B. Какой процент число B составляет от числа A?",
+            o: ["25%", "50%", "75%", "100%"],
+            a: "50%",
+            sol: "A = 2 × B, отсюда B = 0,5 × A. Значит, B составляет 50% от A."
+        },
+        {
+            q: "17. В магазин завезли 500 кг фруктов. Яблоки составляют 45%, груши — 35%, а остальные — сливы. Сколько килограммов слив завезли?",
+            o: ["80 кг", "90 кг", "100 кг", "110 кг"],
+            a: "100 кг",
+            sol: "Процент слив: 100% - 45% - 35% = 20%. Масса слив: 500 × 0,20 = 100 кг."
+        },
+        {
+            q: "18. Цена компьютера с учетом 10% скидки составила 270 000 тенге. Какова была первоначальная цена компьютера?",
+            o: ["290 000 тг", "300 000 тг", "310 000 тг", "320 000 тг"],
+            a: "300 000 тг",
+            sol: "Цена со скидкой составляет 90% от исходной: 270 000 / 0,90 = 300 000 тенге."
+        },
+        {
+            q: "19. Из 200 выстрелов спортсмен попал в цель 184 раза. Найдите процент промахов.",
+            o: ["6%", "8%", "10%", "12%"],
+            a: "8%",
+            sol: "Число промахов: 200 - 184 = 16. Процент промахов: (16 / 200) × 100% = 8%."
+        },
+        {
+            q: "20. В городском парке высадили 1 200 деревьев. Из них 40% — хвойные, а остальные — лиственные. На сколько лиственных деревьев высадили больше, чем хвойных?",
+            o: ["180", "200", "240", "280"],
+            a: "240",
+            sol: "Хвойных: 40%, лиственных: 60%. Разница в процентах: 60% - 40% = 20%. Разница в штуках: 1 200 × 0,20 = 240 деревьев."
+        }
+    ];
+
+    let activeQuestions = [];
+    const STORAGE_KEY = 'leaderboard_ml_w5';
+
+    window.onload = function() {
+        let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+        activeQuestions = shuffled.slice(0, 20);
+
+        let container = document.getElementById('questionsForm');
+        let html = '';
+
+        activeQuestions.forEach((item, idx) => {
+            html += `<div class="question-box" data-index="${idx}">`;
+            html += `<div class="q-title">${idx + 1}.${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            if (item.svg) {
+                html += `<div class="visual-box">${item.svg}</div>`;
+            }
+            html += `<div class="options">`;
+            let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+        loadLeaderboard();
+    };
+
+    function submitTest() {
+        let nameInput = document.getElementById('studentName');
+        let studentName = nameInput ? nameInput.value.trim() : '';
+        if (!studentName) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+
+        let score = 0;
+        let reviewHtml = '';
+
+        activeQuestions.forEach((item, idx) => {
+            let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+            let userAns = selected ? selected.value : "Не отвечено";
+            let isCorrect = (selected && selected.value === item.a);
+
+            if (isCorrect) score++;
+
+            reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}:${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b>${isCorrect ? '✅' : '❌'}</div>`;
+            if (!isCorrect) {
+                reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
+            }
+            reviewHtml += `<div class="solution-box">`;
+            reviewHtml += `<div class="solution-title">💡 Ре
