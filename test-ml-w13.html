@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неделя 13: Часы, календари и время — ЕНТ</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --gold: #d97706;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-light);
+            background-image: 
+                linear-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        .back-btn {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .back-btn:hover { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+
+        .inp-name {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .inp-name:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+
+        .question-box {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .q-title { font-weight: 600; margin-bottom: 10px; color: var(--text-main); font-size: 15px; }
+
+        .visual-box {
+            display: flex;
+            justify-content: center;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .options { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+        .opt-label {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .opt-label:hover { background: #e0f2fe; border-color: var(--accent); }
+        .opt-label input { margin-right: 12px; transform: scale(1.2); }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--accent-hover); }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leaderboard-table th { color: var(--accent); font-weight: 600; }
+        .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
+
+        #resultContainer { display: none; }
+        .score-card {
+            background: #f0fdf4;
+            border: 1px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .score-card h3 { color: var(--success); margin: 0 0 10px 0; font-size: 22px; }
+
+        .review-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--border-color);
+        }
+        .review-item.correct { border-left-color: var(--success); }
+        .review-item.incorrect { border-left-color: var(--danger); }
+        
+        .rev-q { font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .rev-ans { font-size: 13px; margin: 4px 0; color: var(--text-main); }
+        .solution-box {
+            margin-top: 10px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border: 1px dashed var(--border-color);
+        }
+        .solution-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="teacher-name">Математическая грамотность — Неделя 13</h1>
+    </header>
+
+    <div class="main-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: Тест -->
+        <div>
+            <div class="card" id="testCard">
+                <a href="ml-tests.html" class="back-btn">← К списку недель</a>
+                <h2>Тест: Задачи с часами, календарями и временем</h2>
+                <p style="font-size: 14px; color: var(--text-muted);">Случайная выборка 20 вопросов из базы данных.</p>
+                
+                <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
+
+                <div id="questionsForm">
+                    <!-- Загружаются вопросы -->
+                </div>
+
+                <button class="btn-submit" onclick="submitTest()">Завершить тест и проверить</button>
+            </div>
+
+            <!-- Блок результатов -->
+            <div id="resultContainer" class="card">
+                <div class="score-card">
+                    <h3>Результат тестирования</h3>
+                    <p id="scoreText" style="font-size: 18px; margin: 0;"></p>
+                </div>
+                
+                <h2>Работа над ошибками и разбор решений</h2>
+                <div id="reviewList"></div>
+                
+                <button class="back-btn" style="width:100%; text-align:center; margin-top:15px;" onclick="location.reload()">Пройти тест заново</button>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: Рейтинг -->
+        <div>
+            <div class="card">
+                <h2>🏆 Топ-10 результатов</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Лучшие результаты недели 13:</p>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ученик</th>
+                            <th style="text-align: right;">Баллы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Динамически заполняется -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionPool = [
+        {
+            q: "1. Часы показывают 3 часа ровно. Найдите величину меньшего угла между часовой и минутной стрелками.",
+            svg: `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#0284c7" stroke-width="2"/><line x1="50" y1="50" x2="50" y2="20" stroke="#0284c7" stroke-width="2"/><line x1="50" y1="50" x2="80" y2="50" stroke="#0284c7" stroke-width="3"/><circle cx="50" cy="50" r="3" fill="#0284c7"/></svg>`,
+            o: ["60°", "75°", "90°", "120°"],
+            a: "90°",
+            sol: "Циферблат разбит на 12 делений по 30° каждое (360° / 12 = 30°). В 3:00 между стрелками ровно 3 деления: 3 × 30° = 90°."
+        },
+        {
+            q: "2. Какой угол образуют стрелки часов в 15:30?",
+            o: ["75°", "80°", "85°", "90°"],
+            a: "75°",
+            sol: "Минутная стрелка указывает на 6 (180° от 12). Часовая стрелка находится посередине между 3 и 4, то есть на 3.5 деления от 12 (3.5 × 30° = 105°). Угол между ними: 180° - 105° = 75°."
+        },
+        {
+            q: "3. Если 1 января невисокосного года приходится на понедельник, то на какой день недели придется 31 декабря этого же года?",
+            o: ["Воскресенье", "Понедельник", "Вторник", "Среда"],
+            a: "Понедельник",
+            sol: "В невисокосном году 365 дней = 52 недели + 1 день. Поэму первый и последний день невисокосного года всегда совпадают. 31 декабря будет понедельником."
+        },
+        {
+            q: "4. Сколько дней в високосном году?",
+            o: ["364", "365", "366", "367"],
+            a: "366",
+            sol: "В високосном году в феврале 29 дней, поэтому общее количество дней составляет 366."
+        },
+        {
+            q: "5. Назовите високосный год среди перечисленных: 1900, 2014, 2018, 2024.",
+            o: ["1900", "2014", "2018", "2024"],
+            a: "2024",
+            sol: "Год является високосным, если он делится на 4 (и не оканчивается на 00, либо оканчивается на 00 и делится на 400). 2024 делится на 4 (24/4 = 6)."
+        },
+        {
+            q: "6. Электронные часы показывают 14:45. Какое время они покажут через 85 минут?",
+            o: ["15:30", "16:00", "16:10", "16:15"],
+            a: "16:10",
+            sol: "85 минут = 1 час 25 минут. 14:45 + 1 час = 15:45. 15:45 + 25 минут = 16:10."
+        },
+        {
+            q: "7. Часы спешат на 4 минуты в сутки. На сколько минут они ушли вперед за 5 суток?",
+            o: ["15 минут", "16 минут", "20 минут", "24 минуты"],
+            a: "20 минут",
+            sol: "За 5 суток часы ушли вперед на: 5 × 4 = 20 минут."
+        },
+        {
+            q: "8. Часы отстают на 3 минуты каждые 4 часа. На сколько минут отстанут часы за полные сутки (24 часа)?",
+            o: ["12 минут", "15 минут", "18 минут", "21 минута"],
+            a: "18 минут",
+            sol: "В сутках 24 часа. Количество 4-часовых интервалов: 24 / 4 = 6. Отставание за сутки: 6 × 3 = 18 минут."
+        },
+        {
+            q: "9. Самолет вылетел из Астаны в 08:00 по местному времени и прилетел в другой город через 4 часа полёта. Местное время в городе прибытия на 2 часа отстает от астанинского. Который час по местному времени в городе прибытия в момент посадки?",
+            o: ["10:00", "12:00", "14:00", "16:00"],
+            a: "10:00",
+            sol: "В момент посадки по времени Астаны: 08:00 + 4:00 = 12:00. По местному времени (отстает на 2 часа): 12:00 - 2:00 = 10:00."
+        },
+        {
+            q: "10. Если сегодня четверг, то какой день недели будет через 100 дней?",
+            o: ["Пятница", "Суббота", "Воскресенье", "Понедельник"],
+            a: "Суббота",
+            sol: "Остаток от деления 100 на 7 (дней в неделе): 100 = 7 × 14 + 2 (остаток 2). Отсчитываем 2 дня от четверга: пятница (1), суббота (2). Будет суббота."
+        },
+        {
+            q: "11. В каком из месяцев может быть 5 воскресений при условии, что в нем 30 дней и 1-е число — суббота?",
+            o: ["Может быть в любом 30-дневном месяце при таком условии", "Не может быть ни в каком", "Только в марте", "Только в феврале"],
+            a: "Может быть в любом 30-дневном месяце при таком условии",
+            sol: "Если 1-е число — суббота, то 2-е — воскресенье. Воскресенья будут: 2, 9, 16, 23, 30. Ровно 5 воскресений."
+        },
+        {
+            q: "12. Какой угол образуют стрелки часов в 8:00?",
+            o: ["120°", "135°", "150°", "240°"],
+            a: "120°",
+            sol: "В 8:00 между стрелками 4 деления со стороны меньшего угла (от 8 до 12): 4 × 30° = 120°."
+        },
+        {
+            q: "13. Занятие начинается в 09:00 и продолжается 45 минут, после чего идет перерыв 10 минут. Во сколько закончится второе занятие?",
+            o: "10:30",
+            o: ["10:30", "10:40", "10:45", "10:50"],
+            a: "10:40",
+            sol: "1-е занятие: 09:00 - 09:45. Перерыв: 09:45 - 09:55. 2-е занятие: 09:55 + 45 минут = 10:40."
+        },
+        {
+            q: "14. Сколько раз за сутки (24 часа) часовая и минутная стрелки образуют прямой угол (90°)?",
+            o: ["22 раза", "24 раза", "44 раза", "48 раз"],
+            a: "44 раза",
+            sol: "За каждые 12 часов стрелки образуют прямой угол 22 раза. За 24 часа (сутки) это происходит 22 × 2 = 44 раза."
+        },
+        {
+            q: "15. Какой день недели был вчера, если за день до вчерашнего дня была среда?",
+            o: ["Четверг", "Пятница", "Суббота", "Вторник"],
+            a: "Четверг",
+            sol: "За день до вчерашнего дня (позавчера) = среда. Вчера = четверг. Сегодня = пятница."
+        },
+        {
+            q: "16. Поезд отправился в путь в 22:40 и прибыл на станцию назначения в 06:15 следующего дня. Сколько времени поезд находился в пути?",
+            o: ["7 часов 25 минут", "7 часов 35 минут", "8 часов 15 минут", "8 часов 35 минут"],
+            a: "7 часов 35 минут",
+            sol: "Время до полуночи (24:00): 24:00 - 22:40 = 1 час 20 минут. Время после полуночи: 6 часов 15 минут. Общее время: 1ч 20м + 6ч 15м = 7 часов 35 минут."
+        },
+        {
+            q: "17. Назовите величину угла, на который поворачивается минутная стрелка за 20 минут.",
+            o: ["90°", "100°", "120°", "150°"],
+            a: "120°",
+            sol: "Минутная стрелка делает полный оборот 360° за 60 минут. Скорость: 360° / 60 = 6° в минуту. За 20 минут: 20 × 6° = 120°."
+        },
+        {
+            q: "18. На какой угол поворачивается ЧАСОВАЯ стрелка за 20 минут?",
+            o: ["5°", "10°", "15°", "20°"],
+            a: "10°",
+            sol: "Часовая стрелка проходит 30° за 60 минут. Скорость: 30° / 60 = 0.5° в минуту. За 20 минут: 20 × 0.5° = 10°."
+        },
+        {
+            q: "19. Город X находится в часовом поясе UTC+5, а город Y — в UTC+8. Когда в городе X ровно 15:00, сколько времени в городе Y?",
+            o: ["12:00", "17:00", "18:00", "20:00"],
+            a: "18:00",
+            sol: "Разница во времени: 8 - 5 = +3 часа. В городе Y время ушло вперед: 15:00 + 3 часа = 18:00."
+        },
+        {
+            q: "20. В месяце 31 день. Известно, что в этом месяце ровно 5 вторников, 5 сред и 5 четвергов. Каким днем недели было 1-е число этого месяца?",
+            o: ["Понедельник", "Вторник", "Среда", "Четверг"],
+            a: "Вторник",
+            sol: "В месяце из 31 дня ровно 3 дня недели повторяются по 5 раз (31 = 28 + 3). Эти 3 дня — первые три дня месяца (1-е, 2-е и 3-е числа). Так как повторяются вторник, среда и четверг, 1-м числом был вторник."
+        }
+    ];
+
+    let activeQuestions = [];
+    const STORAGE_KEY = 'leaderboard_ml_w13';
+
+    window.onload = function() {
+        let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+        activeQuestions = shuffled.slice(0, 20);
+
+        let container = document.getElementById('questionsForm');
+        let html = '';
+
+        activeQuestions.forEach((item, idx) => {
+            html += `<div class="question-box" data-index="${idx}">`;
+            html += `<div class="q-title">${idx + 1}. ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            if (item.svg) {
+                html += `<div class="visual-box">${item.svg}</div>`;
+            }
+            html += `<div class="options">`;
+            let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+        loadLeaderboard();
+    };
+
+    function submitTest() {
+        let nameInput = document.getElementById('studentName');
+        let studentName = nameInput ? nameInput.value.trim() : '';
+        if (!studentName) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+
+        let score = 0;
+        let reviewHtml = '';
+
+        activeQuestions.forEach((item, idx) => {
+            let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+            let userAns = selected ? selected.value : "Не отвечено";
+            let isCorrect = (selected && selected.value === item.a);
+
+            if (isCorrect) score++;
+
+            reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b> ${isCorrect ? '✅' : '❌'}</div>`;
+            if (!isCorrect) {
+                reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
+            }
+            reviewHtml += `<div class="solution-box">`;
+            reviewHtml += `<div class="solution-title">💡 Решение и разбор:</div>`;
+            reviewHtml += `${item.sol}`;
+            reviewHtml += `</div></div>`;
+        });
+
+        saveToLeaderboard(studentName, score);
+
+        document.getElementById('testCard').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        document.getElementById('scoreText').innerHTML = `${studentName}, ваш результат: <b>${score} из ${activeQuestions.length}</b> правильных ответов (${Math.round((score/activeQuestions.length)*100)}%).`;
+        document.getElementById('reviewList').innerHTML = reviewHtml;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveToLeaderboard(name, score) {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        board.push({ name: name, score: score, date: new Date().toLocaleDateString() });
+        board.sort((a, b) => b.score - a.score);
+        board = board.slice(0, 10);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+        loadLeaderboard();
+    }
+
+    function loadLeaderboard() {
+        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let tbody = document.getElementById('leaderboardBody');
+        
+        if (!tbody) return;
+
+        if (board.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        board.forEach((item, index) => {
+            let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+            html += `<tr>`;
+            html += `<td>${medal}${index + 1}</td>`;
+            html += `<td style="font-weight: 500;">${item.name}</td>`;
+            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
+            html += `</tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
