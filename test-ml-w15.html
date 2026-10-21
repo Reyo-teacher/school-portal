@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Неделя 15: Большой итоговый экзамен ЕНТ (30 вопросов) — Математическая грамотность</title>
+    <title>Неделя 15: Итоговый экзамен ЕНТ — Математическая грамотность</title>
     <style>
         :root {
             --bg-light: #f8fafc;
@@ -16,15 +16,14 @@
             --success: #16a34a;
             --danger: #dc2626;
             --gold: #d97706;
-            --purple: #7c3aed;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-light);
             background-image: 
-                linear-gradient(rgba(124, 58, 237, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(124, 58, 237, 0.04) 1px, transparent 1px);
+                linear-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
             background-size: 32px 32px;
             color: var(--text-main);
             margin: 0;
@@ -40,10 +39,10 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 20px;
-            border-left: 6px solid var(--purple);
+            border-left: 6px solid var(--accent);
             border: 1px solid var(--border-color);
         }
-        .teacher-name { font-size: 18px; font-weight: 700; color: var(--purple); margin: 0; }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
 
         .main-layout {
             display: grid;
@@ -63,12 +62,12 @@
             border: 1px solid var(--border-color);
         }
 
-        h2 { font-size: 17px; color: var(--purple); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
 
         .back-btn {
             display: inline-block;
             background: #f1f5f9;
-            color: var(--purple);
+            color: var(--accent);
             padding: 8px 16px;
             border-radius: 6px;
             font-size: 14px;
@@ -79,7 +78,7 @@
             text-decoration: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .back-btn:hover { background: var(--purple); color: #ffffff; border-color: var(--purple); }
+        .back-btn:hover { background: var(--accent); color: #ffffff; border-color: var(--accent); }
 
         .inp-name {
             width: 100%;
@@ -93,7 +92,7 @@
             margin-bottom: 20px;
             outline: none;
         }
-        .inp-name:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
+        .inp-name:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
 
         .question-box {
             margin-bottom: 30px;
@@ -125,11 +124,11 @@
             font-size: 14px;
             transition: all 0.2s;
         }
-        .opt-label:hover { background: #f3e8ff; border-color: var(--purple); }
+        .opt-label:hover { background: #e0f2fe; border-color: var(--accent); }
         .opt-label input { margin-right: 12px; transform: scale(1.2); }
 
         .btn-submit {
-            background: var(--purple);
+            background: var(--accent);
             color: #ffffff;
             border: none;
             padding: 14px;
@@ -140,7 +139,7 @@
             width: 100%;
             transition: background 0.2s;
         }
-        .btn-submit:hover { background: #6d28d9; }
+        .btn-submit:hover { background: var(--accent-hover); }
 
         .leaderboard-table {
             width: 100%;
@@ -153,25 +152,76 @@
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
-        .leaderboard-table th { color: var(--purple); font-weight: 600; }
+        .leaderboard-table th { color: var(--accent); font-weight: 600; }
         .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
 
         #resultContainer { display: none; }
         
-        .certificate-card {
-            background: linear-gradient(135deg, #7c3aed 0%, #0284c7 100%);
-            color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
+        /* СТИЛЬ ПРОФЕССИОНАЛЬНОГО СЕРТИФИКАТА КАК НА ОБРАЗЦЕ */
+        .certificate-sheet {
+            background: #ffffff;
+            border: 6px solid var(--accent);
+            padding: 35px 30px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.2);
-            border: 3px solid #fde047;
+            text-align: center;
         }
-        .certificate-card h3 { margin: 0 0 5px 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; color: #fde047; }
-        .certificate-card h4 { margin: 5px 0 15px 0; font-size: 20px; color: #ffffff; }
-        .cert-score { font-size: 28px; font-weight: bold; margin: 15px 0; background: rgba(255,255,255,0.15); padding: 10px; border-radius: 8px; display: inline-block; }
-        .cert-status { font-size: 15px; font-weight: 600; margin-top: 10px; padding: 6px 12px; background: #ffffff; color: #7c3aed; border-radius: 20px; display: inline-block; }
+        .cert-header-title { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: 1.5px; margin: 0; }
+        .cert-header-sub { font-size: 20px; font-weight: 700; color: var(--accent); margin: 5px 0 10px 0; letter-spacing: 1px; }
+        .cert-header-desc { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 25px; }
+        
+        .cert-issued-to { font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+        .cert-name-line { 
+            font-size: 24px; 
+            font-weight: 700; 
+            color: #0f172a; 
+            border-bottom: 2px solid var(--border-color); 
+            display: inline-block; 
+            padding: 0 40px 8px 40px; 
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .cert-body-text { font-size: 14px; color: var(--text-main); margin-bottom: 30px; line-height: 1.6; }
+        .cert-score-box { font-size: 24px; font-weight: bold; color: var(--accent); margin-bottom: 5px; }
+        .cert-status-text { font-size: 14px; font-weight: 600; margin-bottom: 35px; }
+
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            text-align: left;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .cert-footer-col { flex: 1; }
+        .cert-footer-col.center { text-align: center; }
+        .cert-footer-col.right { text-align: right; }
+        .cert-sign-line { border-bottom: 1px solid var(--text-muted); width: 130px; display: inline-block; margin-bottom: 4px; }
+        
+        /* Стилизованная печать */
+        .fake-stamp {
+            width: 85px;
+            height: 85px;
+            border: 3px dashed #dc2626;
+            border-radius: 50%;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #dc2626;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transform: rotate(-12deg);
+            opacity: 0.85;
+            padding: 5px;
+            box-sizing: border-box;
+            background: rgba(220, 38, 38, 0.02);
+        }
 
         .analytics-box {
             background: #f8fafc;
@@ -179,8 +229,9 @@
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 25px;
+            text-align: left;
         }
-        .analytics-title { font-weight: bold; color: var(--purple); margin-bottom: 10px; font-size: 15px; }
+        .analytics-title { font-weight: bold; color: var(--accent); margin-bottom: 10px; font-size: 15px; }
         .analytics-item { font-size: 13px; color: var(--text-main); margin-bottom: 6px; display: flex; justify-content: space-between; }
 
         .review-item {
@@ -190,6 +241,7 @@
             margin-bottom: 15px;
             border: 1px solid var(--border-color);
             border-left: 5px solid var(--border-color);
+            text-align: left;
         }
         .review-item.correct { border-left-color: var(--success); }
         .review-item.incorrect { border-left-color: var(--danger); }
@@ -205,7 +257,7 @@
             color: var(--text-muted);
             border: 1px dashed var(--border-color);
         }
-        .solution-title { color: var(--purple); font-weight: bold; margin-bottom: 4px; }
+        .solution-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -232,15 +284,43 @@
                 <button class="btn-submit" onclick="submitTest()">Завершить финальный экзамен</button>
             </div>
 
-            <!-- Блок результатов и сертификата -->
+            <!-- Блок результатов и официального сертификата -->
             <div id="resultContainer" class="card">
-                <div class="certificate-card">
-                    <h3>🎖️ Именной сертификат прохождения курса ЕНТ</h3>
-                    <h4 id="certStudentName"></h4>
-                    <p style="margin: 0; font-size: 13px; opacity: 0.9;">успешно завершил(а) генеральный экзаменационный симулятор</p>
-                    <div class="cert-score" id="certScoreText"></div>
-                    <br>
-                    <div id="certStatusBadge" class="cert-status"></div>
+                
+                <!-- ОФИЦИАЛЬНЫЙ БЛАНК СЕРТИФИКАТА -->
+                <div class="certificate-sheet">
+                    <div class="cert-header-title">СЕРТИФИКАТ</div>
+                    <div class="cert-header-sub">ОБ УСПЕШНОМ ОКОНЧАНИИ КУРСА</div>
+                    <div class="cert-header-desc">по подготовке к ЕНТ по предмету «Математическая грамотность»</div>
+                    
+                    <div class="cert-issued-to">ВЫДАН</div>
+                    <div class="cert-name-line" id="certStudentName"></div>
+                    
+                    <div class="cert-body-text">
+                        Подтверждает, что ученик(ца) успешно прошел(а) полный 15-недельный курс обучения на образовательном портале под руководством учителя <b>Логунова Г. В.</b> и успешно сдал(а) итоговый симуляционный экзамен ЕНТ.
+                    </div>
+
+                    <div class="cert-score-box" id="certScoreText"></div>
+                    <div class="cert-status-text" id="certStatusBadge"></div>
+
+                    <!-- НИЖНИЙ БЛОК: Подпись, Дата, Печать -->
+                    <div class="cert-footer">
+                        <div class="cert-footer-col">
+                            <div><span class="cert-sign-line"></span></div>
+                            <div><b>Преподаватель:</b> Логунов Г.В.</div>
+                        </div>
+                        <div class="cert-footer-col center">
+                            <div class="fake-stamp">
+                                <span>ШКОЛЬНЫЙ</span>
+                                <b>ПОРТАЛ</b>
+                                <span>ЕНТ 2026</span>
+                            </div>
+                        </div>
+                        <div class="cert-footer-col right">
+                            <div><b>Дата выдачи:</b> <span id="certDate"></span></div>
+                            <div style="margin-top: 5px;"><b>Код сертификата:</b> <span id="certCode"></span></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Блок аналитики компетенций -->
@@ -401,7 +481,6 @@
             badgeText = '🔴 Требуется повторение слабых тем курса';
         }
 
-        // Формирование блока аналитики по категориям
         let analyticsHtml = '';
         for (let cat in categoryStats) {
             let stat = categoryStats[cat];
@@ -410,12 +489,16 @@
             analyticsHtml += `<div class="analytics-item"><span><b>${cat}:</b> освоено на ${catPct}% (${stat.correct}/${stat.total})</span> <span style="color:${color}; font-weight:bold;">${catPct >= 75 ? 'Отлично' : 'Нужно повторить'}</span></div>`;
         }
 
+        // Заполняем данные сертификата
         document.getElementById('testCard').style.display = 'none';
         document.getElementById('resultContainer').style.display = 'block';
         
         document.getElementById('certStudentName').innerHTML = studentName;
-        document.getElementById('certScoreText').innerHTML = `${score} из ${activeQuestions.length} (${pct}%)`;
+        document.getElementById('certScoreText').innerHTML = `Результат: ${score} из ${activeQuestions.length} (${pct}%)`;
         document.getElementById('certStatusBadge').innerHTML = badgeText;
+        document.getElementById('certDate').innerHTML = new Date().toLocaleDateString();
+        document.getElementById('certCode').innerHTML = 'ENT-' + Math.floor(100000 + Math.random() * 900000);
+        
         document.getElementById('analyticsContent').innerHTML = analyticsHtml;
         document.getElementById('reviewList').innerHTML = reviewHtml;
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -447,7 +530,7 @@
             html += `<tr>`;
             html += `<td>${medal}${index + 1}</td>`;
             html += `<td style="font-weight: 500;">${item.name}</td>`;
-            html += `<td style="text-align: right; font-weight: bold; color: var(--purple);">${item.score}/30</td>`;
+            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/30</td>`;
             html += `</tr>`;
         });
         tbody.innerHTML = html;
