@@ -85,7 +85,17 @@
             background: rgba(14, 165, 233, 0.25);
             border-color: var(--accent);
             color: var(--accent);
+        }
+        .tile-link.trainers {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #34d399;
+            color: #34d399;
             grid-column: span 2;
+        }
+        .tile-link.trainers:hover {
+            background: #34d399;
+            color: #0f172a;
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
         }
 
         .back-btn {
@@ -100,7 +110,6 @@
             margin-bottom: 15px;
             border: 1px solid var(--border-color);
             text-decoration: none;
-            -webkit-tap-highlight-color: transparent;
         }
         .back-btn:hover { background: var(--accent); color: #0f172a; }
     </style>
@@ -124,6 +133,7 @@
             <a href="#" onclick="alert('Материалы 10 класса в разработке'); return false;" class="tile-link">10 класс</a>
             <a href="#" onclick="alert('Материалы 11 класса в разработке'); return false;" class="tile-link">11 класс</a>
             <a href="ent.html" class="tile-link ent">🎯 ЕНТ Подготовка</a>
+            <a href="trainers.html" class="tile-link trainers">⚡ Интерактивные тренажёры</a>
         </div>
     </div>
 </div>
