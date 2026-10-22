@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Неделя 15: Итоговый экзамен ЕНТ — Математическая грамотность</title>
+    <title>Неделя 15: Итоговый тест по математической грамотности — ЕНТ</title>
     <style>
         :root {
             --bg-light: #f8fafc;
@@ -101,17 +101,6 @@
         }
         .q-title { font-weight: 600; margin-bottom: 10px; color: var(--text-main); font-size: 15px; }
 
-        .visual-box {
-            display: flex;
-            justify-content: center;
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 12px 0;
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
-
         .options { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
         .opt-label {
             display: flex;
@@ -156,7 +145,6 @@
         .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
 
         #resultContainer { display: none; }
-        
         .score-card {
             background: #f0fdf4;
             border: 1px solid var(--success);
@@ -167,17 +155,6 @@
         }
         .score-card h3 { color: var(--success); margin: 0 0 10px 0; font-size: 22px; }
 
-        .analytics-box {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-        .analytics-title { font-weight: bold; color: var(--accent); margin-bottom: 10px; font-size: 15px; }
-        .analytics-item { font-size: 13px; color: var(--text-main); margin-bottom: 6px; display: flex; justify-content: space-between; }
-
         .review-item {
             background: #f8fafc;
             border-radius: 8px;
@@ -185,7 +162,6 @@
             margin-bottom: 15px;
             border: 1px solid var(--border-color);
             border-left: 5px solid var(--border-color);
-            text-align: left;
         }
         .review-item.correct { border-left-color: var(--success); }
         .review-item.incorrect { border-left-color: var(--danger); }
@@ -203,12 +179,14 @@
         }
         .solution-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
     </style>
+    <!-- Подключаем общую базу вопросов со всех недель -->
+    <script src="all-questions.js"></script>
 </head>
 <body>
 
 <div class="wrapper">
     <header>
-        <h1 class="teacher-name">🎓 Математическая грамотность — Итоговый экзамен ЕНТ (30 вопросов)</h1>
+        <h1 class="teacher-name">Математическая грамотность — Неделя 15 (Итоговый тест)</h1>
     </header>
 
     <div class="main-layout">
@@ -216,42 +194,37 @@
         <div>
             <div class="card" id="testCard">
                 <a href="ml-tests.html" class="back-btn">← К списку недель</a>
-                <h2>Генеральный симулятор ЕНТ (Случайные 30 вопросов)</h2>
-                <p style="font-size: 14px; color: var(--text-muted);">Полномасштабный экзамен по всем темам курса. Проверьте свои силы!</p>
+                <h2>Итоговый экзаменационный тест</h2>
+                <p style="font-size: 14px; color: var(--text-muted);">Случайная выборка ровно 30 вопросов из общей базы курса по всем темам.</p>
                 
                 <input type="text" class="inp-name" id="studentName" placeholder="Введите ваши Фамилию и Имя (обязательно)">
 
-                <div id="questionsForm"></div>
+                <div id="questionsForm">
+                    <!-- Загружаются вопросы -->
+                </div>
 
-                <button class="btn-submit" onclick="submitTest()">Завершить финальный экзамен</button>
+                <button class="btn-submit" onclick="submitTest()">Завершить тест и проверить</button>
             </div>
 
-            <!-- БЛОК РЕЗУЛЬТАТОВ -->
+            <!-- Блок результатов -->
             <div id="resultContainer" class="card">
                 <div class="score-card">
-                    <h3>Результаты итогового экзамена</h3>
-                    <p id="scoreText" style="font-size: 18px; margin: 0 0 10px 0;"></p>
-                    <div id="statusBadge" style="font-size: 15px; font-weight: 600;"></div>
-                </div>
-
-                <!-- Блок аналитики компетенций -->
-                <div class="analytics-box">
-                    <div class="analytics-title">📊 Экспресс-анализ готовности по разделам:</div>
-                    <div id="analyticsContent"></div>
+                    <h3>Результат итогового тестирования</h3>
+                    <p id="scoreText" style="font-size: 18px; margin: 0;"></p>
                 </div>
                 
-                <h2>Разбор решений и работа над ошибками</h2>
+                <h2>Работа над ошибками и разбор решений</h2>
                 <div id="reviewList"></div>
                 
-                <button class="back-btn" style="width:100%; text-align:center; margin-top:15px;" onclick="location.reload()">Пройти симуляцию заново</button>
+                <button class="back-btn" style="width:100%; text-align:center; margin-top:15px;" onclick="location.reload()">Пройти тест заново</button>
             </div>
         </div>
 
         <!-- ПРАВАЯ КОЛОНКА: Рейтинг -->
         <div>
             <div class="card">
-                <h2>🏆 Генеральный Топ-10 ЕНТ</h2>
-                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Лучшие результаты итогового теста:</p>
+                <h2>🏆 Топ-10 результатов</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Общий рейтинг школы (Неделя 15):</p>
                 <table class="leaderboard-table">
                     <thead>
                         <tr>
@@ -260,7 +233,9 @@
                             <th style="text-align: right;">Баллы</th>
                         </tr>
                     </thead>
-                    <tbody id="leaderboardBody"></tbody>
+                    <tbody id="leaderboardBody">
+                        <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Загрузка рейтинга...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -268,52 +243,19 @@
 </div>
 
 <script>
-    const questionPool = [
-        { q: "В трех ящиках лежат 90 кг яблок. В первом на 10 кг больше, чем во втором, а в третьем — в 2 раза больше, чем во втором. Сколько во втором?", o: ["20 кг", "25 кг", "30 кг", "40 кг"], a: "20 кг", sol: "Пусть во 2-м x кг. Уравнение: x + (x + 10) + 2x = 90 ⇒ 4x = 80 ⇒ x = 20 кг.", category: "Текстовые задачи" },
-        { q: "Сумма двух чисел равна 45, а их разность равна 7. Найдите меньшее число.", o: ["16", "19", "22", "26"], a: "19", sol: "Система: x + y = 45, x - y = 7. Сложим: 2x = 52 ⇒ x = 26, тогда y = 19.", category: "Текстовые задачи" },
-        { q: "Цена альбома 450 тенге. Какое наибольшее количество таких альбомов можно купить на 3000 тенге?", o: ["5", "6", "7", "8"], a: "6", sol: "Делим 3000 на 450: 3000 / 450 = 6.66. Наибольшее целое количество равно 6.", category: "Оптимизация" },
-        { q: "В классе 32 ученика. Девочек на 4 больше, чем мальчиков. Сколько мальчиков в классе?", o: ["12", "14", "16", "18"], a: "14", sol: "Пусть мальчиков x, девочек x + 4. Всего: x + x + 4 = 32 ⇒ 2x = 28 ⇒ x = 14 мальчиков.", category: "Текстовые задачи" },
-        { q: "Среди 8 монет одна фальшивая (тяжелее остальных). Какое наименьшее число взвешиваний на чашечных весах без гирь нужно?", o: ["1", "2", "3", "4"], a: "2", sol: "Делим на группы 3, 3 и 2. Два взвешивания гарантированно находят фальшивую монету.", category: "Логика и взвешивания" },
-        { q: "Имеются сосуды 3 л и 5 л. Какое наименьшее количество переливаний нужно, чтобы отмерить ровно 4 литра?", o: ["4", "6", "8", "10"], a: "6", sol: "Классический алгоритм переливаний занимает 6 шагов.", category: "Логика и взвешивания" },
-        { q: "Крестьянину нужно перевезти волка, козу и капусту. За какое наименьшее число рейсов он переправит всех?", o: ["5", "7", "9", "11"], a: "7", sol: "Классическая задача о переправе решается за 7 рейсов туда и обратно.", category: "Логика и взвешивания" },
-        { q: "В секциях школы 120 учеников. По диаграмме: спорт — 50%, художественная — 30%, шахматы — остальное. Сколько в шахматах?", o: ["12", "18", "24", "30"], a: "24", sol: "Процент шахмат: 100% - 50% - 30% = 20%. 20% от 120 = 24 ученика.", category: "Графики и диаграммы" },
-        { q: "Продажи авто за 4 квартала: 120, 150, 90, 180 млн тенге. Найдите общий объем продаж за год.", o: ["480 млн", "500 млн", "540 млн", "600 млн"], a: "540 млн", sol: "Складываем значения: 120 + 150 + 90 + 180 = 540 млн тенге.", category: "Графики и диаграммы" },
-        { q: "Среднее арифметическое 5 чисел равно 12. Если добавить шестое число, среднее стало равным 14. Найдите шестое число.", o: ["20", "22", "24", "26"], a: "24", sol: "Сумма 6 чисел = 84, сумма 5 чисел = 60. Шестое число: 84 - 60 = 24.", category: "Статистика" },
-        { q: "Найдите моду ряда чисел: 4, 7, 10, 4, 12, 15, 4.", o: ["4", "7", "10", "12"], a: "4", sol: "Число 4 повторяется чаще остальных (3 раза), поэтому оно является модой.", category: "Статистика" },
-        { q: "Найдите размах ряда: 12, 25, 8, 34, 17.", o: ["24", "26", "28", "30"], a: "26", sol: "Размах — разница между максимумом и минимумом: 34 - 8 = 26.", category: "Статистика" },
-        { q: "Товар стоил 12 000 тенге. Сначала цену снизили на 15%. Какова новая цена?", o: ["9 800 тг", "10 200 тг", "10 500 тг", "10 800 тг"], a: "10 200 тг", sol: "Скидка: 12000 × 0.15 = 1800 тг. Новая цена: 12000 - 1800 = 10 200 тг.", category: "Проценты" },
-        { q: "Число 45 составляет 30% от числа X. Найдите X.", o: ["120", "135", "150", "160"], a: "150", sol: "Целое по его части: 45 / 0.3 = 150.", category: "Проценты" },
-        { q: "Цена куртки сначала повысилась на 20%, а затем снизилась на 20%. Как изменилась первоначальная цена?", o: ["Не изменилась", "Уменьшилась на 4%", "Увеличилась на 4%", "Уменьшилась на 2%"], a: "Уменьшилась на 4%", sol: "100% × 1.2 × 0.8 = 96%. Цена уменьшилась на 4%.", category: "Проценты" },
-        { q: "В меню столовой 4 первых, 5 вторых и 3 напитка. Сколькими способами можно выбрать полный обед?", o: ["12", "20", "60", "120"], a: "60", sol: "По правилу умножения: 4 × 5 × 3 = 60 вариантов.", category: "Комбинаторика" },
-        { q: "Сколькими способами 5 человек могут встать в очередь в кассу?", o: ["25", "60", "120", "240"], a: "120", sol: "Число перестановок P₅ = 5! = 120 способов.", category: "Комбинаторика" },
-        { q: "В классе 20 учеников. Сколькими способами можно выбрать старосту и его заместителя?", o: ["190", "380", "400", "200"], a: "380", sol: "Размещения: 20 × 19 = 380 способов.", category: "Комбинаторика" },
-        { q: "Куб 3×3×3 покрасили снаружи и распилили на 27 кубиков. Сколько кубиков имеют ровно ТРИ окрашенные грани?", o: ["4", "6", "8", "12"], a: "8", sol: "Кубики с 3 гранями находятся в вершинах куба (их всегда 8).", category: "Стереометрия" },
-        { q: "Сколько рёбер у пятиугольной призмы?", o: ["10", "12", "15", "20"], a: "15", sol: "У n-угольной призмы 3n рёбер. 3 × 5 = 15 рёбер.", category: "Стереометрия" },
-        { q: "Длина ребра куба равна 4 см. Найдите площадь полной поверхности куба.", o: ["64 см²", "80 см²", "96 см²", "128 см²"], a: "96 см²", sol: "S = 6a² = 6 × 4² = 96 см².", category: "Стереометрия" },
-        { q: "Первый рабочий делает заказ за 6 часов, а второй — за 3 часа. За сколько часов они выполнят его вместе?", o: ["1 час", "2 часа", "2.5 часа", "3 часа"], a: "2 часа", sol: "Совместная производительность: 1/6 + 1/3 = 1/2. Время: 1 / (1/2) = 2 часа.", category: "Движение и работа" },
-        { q: "Автомобиль проехал первую половину пути со скоростью 60 км/ч, а вторую — со скоростью 90 км/ч. Найдите среднюю скорость.", o: ["72 км/ч", "75 км/ч", "78 км/ч", "80 км/ч"], a: "72 км/ч", sol: "Гармоническое среднее: (2 × 60 × 90) / (60 + 90) = 72 км/ч.", category: "Движение и работа" },
-        { q: "Лодка плывет по течению со скоростью 18 км/ч, а против — 12 км/ч. Найдите скорость течения реки.", o: ["2 км/ч", "3 км/ч", "4 км/ч", "5 км/ч"], a: "3 км/ч", sol: "Скорость течения = (18 - 12) / 2 = 3 км/ч.", category: "Движение и работа" },
-        { q: "Найдите следующее число в ряду: 3, 7, 15, 31, 63, ?", o: ["95", "127", "128", "255"], a: "127", sol: "Каждое число получается по правилу 2x + 1: 63 × 2 + 1 = 127.", category: "Последовательности" },
-        { q: "Укажите следующее число в ряду Фибоначчи: 1, 1, 2, 3, 5, 8, 13, 21, ?", o: ["28", "34", "40", "55"], a: "34", sol: "Сумма двух предыдущих: 13 + 21 = 34.", category: "Последовательности" },
-        { q: "Какое число должно стоять вместо знака вопроса: 1, 4, 9, 16, 25, 36, ?", o: ["42", "48", "49", "64"], a: "49", sol: "Квадраты чисел: 7² = 49.", category: "Последовательности" },
-        { q: "В урне 6 белых и 4 черных шара. Наугад извлекают один шар. Какова вероятность того, что он белый?", o: ["0.4", "0.5", "0.6", "0.75"], a: "0.6", sol: "P = 6 / 10 = 0.6.", category: "Вероятность" },
-        { q: "Бросают игральную кость. Какова вероятность того, что выпадет четное число очков?", o: ["1/6", "1/3", "1/2", "2/3"], a: "1/2", sol: "Четных очков 3 из 6: P = 3 / 6 = 1/2.", category: "Вероятность" },
-        { q: "Вероятность безотказной работы чайника равна 0.92. Какова вероятность выхода из строя?", o: ["0.02", "0.08", "0.12", "0.18"], a: "0.08", sol: "Противоположное событие: 1 - 0.92 = 0.08.", category: "Вероятность" },
-        { q: "Для ремонта нужно 30 рулонов обоев. Поштучно по 1200 тг или упаковками по 6 шт за 6000 тг. Какова наименьшая сумма?", o: ["30 000 тг", "32 000 тг", "36 000 тг", "33 000 тг"], a: "30 000 тг", sol: "Упаковка выгоднее (1000 тг/рулон). 30 рулонов делятся на 6 без остатка: 5 упаковок по 6000 = 30 000 тг.", category: "Оптимизация" },
-        { q: "Фермеру нужно огородить участок 100 м² сеткой так, чтобы периметр был наименьшим. Каковы стороны?", o: ["5 м и 20 м", "10 м и 10 м", "2 м и 50 м", "4 м и 25 м"], a: "10 м и 10 м", sol: "Минимальный периметр у квадрата со стороной √100 = 10 м.", category: "Оптимизация" },
-        { q: "Периметр квадрата равен 36 см. Найдите его площадь.", o: ["54 см²", "72 см²", "81 см²", "100 см²"], a: "81 см²", sol: "Сторона a = 36 / 4 = 9 см. Площадь S = 9² = 81 см².", category: "Площади и периметры" },
-        { q: "Стороны прямоугольника равны 9 см и 12 см. Найдите длину диагонали.", o: ["13 см", "14 см", "15 см", "17 см"], a: "15 см", sol: "По теореме Пифагора: √(9² + 12²) = √225 = 15 см.", category: "Площади и периметры" },
-        { q: "Какой угол образуют стрелки часов в 3 часа ровно?", o: ["60°", "75°", "90°", "120°"], a: "90°", sol: "Между цифрами 12 и 3 ровно 3 деления по 30°: 3 × 30° = 90°.", category: "Часы и время" },
-        { q: "Электронные часы показывают 14:45. Какое время они покажут через 85 минут?", o: ["15:30", "16:00", "16:10", "16:15"], a: "16:10", sol: "85 минут = 1 ч 25 мин. 14:45 + 1 ч 25 мин = 16:10.", category: "Часы и время" },
-        { q: "Сравните величины: Графа А = 25% от 80, Графа Б = 20% от 100.", o: ["Графа А больше", "Графа Б больше", "Значения равны", "Нельзя определить"], a: "Значения равны", sol: "Графа А = 20, Графа Б = 20. Величины равны.", category: "Логика и сравнение" },
-        { q: "В классе 30 человек. 18 любят математику, 15 — физику, 3 не любят ничего. Сколько любят оба предмета?", o: ["3", "6", "9", "12"], a: "6", sol: "По формуле включений-исключений: (18 + 15) - (30 - 3) = 6 человек.", category: "Логика и сравнение" }
-    ];
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk6LbGQb8yiUnozyt7uOshLK79-EB52HEYA6-PfkjvJILON8zR41JkdTgM0apg7OHJ/exec";
+    const CURRENT_WEEK = "Неделя 15";
 
     let activeQuestions = [];
-    const STORAGE_KEY = 'leaderboard_ml_final';
 
     window.onload = function() {
-        let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+        if (typeof globalQuestionPool === 'undefined' || globalQuestionPool.length === 0) {
+            alert('Ошибка: не удалось загрузить файл с вопросами (all-questions.js). Убедитесь, что он лежит в той же папке.');
+            return;
+        }
+
+        // Перемешиваем всю общую базу и берем ровно 30 вопросов
+        let shuffled = [...globalQuestionPool].sort(() => 0.5 - Math.random());
         activeQuestions = shuffled.slice(0, 30);
 
         let container = document.getElementById('questionsForm');
@@ -322,9 +264,6 @@
         activeQuestions.forEach((item, idx) => {
             html += `<div class="question-box" data-index="${idx}">`;
             html += `<div class="q-title">${idx + 1}. ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
-            if (item.svg) {
-                html += `<div class="visual-box">${item.svg}</div>`;
-            }
             html += `<div class="options">`;
             let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
             shuffledOpts.forEach(opt => {
@@ -348,24 +287,16 @@
 
         let score = 0;
         let reviewHtml = '';
-        let categoryStats = {};
 
         activeQuestions.forEach((item, idx) => {
             let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
             let userAns = selected ? selected.value : "Не отвечено";
             let isCorrect = (selected && selected.value === item.a);
 
-            let cat = item.category || "Общие";
-            if (!categoryStats[cat]) categoryStats[cat] = { total: 0, correct: 0 };
-            categoryStats[cat].total++;
-
-            if (isCorrect) {
-                score++;
-                categoryStats[cat].correct++;
-            }
+            if (isCorrect) score++;
 
             reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
-            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1} [${cat}]: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
             reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b> ${isCorrect ? '✅' : '❌'}</div>`;
             if (!isCorrect) {
                 reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
@@ -376,66 +307,65 @@
             reviewHtml += `</div></div>`;
         });
 
-        saveToLeaderboard(studentName, score);
-
-        let pct = Math.round((score / activeQuestions.length) * 100);
-        let badgeText = '';
-        if (score >= 26) {
-            badgeText = '🟢 Высокий уровень (Отличная готовность к ЕНТ!)';
-        } else if (score >= 20) {
-            badgeText = '🟡 Хороший результат (Есть небольшие пробелы)';
-        } else {
-            badgeText = '🔴 Требуется повторение слабых тем курса';
-        }
-
-        let analyticsHtml = '';
-        for (let cat in categoryStats) {
-            let stat = categoryStats[cat];
-            let catPct = Math.round((stat.correct / stat.total) * 100);
-            let color = catPct >= 75 ? 'var(--success)' : (catPct >= 50 ? 'var(--gold)' : 'var(--danger)');
-            analyticsHtml += `<div class="analytics-item"><span><b>${cat}:</b> освоено на ${catPct}% (${stat.correct}/${stat.total})</span> <span style="color:${color}; font-weight:bold;">${catPct >= 75 ? 'Отлично' : 'Нужно повторить'}</span></div>`;
-        }
+        saveToCloudLeaderboard(studentName, score);
 
         document.getElementById('testCard').style.display = 'none';
         document.getElementById('resultContainer').style.display = 'block';
-        
-        document.getElementById('scoreText').innerHTML = `<b>${studentName}</b>, ваш итоговый результат: <b>${score} из ${activeQuestions.length}</b> (${pct}%).`;
-        document.getElementById('statusBadge').innerHTML = badgeText;
-        document.getElementById('analyticsContent').innerHTML = analyticsHtml;
+        document.getElementById('scoreText').innerHTML = `${studentName}, ваш итоговый результат: <b>${score} из ${activeQuestions.length}</b> правильных ответов (${Math.round((score/activeQuestions.length)*100)}%).`;
         document.getElementById('reviewList').innerHTML = reviewHtml;
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function saveToLeaderboard(name, score) {
-        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        board.push({ name: name, score: score, date: new Date().toLocaleDateString() });
-        board.sort((a, b) => b.score - a.score);
-        board = board.slice(0, 10);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
-        loadLeaderboard();
+    function saveToCloudLeaderboard(name, score) {
+        let payload = {
+            name: name,
+            score: score,
+            date: new Date().toLocaleDateString(),
+            week: CURRENT_WEEK
+        };
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Успешно сохранено:", data);
+            loadLeaderboard();
+        })
+        .catch(err => {
+            console.error("Ошибка сохранения:", err);
+            setTimeout(loadLeaderboard, 1000);
+        });
     }
 
     function loadLeaderboard() {
-        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
         let tbody = document.getElementById('leaderboardBody');
-        
         if (!tbody) return;
 
-        if (board.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
-            return;
-        }
+        fetch(`${WEB_APP_URL}?week=${encodeURIComponent(CURRENT_WEEK)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+                    return;
+                }
 
-        let html = '';
-        board.forEach((item, index) => {
-            let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
-            html += `<tr>`;
-            html += `<td>${medal}${index + 1}</td>`;
-            html += `<td style="font-weight: 500;">${item.name}</td>`;
-            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/30</td>`;
-            html += `</tr>`;
-        });
-        tbody.innerHTML = html;
+                let html = '';
+                data.slice(0, 10).forEach((item, index) => {
+                    let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+                    html += `<tr>`;
+                    html += `<td>${medal}${index + 1}</td>`;
+                    html += `<td style="font-weight: 500;">${item.name}</td>`;
+                    html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/30</td>`;
+                    html += `</tr>`;
+                });
+                tbody.innerHTML = html;
+            })
+            .catch(err => {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Не удалось загрузить рейтинг</td></tr>`;
+            });
     }
 </script>
 
