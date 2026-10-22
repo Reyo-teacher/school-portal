@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажёр: Таблица умножения</title>
+    <style>
+        :root {
+            --bg-dark: #070f1e;
+            --card-bg: rgba(15, 23, 42, 0.9);
+            --accent: #34d399;
+            --accent-hover: #059669;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(52, 211, 153, 0.25);
+            --danger: #ef4444;
+            --gold: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .wrapper { max-width: 1000px; margin: 0 auto; }
+
+        header {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 6px solid var(--accent);
+            border: 1px solid var(--border-color);
+        }
+        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 20px;
+        }
+        @media (max-width: 850px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+
+        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+        }
+        .back-btn:hover { background: var(--accent); color: #0f172a; }
+
+        /* Игровой интерфейс */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .score-badge {
+            font-size: 16px;
+            font-weight: 700;
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timer-box {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .timer-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 5px;
+        }
+        .timer-bar-bg {
+            background: #334155;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .timer-bar-fill {
+            background: var(--danger);
+            height: 100%;
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+
+        .task-display {
+            font-size: 42px;
+            font-weight: 800;
+            text-align: center;
+            margin: 15px 0;
+            color: var(--text-main);
+            letter-spacing: 2px;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 26px;
+            text-align: center;
+            background: #1e293b;
+            border: 2px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        /* Экранные цифры (Кнопочная клавиатура) */
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .num-btn {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 20px;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .num-btn:active { background: var(--accent); color: #0f172a; }
+        .num-btn.clear-btn { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: var(--danger); }
+
+        .btn-action {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-action:hover { background: var(--accent-hover); }
+
+        /* Таблица лидеров */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .leaderboard-table th { color: var(--accent); font-weight: 600; }
+        .leaderboard-table tr:nth-child(1) td { color: var(--gold); font-weight: bold; }
+
+        /* Окно Конец Игры */
+        .game-over-box {
+            text-align: center;
+            padding: 20px 10px;
+        }
+        .game-over-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--danger);
+            margin-bottom: 10px;
+        }
+        .inp-name {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            background: #1e293b;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin: 15px 0;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="teacher-name">✖️ Тренажёр: Таблица умножения</h1>
+    </header>
+
+    <div class="main-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: Игровой блок -->
+        <div>
+            <div class="card" id="gameCard">
+                <a href="trainers.html" class="back-btn">← К тренажёрам</a>
+                
+                <!-- Экран 1: Старт -->
+                <div id="startScreen" style="text-align: center; padding: 30px 10px;">
+                    <h2>Проверь свою скорость и знания!</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">
+                        На каждый пример даётся ровно <b>10 секунд</b>.<br>
+                        Игра продолжается до первой ошибки или истечения времени.
+                    </p>
+                    <button class="btn-action" style="font-size: 18px; padding: 16px;" onclick="startGame()">▶ СТАРТ</button>
+                </div>
+
+                <!-- Экран 2: Процесс игры -->
+                <div id="playScreen" style="display: none;">
+                    <div class="game-header">
+                        <div class="score-badge">Правильно: <span id="scoreVal">0</span></div>
+                    </div>
+
+                    <!-- Секундомер -->
+                    <div class="timer-box">
+                        <div class="timer-text">Осталось времени: <span id="timerSec">10.0</span> с</div>
+                        <div class="timer-bar-bg">
+                            <div class="timer-bar-fill" id="timerBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="task-display" id="taskText">? × ? = ?</div>
+
+                    <input type="text" id="userAnswer" class="answer-input" placeholder="?" readonly>
+
+                    <!-- Цифровая клавиатура -->
+                    <div class="numpad">
+                        <button class="num-btn" onclick="pressNum('1')">1</button>
+                        <button class="num-btn" onclick="pressNum('2')">2</button>
+                        <button class="num-btn" onclick="pressNum('3')">3</button>
+                        <button class="num-btn" onclick="pressNum('4')">4</button>
+                        <button class="num-btn" onclick="pressNum('5')">5</button>
+                        <button class="num-btn" onclick="pressNum('6')">6</button>
+                        <button class="num-btn" onclick="pressNum('7')">7</button>
+                        <button class="num-btn" onclick="pressNum('8')">8</button>
+                        <button class="num-btn" onclick="pressNum('9')">9</button>
+                        <button class="num-btn clear-btn" onclick="clearInput()">C</button>
+                        <button class="num-btn" onclick="pressNum('0')">0</button>
+                        <button class="num-btn clear-btn" onclick="backspaceInput()">⌫</button>
+                    </div>
+
+                    <button class="btn-action" onclick="submitAnswer()">Ответить</button>
+                </div>
+
+                <!-- Экран 3: Конец игры -->
+                <div id="gameOverScreen" class="game-over-box" style="display: none;">
+                    <div class="game-over-title">КОНЕЦ ИГРЫ</div>
+                    <p id="gameOverReason" style="color: var(--text-muted);"></p>
+                    <p style="font-size: 18px;">Ваш результат: <b id="finalScore" style="color: var(--accent);">0</b> решенных примеров</p>
+
+                    <input type="text" id="studentName" class="inp-name" placeholder="Введите ваши Фамилию и Имя для таблицы лидеров">
+                    
+                    <button class="btn-action" onclick="saveRecord()">Сохранить результат и войти в рейтинг</button>
+                    <button class="back-btn" style="width: 100%; text-align: center; margin-top: 10px;" onclick="resetGame()">Попробовать заново</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: Таблица лидеров -->
+        <div>
+            <div class="card">
+                <h2>🏆 Топ-10 лучших</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Рейтинг знатоков таблицы умножения:</p>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Ученик</th>
+                            <th style="text-align: right;">Очки</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Загрузка рейтинга...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk6LbGQb8yiUnozyt7uOshLK79-EB52HEYA6-PfkjvJILON8zR41JkdTgM0apg7OHJ/exec";
+    const CURRENT_WEEK = "Тренажер_Умножение";
+
+    let num1 = 0;
+    let num2 = 0;
+    let correctAnswer = 0;
+    let score = 0;
+    let timeLeft = 10.0;
+    let timerInterval = null;
+
+    window.onload = function() {
+        loadLeaderboard();
+        // Ввод с физической клавиатуры компьютера
+        document.addEventListener('keydown', function(e) {
+            let playScreen = document.getElementById('playScreen');
+            if (playScreen.style.display !== 'none') {
+                if (e.key >= '0' && e.key <= '9') {
+                    pressNum(e.key);
+                } else if (e.key === 'Backspace') {
+                    backspaceInput();
+                } else if (e.key === 'Enter') {
+                    submitAnswer();
+                }
+            }
+        });
+    };
+
+    function startGame() {
+        score = 0;
+        document.getElementById('scoreVal').innerText = score;
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('gameOverScreen').style.display = 'none';
+        document.getElementById('playScreen').style.display = 'block';
+        nextTask();
+    }
+
+    function nextTask() {
+        num1 = Math.floor(Math.random() * 8) + 2; // 2..9
+        num2 = Math.floor(Math.random() * 8) + 2; // 2..9
+        correctAnswer = num1 * num2;
+
+        document.getElementById('taskText').innerText = `${num1} ×${num2} = ?`;
+        document.getElementById('userAnswer').value = '';
+
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 10.0;
+        updateTimerDisplay();
+
+        timerInterval = setInterval(() => {
+            timeLeft -= 0.1;
+            if (timeLeft <= 0) {
+                timeLeft = 0;
+                updateTimerDisplay();
+                clearInterval(timerInterval);
+                finishGame("Время закончилось!");
+            } else {
+                updateTimerDisplay();
+            }
+        }, 100);
+    }
+
+    function updateTimerDisplay() {
+        document.getElementById('timerSec').innerText = timeLeft.toFixed(1);
+        let percent = (timeLeft / 10.0) * 100;
+        document.getElementById('timerBar').style.width = percent + "%";
+    }
+
+    function pressNum(num) {
+        let inp = document.getElementById('userAnswer');
+        if (inp.value.length < 4) {
+            inp.value += num;
+        }
+    }
+
+    function clearInput() {
+        document.getElementById('userAnswer').value = '';
+    }
+
+    function backspaceInput() {
+        let inp = document.getElementById('userAnswer');
+        inp.value = inp.value.slice(0, -1);
+    }
+
+    function submitAnswer() {
+        if (document.getElementById('playScreen').style.display === 'none') return;
+
+        let userVal = document.getElementById('userAnswer').value.trim();
+        if (userVal === "") return;
+
+        let userAns = parseInt(userVal);
+
+        if (userAns === correctAnswer) {
+            score++;
+            document.getElementById('scoreVal').innerText = score;
+            nextTask();
+        } else {
+            clearInterval(timerInterval);
+            finishGame(`Неверный ответ! (${num1} × ${num2} =${correctAnswer})`);
+        }
+    }
+
+    function finishGame(reason) {
+        document.getElementById('playScreen').style.display = 'none';
+        document.getElementById('gameOverScreen').style.display = 'block';
+        document.getElementById('gameOverReason').innerText = reason;
+        document.getElementById('finalScore').innerText = score;
+    }
+
+    function resetGame() {
+        document.getElementById('gameOverScreen').style.display = 'none';
+        document.getElementById('startScreen').style.display = 'block';
+    }
+
+    function saveRecord() {
+        let nameInp = document.getElementById('studentName');
+        let name = nameInp ? nameInp.value.trim() : '';
+        if (!name) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            if (nameInp) nameInp.focus();
+            return;
+        }
+
+        let payload = {
+            name: name,
+            score: score,
+            date: new Date().toLocaleDateString(),
+            week: CURRENT_WEEK
+        };
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Сохранено:", data);
+            loadLeaderboard();
+            resetGame();
+        })
+        .catch(err => {
+            console.error("Ошибка сохранения:", err);
+            setTimeout(() => { loadLeaderboard(); resetGame(); }, 1000);
+        });
+    }
+
+    function loadLeaderboard() {
+        let tbody = document.getElementById('leaderboardBody');
+        if (!tbody) return;
+
+        fetch(`${WEB_APP_URL}?week=${encodeURIComponent(CURRENT_WEEK)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td
