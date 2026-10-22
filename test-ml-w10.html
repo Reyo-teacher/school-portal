@@ -233,7 +233,7 @@
         <div>
             <div class="card">
                 <h2>🏆 Топ-10 результатов</h2>
-                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Лучшие результаты недели 10:</p>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Общий рейтинг школы (Неделя 10):</p>
                 <table class="leaderboard-table">
                     <thead>
                         <tr>
@@ -243,7 +243,7 @@
                         </tr>
                     </thead>
                     <tbody id="leaderboardBody">
-                        <!-- Динамически заполняется -->
+                        <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Загрузка рейтинга...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -252,6 +252,9 @@
 </div>
 
 <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk6LbGQb8yiUnozyt7uOshLK79-EB52HEYA6-PfkjvJILON8zR41JkdTgM0apg7OHJ/exec";
+    const CURRENT_WEEK = "Неделя 10";
+
     const questionPool = [
         {
             q: "1. В урне 6 белых и 4 черных шара. Наугад извлекают один шар. Какова вероятность того, что вытянутый шар окажется белым?",
@@ -366,7 +369,7 @@
             q: "19. Какова вероятность того, что при броске монеты три раза подряд все три раза выпадет 'орел'?",
             o: ["1/3", "1/4", "1/6", "1/8"],
             a: "1/8",
-            sol: "Общее число исходов при 3 бросках N = 2³ = 8. Исходи (ООО) только 1 (m = 1). P = 1 / 8."
+            sol: "Общее число исходов при 3 бросках N = 2³ = 8. Исходы (ООО) только 1 (m = 1). P = 1 / 8."
         },
         {
             q: "20. В пакете лежат 10 конфет с шоколадной начинкой и 15 с фруктовой. Ребенок наугад достает одну конфету. Найти вероятность того, что конфета с шоколадной начинкой.",
@@ -377,7 +380,6 @@
     ];
 
     let activeQuestions = [];
-    const STORAGE_KEY = 'leaderboard_ml_w10';
 
     window.onload = function() {
         let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
@@ -435,7 +437,7 @@
             reviewHtml += `</div></div>`;
         });
 
-        saveToLeaderboard(studentName, score);
+        saveToCloudLeaderboard(studentName, score);
 
         document.getElementById('testCard').style.display = 'none';
         document.getElementById('resultContainer').style.display = 'block';
@@ -444,36 +446,56 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function saveToLeaderboard(name, score) {
-        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        board.push({ name: name, score: score, date: new Date().toLocaleDateString() });
-        board.sort((a, b) => b.score - a.score);
-        board = board.slice(0, 10);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
-        loadLeaderboard();
+    function saveToCloudLeaderboard(name, score) {
+        let payload = {
+            name: name,
+            score: score,
+            date: new Date().toLocaleDateString(),
+            week: CURRENT_WEEK
+        };
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Успешно сохранено:", data);
+            loadLeaderboard();
+        })
+        .catch(err => {
+            console.error("Ошибка сохранения:", err);
+            setTimeout(loadLeaderboard, 1000);
+        });
     }
 
     function loadLeaderboard() {
-        let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
         let tbody = document.getElementById('leaderboardBody');
-        
         if (!tbody) return;
 
-        if (board.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
-            return;
-        }
+        fetch(`${WEB_APP_URL}?week=${encodeURIComponent(CURRENT_WEEK)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+                    return;
+                }
 
-        let html = '';
-        board.forEach((item, index) => {
-            let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
-            html += `<tr>`;
-            html += `<td>${medal}${index + 1}</td>`;
-            html += `<td style="font-weight: 500;">${item.name}</td>`;
-            html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
-            html += `</tr>`;
-        });
-        tbody.innerHTML = html;
+                let html = '';
+                data.slice(0, 10).forEach((item, index) => {
+                    let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+                    html += `<tr>`;
+                    html += `<td>${medal}${index + 1}</td>`;
+                    html += `<td style="font-weight: 500;">${item.name}</td>`;
+                    html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
+                    html += `</tr>`;
+                });
+                tbody.innerHTML = html;
+            })
+            .catch(err => {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Не удалось загрузить рейтинг</td></tr>`;
+            });
     }
 </script>
 
