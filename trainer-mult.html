@@ -140,7 +140,7 @@
             margin-bottom: 15px;
         }
 
-        /* Экранные цифры (Кнопочная клавиатура) */
+        /* Цифровая клавиатура */
         .numpad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -258,21 +258,21 @@
 
                     <!-- Цифровая клавиатура -->
                     <div class="numpad">
-                        <button class="num-btn" onclick="pressNum('1')">1</button>
-                        <button class="num-btn" onclick="pressNum('2')">2</button>
-                        <button class="num-btn" onclick="pressNum('3')">3</button>
-                        <button class="num-btn" onclick="pressNum('4')">4</button>
-                        <button class="num-btn" onclick="pressNum('5')">5</button>
-                        <button class="num-btn" onclick="pressNum('6')">6</button>
-                        <button class="num-btn" onclick="pressNum('7')">7</button>
-                        <button class="num-btn" onclick="pressNum('8')">8</button>
-                        <button class="num-btn" onclick="pressNum('9')">9</button>
-                        <button class="num-btn clear-btn" onclick="clearInput()">C</button>
-                        <button class="num-btn" onclick="pressNum('0')">0</button>
-                        <button class="num-btn clear-btn" onclick="backspaceInput()">⌫</button>
+                        <button type="button" class="num-btn" onclick="pressNum('1')">1</button>
+                        <button type="button" class="num-btn" onclick="pressNum('2')">2</button>
+                        <button type="button" class="num-btn" onclick="pressNum('3')">3</button>
+                        <button type="button" class="num-btn" onclick="pressNum('4')">4</button>
+                        <button type="button" class="num-btn" onclick="pressNum('5')">5</button>
+                        <button type="button" class="num-btn" onclick="pressNum('6')">6</button>
+                        <button type="button" class="num-btn" onclick="pressNum('7')">7</button>
+                        <button type="button" class="num-btn" onclick="pressNum('8')">8</button>
+                        <button type="button" class="num-btn" onclick="pressNum('9')">9</button>
+                        <button type="button" class="num-btn clear-btn" onclick="clearInput()">C</button>
+                        <button type="button" class="num-btn" onclick="pressNum('0')">0</button>
+                        <button type="button" class="num-btn clear-btn" onclick="backspaceInput()">⌫</button>
                     </div>
 
-                    <button class="btn-action" onclick="submitAnswer()">Ответить</button>
+                    <button type="button" class="btn-action" onclick="submitAnswer()">Ответить</button>
                 </div>
 
                 <!-- Экран 3: Конец игры -->
@@ -283,8 +283,8 @@
 
                     <input type="text" id="studentName" class="inp-name" placeholder="Введите ваши Фамилию и Имя для таблицы лидеров">
                     
-                    <button class="btn-action" onclick="saveRecord()">Сохранить результат и войти в рейтинг</button>
-                    <button class="back-btn" style="width: 100%; text-align: center; margin-top: 10px;" onclick="resetGame()">Попробовать заново</button>
+                    <button type="button" class="btn-action" onclick="saveRecord()">Сохранить результат и войти в рейтинг</button>
+                    <button type="button" class="back-btn" style="width: 100%; text-align: center; margin-top: 10px;" onclick="resetGame()">Попробовать заново</button>
                 </div>
             </div>
         </div>
@@ -324,10 +324,10 @@
 
     window.onload = function() {
         loadLeaderboard();
-        // Ввод с физической клавиатуры компьютера
+        
         document.addEventListener('keydown', function(e) {
             let playScreen = document.getElementById('playScreen');
-            if (playScreen.style.display !== 'none') {
+            if (playScreen && playScreen.style.display !== 'none') {
                 if (e.key >= '0' && e.key <= '9') {
                     pressNum(e.key);
                 } else if (e.key === 'Backspace') {
@@ -349,11 +349,11 @@
     }
 
     function nextTask() {
-        num1 = Math.floor(Math.random() * 8) + 2; // 2..9
-        num2 = Math.floor(Math.random() * 8) + 2; // 2..9
+        num1 = Math.floor(Math.random() * 8) + 2;
+        num2 = Math.floor(Math.random() * 8) + 2;
         correctAnswer = num1 * num2;
 
-        document.getElementById('taskText').innerText = `${num1} ×${num2} = ?`;
+        document.getElementById('taskText').innerText = `${num1} × ${num2} = ?`;
         document.getElementById('userAnswer').value = '';
 
         startTimer();
@@ -413,7 +413,7 @@
             nextTask();
         } else {
             clearInterval(timerInterval);
-            finishGame(`Неверный ответ! (${num1} × ${num2} =${correctAnswer})`);
+            finishGame(`Неверный ответ! (${num1} × ${num2} = ${correctAnswer})`);
         }
     }
 
@@ -470,4 +470,26 @@
             .then(res => res.json())
             .then(data => {
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = `<tr><td
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет рекордов. Станьте первым!</td></tr>`;
+                    return;
+                }
+
+                let html = '';
+                data.slice(0, 10).forEach((item, index) => {
+                    let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+                    html += `<tr>`;
+                    html += `<td>${medal}${index + 1}</td>`;
+                    html += `<td style="font-weight: 500;">${item.name}</td>`;
+                    html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}</td>`;
+                    html += `</tr>`;
+                });
+                tbody.innerHTML = html;
+            })
+            .catch(err => {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Не удалось загрузить рейтинг</td></tr>`;
+            });
+    }
+</script>
+
+</body>
+</html>
