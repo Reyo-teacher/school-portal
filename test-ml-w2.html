@@ -240,7 +240,7 @@
 
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk6LbGQb8yiUnozyt7uOshLK79-EB52HEYA6-PfkjvJILON8zR41JkdTgM0apg7OHJ/exec";
-const CURRENT_WEEK = "Неделя 2";
+    const CURRENT_WEEK = "Неделя 2";
 
     const questionPool = [
         {
@@ -283,7 +283,7 @@ const CURRENT_WEEK = "Неделя 2";
             q: "7. Турист проехал на велосипеде 45 км за 3 часа, а пешком шел 12 км со скоростью 4 км/ч. Сколько всего времени затратил турист?",
             o: ["5 часов", "6 часов", "7 часов", "8 часов"],
             a: "6 часов",
-            sol: "Время на велосипеде: 45 / 3 = 15 часов? Нет, 45 км за 3 часа — это 15 км/ч. Время пешком: 12 / 4 = 3 часа. Общее время: 3 часа (на веле) + 3 часа (пешком) = 6 часов."
+            sol: "Время на велосипеде: 45 / 3 = 15 км/ч. Время пешком: 12 / 4 = 3 часа. Общее время: 3 часа + 3 часа = 6 часов."
         },
         {
             q: "8. Из города в село, расстояние между которыми 120 км, выехал автобус со скоростью 60 км/ч. На сколько часов раньше прибудет автомобиль, если его скорость 80 км/ч?",
@@ -439,12 +439,18 @@ const CURRENT_WEEK = "Неделя 2";
 
         fetch(WEB_APP_URL, {
             method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify(payload)
-        }).then(() => {
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Успешно сохранено:", data);
+            loadLeaderboard();
+        })
+        .catch(err => {
+            console.error("Ошибка сохранения:", err);
             setTimeout(loadLeaderboard, 1000);
-        }).catch(err => console.error("Ошибка сохранения:", err));
+        });
     }
 
     function loadLeaderboard() {
