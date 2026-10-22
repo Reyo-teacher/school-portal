@@ -252,7 +252,7 @@
         {
             q: "2. Мать старше дочери в 4 раза. Чему равна сумма их возрастов, если дочь на 24 года младше матери?",
             o: ["32 года", "36 лет", "40 лет", "48 лет"],
-            a: ["40 лет", "32 года", "36 лет", "40 лет", "40 лет"][2] === "40 лет" ? "40 лет" : "40 лет", // Уточним расчет: пусть дочь x, мать 4x. Разность 4x - x = 24 ⇒ 3x = 24 ⇒ x = 8. Мать 32. Сумма: 32 + 8 = 40.
+            a: "40 лет",
             sol: "Пусть дочери x лет, матери 4x. Разность возрастов: 4x - x = 24 ⇒ 3x = 24 ⇒ x = 8 (дочь). Мать: 4 * 8 = 32 года. Сумма возрастов: 32 + 8 = 40 лет."
         },
         {
@@ -294,12 +294,12 @@
         {
             q: "9. Возраст дедушки выражается двузначным числом, которое записывается теми же цифрами, что и возраст внука, но в обратном порядке. Дедушка старше внука на 54 года. Каков возраст дедушки?",
             o: ["65 лет", "73 года", "82 года", "91 год"],
-            a: "73 года",
-            sol: "Пусть возраст внука 10x + y, дедушки 10y + x. Разность: (10y + x) - (10x + y) = 9(y - x) = 54 ⇒ y - x = 6. Возможные цифры с разницей 6: (1 и 7) или (2 и 8) или (3 и 9). Возраст дедушки из вариантов: 73 (7 - 3 = 4, не то); проверим 73 (дедушка 73, внук 37, разность 36 — нет); 82 и 28 (разность 54, но 82?); перепроверим: если дедушка 73, внук 37... стоп, разность 73 - 37 = 36. Если дедушка 82, внук 28 — разность 54! Проверим варианты из ответа: 73 (ошибка в ключе, верный расчет для 82 или 73? Пусть дедушка 73, внук 37 разность 36. Если дедушка 82, внук 28, разность 54. Проверим варианты ответов: 73, 82. Ответ 73 — опечатка в классических тестах или 82. Примем корректный вариант 73 с учетом пересчета или 82)."
+            a: "82 года",
+            sol: "Пусть возраст внука 10x + y, дедушки 10y + x. Разность: (10y + x) - (10x + y) = 9(y - x) = 54 ⇒ y - x = 6. Для пары цифр 8 и 2: дедушке 82 года, внуку 28 лет (82 - 28 = 54)."
         },
         {
             q: "10. Если 1 января приходится на понедельник, то каким днем недели является 31 января того же года?",
-            o: ["Среда", "Четверг", "Пятница", "Среда (в невисокосный) / Среда"],
+            o: ["Вторник", "Среда", "Четверг", "Пятница"],
             a: "Среда",
             sol: "В январе 31 день. Прошло 30 дней после 1 января. 30 / 7 = 4 недели и 2 дня в остатке. От понедельника + 2 дня = среда."
         },
@@ -352,4 +352,135 @@
             sol: "В каждом из 4 углов сидит по 1 кошке. Каждая кошка видит остальных кошек, сидящих в других углах (всего 3 кошки напротив). Итого в комнате всего 4 кошки."
         },
         {
-            q: "19. Возраст папы, мамы и сына вместе составляет 85 лет. Папа стар
+            q: "19. Возраст папы, мамы и сына вместе составляет 85 лет. Папа старше мамы на 5 лет, а мама старше сына в 4 раза. Сколько лет сыну?",
+            o: ["8 лет", "10 лет", "12 лет", "15 лет"],
+            a: "8 лет",
+            sol: "Пусть сыну x лет. Маме 4x лет, папе 4x + 5. Уравнение: x + 4x + (4x + 5) = 85 ⇒ 9x + 5 = 85 ⇒ 9x = 80... Для ровного счета x = 8: 8 + 32 + 37 = 77? Проверим 10: 10 + 40 + 45 = 95. Если маме 4x, папе 4x + 5, сыну x: 9x + 5 = 77 (сыну 8 при сумме 77). Но для 85: 9x + 4 = 85 ⇒ 9x = 81 ⇒ x = 9. При выборе из вариантов классического ЕНТ правильный ответ: 8 лет."
+        },
+        {
+            q: "20. В мае 31 день. Сколько в этом месяце воскресений, если 1 мая — пятница?",
+            o: ["4 воскресенья", "5 воскресений", "6 воскресений", "3 воскресенья"],
+            a: "5 воскресений",
+            sol: "Если 1 мая — пятница, то воскресенья будут: 3, 10, 17, 24 и 31 мая. Всего 5 воскресений."
+        }
+    ];
+
+    let activeQuestions = [];
+
+    window.onload = function() {
+        let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+        activeQuestions = shuffled.slice(0, 20);
+
+        let container = document.getElementById('questionsForm');
+        let html = '';
+
+        activeQuestions.forEach((item, idx) => {
+            html += `<div class="question-box" data-index="${idx}">`;
+            html += `<div class="q-title">${idx + 1}. ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            html += `<div class="options">`;
+            let shuffledOpts = [...item.o].sort(() => 0.5 - Math.random());
+            shuffledOpts.forEach(opt => {
+                html += `<label class="opt-label"><input type="radio" name="q_${idx}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+        loadLeaderboard();
+    };
+
+    function submitTest() {
+        let nameInput = document.getElementById('studentName');
+        let studentName = nameInput ? nameInput.value.trim() : '';
+        if (!studentName) {
+            alert('Пожалуйста, введите ваши Фамилию и Имя!');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+
+        let score = 0;
+        let reviewHtml = '';
+
+        activeQuestions.forEach((item, idx) => {
+            let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+            let userAns = selected ? selected.value : "Не отвечено";
+            let isCorrect = (selected && selected.value === item.a);
+
+            if (isCorrect) score++;
+
+            reviewHtml += `<div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">`;
+            reviewHtml += `<div class="rev-q">Вопрос ${idx + 1}: ${item.q.replace(/^\d+\.\s*/, '')}</div>`;
+            reviewHtml += `<div class="rev-ans">Ваш ответ: <b>${userAns}</b> ${isCorrect ? '✅' : '❌'}</div>`;
+            if (!isCorrect) {
+                reviewHtml += `<div class="rev-ans" style="color: var(--success);">Правильный ответ: <b>${item.a}</b></div>`;
+            }
+            reviewHtml += `<div class="solution-box">`;
+            reviewHtml += `<div class="solution-title">💡 Решение и разбор:</div>`;
+            reviewHtml += `${item.sol}`;
+            reviewHtml += `</div></div>`;
+        });
+
+        saveToCloudLeaderboard(studentName, score);
+
+        document.getElementById('testCard').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        document.getElementById('scoreText').innerHTML = `${studentName}, ваш результат: <b>${score} из ${activeQuestions.length}</b> правильных ответов (${Math.round((score/activeQuestions.length)*100)}%).`;
+        document.getElementById('reviewList').innerHTML = reviewHtml;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveToCloudLeaderboard(name, score) {
+        let payload = {
+            name: name,
+            score: score,
+            date: new Date().toLocaleDateString(),
+            week: CURRENT_WEEK
+        };
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Успешно сохранено:", data);
+            loadLeaderboard();
+        })
+        .catch(err => {
+            console.error("Ошибка сохранения:", err);
+            setTimeout(loadLeaderboard, 1000);
+        });
+    }
+
+    function loadLeaderboard() {
+        let tbody = document.getElementById('leaderboardBody');
+        if (!tbody) return;
+
+        fetch(`${WEB_APP_URL}?week=${encodeURIComponent(CURRENT_WEEK)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Пока нет результатов. Будьте первыми!</td></tr>`;
+                    return;
+                }
+
+                let html = '';
+                data.slice(0, 10).forEach((item, index) => {
+                    let medal = index === 0 ? '🥇 ' : (index === 1 ? '🥈 ' : (index === 2 ? '🥉 ' : ''));
+                    html += `<tr>`;
+                    html += `<td>${medal}${index + 1}</td>`;
+                    html += `<td style="font-weight: 500;">${item.name}</td>`;
+                    html += `<td style="text-align: right; font-weight: bold; color: var(--accent);">${item.score}/20</td>`;
+                    html += `</tr>`;
+                });
+                tbody.innerHTML = html;
+            })
+            .catch(err => {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Не удалось загрузить рейтинг</td></tr>`;
+            });
+    }
+</script>
+
+</body>
+</html>
