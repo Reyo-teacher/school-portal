@@ -73,6 +73,7 @@
             transition: all 0.2s;
             display: block;
             box-sizing: border-box;
+            cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
         .tile-link:hover, .tile-link:active {
@@ -112,6 +113,32 @@
             text-decoration: none;
         }
         .back-btn:hover { background: var(--accent); color: #0f172a; }
+
+        /* Переключение экранов */
+        .view-section { display: none; }
+        .view-section.active-view { display: block; }
+
+        /* Стили списка глав */
+        .chapter-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .chapter-title {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .topic-list {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .topic-list li { margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -121,22 +148,122 @@
         <h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1>
     </header>
 
-    <div class="card">
-        <a href="index.html" class="back-btn">← На главную</a>
-        <h2>Выберите класс или направление</h2>
-        <div class="grid-tiles">
-            <a href="#" onclick="alert('Материалы 5 класса в разработке'); return false;" class="tile-link">5 класс</a>
-            <a href="#" onclick="alert('Материалы 6 класса в разработке'); return false;" class="tile-link">6 класс</a>
-            <a href="#" onclick="alert('Материалы 7 класса в разработке'); return false;" class="tile-link">7 класс</a>
-            <a href="#" onclick="alert('Материалы 8 класса в разработке'); return false;" class="tile-link">8 класс</a>
-            <a href="#" onclick="alert('Материалы 9 класса в разработке'); return false;" class="tile-link">9 класс</a>
-            <a href="#" onclick="alert('Материалы 10 класса в разработке'); return false;" class="tile-link">10 класс</a>
-            <a href="#" onclick="alert('Материалы 11 класса в разработке'); return false;" class="tile-link">11 класс</a>
-            <a href="ent.html" class="tile-link ent">🎯 ЕНТ Подготовка</a>
-            <a href="trainers.html" class="tile-link trainers">⚡ Интерактивные тренажёры</a>
+    <!-- ЭКРАН 1: ВЫБОР КЛАССА -->
+    <div id="view-class-select" class="view-section active-view">
+        <div class="card">
+            <a href="index.html" class="back-btn">← На главную</a>
+            <h2>Выберите класс или направление</h2>
+            <div class="grid-tiles">
+                <a href="#" id="btn-5-class" class="tile-link">5 класс</a>
+                <a href="#" onclick="alert('Материалы 6 класса в разработке'); return false;" class="tile-link">6 класс</a>
+                <a href="#" onclick="alert('Материалы 7 класса в разработке'); return false;" class="tile-link">7 класс</a>
+                <a href="#" onclick="alert('Материалы 8 класса в разработке'); return false;" class="tile-link">8 класс</a>
+                <a href="#" onclick="alert('Материалы 9 класса в разработке'); return false;" class="tile-link">9 класс</a>
+                <a href="#" onclick="alert('Материалы 10 класса в разработке'); return false;" class="tile-link">10 класс</a>
+                <a href="#" onclick="alert('Материалы 11 класса в разработке'); return false;" class="tile-link">11 класс</a>
+                <a href="ent.html" class="tile-link ent">🎯 ЕНТ Подготовка</a>
+                <a href="trainers.html" class="tile-link trainers">⚡ Интерактивные тренажёры</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2: ГЛАВЫ 5 КЛАССА -->
+    <div id="view-5-class-chapters" class="view-section">
+        <div class="card">
+            <button id="btn-back-to-classes" class="back-btn">← К выбору классов</button>
+            <h2>Математика — 5 класс (7 глав)</h2>
+
+            <div class="chapter-card">
+                <div class="chapter-title">Глава I. Натуральные числа и нуль</div>
+                <ul class="topic-list">
+                    <li>Натуральные числа, нуль, разрядные единицы и классы</li>
+                    <li>Координатный луч и изображение чисел</li>
+                    <li>Сравнение натуральных чисел и двойное неравенство</li>
+                    <li>Сложение, вычитание, умножение и деление</li>
+                    <li>Свойства арифметических действий и упрощение выражений</li>
+                    <li>Уравнения, формулы ($s=vt$, $C=an$) и числовые последовательности</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card">
+                <div class="chapter-title">Глава II. Делимость натуральных чисел</div>
+                <ul class="topic-list">
+                    <li>Делители и кратные, простые и составные числа</li>
+                    <li>Признаки делимости на 2, 3, 5, 9, 10</li>
+                    <li>Степень числа (квадрат, куб)</li>
+                    <li>Разложение на простые множители, НОД и НОК</li>
+                    <li>Движение по реке</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card">
+                <div class="chapter-title">Глава III. Обыкновенные дроби и действия над ними</div>
+                <ul class="topic-list">
+                    <li>Обыкновенная дробь, основное свойство и сокращение</li>
+                    <li>Правильные, неправильные дроби и смешанные числа</li>
+                    <li>Сложение и вычитание дробей и смешанных чисел</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card">
+                <div class="chapter-title">Глава IV. Десятичные дроби и действия над ними</div>
+                <ul class="topic-list">
+                    <li>Понятие десятичной дроби и сравнение</li>
+                    <li>Арифметические действия с десятичными дробями</li>
+                    <li>Округление чисел и среднее арифметическое</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card">
+                <div class="chapter-title">Глава V. Отношения и пропорции. Проценты</div>
+                <ul class="topic-list">
+                    <li>Отношение двух чисел и проценты</li>
+                    <li>Пропорция и её основное свойство</li>
+                    <li>Прямая и обратная пропорциональные зависимости</li>
+                    <li>Окружность, круг, шар и сфера</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card">
+                <div class="chapter-title">Глава VI. Положительные и отрицательные числа. Координаты на плоскости</div>
+                <ul class="topic-list">
+                    <li>Положительные и отрицательные числа, координатная прямая</li>
+                    <li>Модуль числа и сравнение рациональных чисел</li>
+                    <li>Арифметические действия с рациональными числами</li>
+                    <li>Прямоугольная система координат на плоскости</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card">
+                <div class="chapter-title">Глава VII. Итоговое повторение курса математики за 5 класс</div>
+                <ul class="topic-list">
+                    <li>Систематизация и повторение всех тем за учебный год</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    const btn5Class = document.getElementById('btn-5-class');
+    const btnBackToClasses = document.getElementById('btn-back-to-classes');
+    const viewClassSelect = document.getElementById('view-class-select');
+    const view5ClassChapters = document.getElementById('view-5-class-chapters');
+
+    // Нажатие на "5 класс" открывает список глав
+    btn5Class.addEventListener('click', (e) => {
+        e.preventDefault();
+        viewClassSelect.classList.remove('active-view');
+        view5ClassChapters.classList.add('active-view');
+    });
+
+    // Нажатие на "← К выбору классов" возвращает к плиткам
+    btnBackToClasses.addEventListener('click', (e) => {
+        e.preventDefault();
+        view5ClassChapters.classList.remove('active-view');
+        viewClassSelect.classList.add('active-view');
+    });
+</script>
 
 </body>
 </html>
