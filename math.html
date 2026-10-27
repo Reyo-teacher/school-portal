@@ -53,10 +53,19 @@
 
         h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
 
+        /* Сетка для классов */
         .grid-tiles {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 12px;
+            margin-top: 15px;
+        }
+
+        /* Сетка для глав и тем */
+        .grid-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             margin-top: 15px;
         }
 
@@ -82,6 +91,44 @@
             border-color: var(--accent);
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
+        
+        .chapter-btn {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 15px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .chapter-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .topic-btn {
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .topic-btn:hover {
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: 600;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+        }
+
         .tile-link.ent {
             background: rgba(14, 165, 233, 0.25);
             border-color: var(--accent);
@@ -92,11 +139,6 @@
             border-color: #34d399;
             color: #34d399;
             grid-column: span 2;
-        }
-        .tile-link.trainers:hover {
-            background: #34d399;
-            color: #0f172a;
-            box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
         }
 
         .back-btn {
@@ -114,31 +156,9 @@
         }
         .back-btn:hover { background: var(--accent); color: #0f172a; }
 
-        /* Переключение экранов */
+        /* Переключение уровней навигации */
         .view-section { display: none; }
         .view-section.active-view { display: block; }
-
-        /* Стили списка глав */
-        .chapter-card {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .chapter-title {
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-        .topic-list {
-            margin: 0;
-            padding-left: 20px;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-        .topic-list li { margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -148,121 +168,205 @@
         <h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1>
     </header>
 
-    <!-- ЭКРАН 1: ВЫБОР КЛАССА -->
+    <!-- УРОВЕНЬ 1: ВЫБОР КЛАССА -->
     <div id="view-class-select" class="view-section active-view">
         <div class="card">
             <a href="index.html" class="back-btn">← На главную</a>
             <h2>Выберите класс или направление</h2>
             <div class="grid-tiles">
-                <a href="#" id="btn-5-class" class="tile-link">5 класс</a>
-                <a href="#" onclick="alert('Материалы 6 класса в разработке'); return false;" class="tile-link">6 класс</a>
-                <a href="#" onclick="alert('Материалы 7 класса в разработке'); return false;" class="tile-link">7 класс</a>
-                <a href="#" onclick="alert('Материалы 8 класса в разработке'); return false;" class="tile-link">8 класс</a>
-                <a href="#" onclick="alert('Материалы 9 класса в разработке'); return false;" class="tile-link">9 класс</a>
-                <a href="#" onclick="alert('Материалы 10 класса в разработке'); return false;" class="tile-link">10 класс</a>
-                <a href="#" onclick="alert('Материалы 11 класса в разработке'); return false;" class="tile-link">11 класс</a>
+                <button id="btn-5-class" class="tile-link">5 класс</button>
+                <button onclick="alert('Материалы 6 класса в разработке');" class="tile-link">6 класс</button>
+                <button onclick="alert('Материалы 7 класса в разработке');" class="tile-link">7 класс</button>
+                <button onclick="alert('Материалы 8 класса в разработке');" class="tile-link">8 класс</button>
+                <button onclick="alert('Материалы 9 класса в разработке');" class="tile-link">9 класс</button>
+                <button onclick="alert('Материалы 10 класса в разработке');" class="tile-link">10 класс</button>
+                <button onclick="alert('Материалы 11 класса в разработке');" class="tile-link">11 класс</button>
                 <a href="ent.html" class="tile-link ent">🎯 ЕНТ Подготовка</a>
                 <a href="trainers.html" class="tile-link trainers">⚡ Интерактивные тренажёры</a>
             </div>
         </div>
     </div>
 
-    <!-- ЭКРАН 2: ГЛАВЫ 5 КЛАССА -->
+    <!-- УРОВЕНЬ 2: ВЫБОР ГЛАВЫ 5 КЛАССА -->
     <div id="view-5-class-chapters" class="view-section">
         <div class="card">
             <button id="btn-back-to-classes" class="back-btn">← К выбору классов</button>
-            <h2>Математика — 5 класс (7 глав)</h2>
+            <h2>5 класс — Выберите главу</h2>
 
-            <div class="chapter-card">
-                <div class="chapter-title">Глава I. Натуральные числа и нуль</div>
-                <ul class="topic-list">
-                    <li>Натуральные числа, нуль, разрядные единицы и классы</li>
-                    <li>Координатный луч и изображение чисел</li>
-                    <li>Сравнение натуральных чисел и двойное неравенство</li>
-                    <li>Сложение, вычитание, умножение и деление</li>
-                    <li>Свойства арифметических действий и упрощение выражений</li>
-                    <li>Уравнения, формулы ($s=vt$, $C=an$) и числовые последовательности</li>
-                </ul>
+            <div class="grid-vertical">
+                <button class="chapter-btn" onclick="openTopics(1)">Глава I. Натуральные числа и нуль</button>
+                <button class="chapter-btn" onclick="openTopics(2)">Глава II. Делимость натуральных чисел</button>
+                <button class="chapter-btn" onclick="openTopics(3)">Глава III. Обыкновенные дроби и действия над ними</button>
+                <button class="chapter-btn" onclick="openTopics(4)">Глава IV. Десятичные дроби и действия над ними</button>
+                <button class="chapter-btn" onclick="openTopics(5)">Глава V. Отношения и пропорции. Проценты</button>
+                <button class="chapter-btn" onclick="openTopics(6)">Глава VI. Положительные и отрицательные числа. Координаты</button>
+                <button class="chapter-btn" onclick="openTopics(7)">Глава VII. Итоговое повторение курса математики за 5 класс</button>
             </div>
+        </div>
+    </div>
 
-            <div class="chapter-card">
-                <div class="chapter-title">Глава II. Делимость натуральных чисел</div>
-                <ul class="topic-list">
-                    <li>Делители и кратные, простые и составные числа</li>
-                    <li>Признаки делимости на 2, 3, 5, 9, 10</li>
-                    <li>Степень числа (квадрат, куб)</li>
-                    <li>Разложение на простые множители, НОД и НОК</li>
-                    <li>Движение по реке</li>
-                </ul>
-            </div>
-
-            <div class="chapter-card">
-                <div class="chapter-title">Глава III. Обыкновенные дроби и действия над ними</div>
-                <ul class="topic-list">
-                    <li>Обыкновенная дробь, основное свойство и сокращение</li>
-                    <li>Правильные, неправильные дроби и смешанные числа</li>
-                    <li>Сложение и вычитание дробей и смешанных чисел</li>
-                </ul>
-            </div>
-
-            <div class="chapter-card">
-                <div class="chapter-title">Глава IV. Десятичные дроби и действия над ними</div>
-                <ul class="topic-list">
-                    <li>Понятие десятичной дроби и сравнение</li>
-                    <li>Арифметические действия с десятичными дробями</li>
-                    <li>Округление чисел и среднее арифметическое</li>
-                </ul>
-            </div>
-
-            <div class="chapter-card">
-                <div class="chapter-title">Глава V. Отношения и пропорции. Проценты</div>
-                <ul class="topic-list">
-                    <li>Отношение двух чисел и проценты</li>
-                    <li>Пропорция и её основное свойство</li>
-                    <li>Прямая и обратная пропорциональные зависимости</li>
-                    <li>Окружность, круг, шар и сфера</li>
-                </ul>
-            </div>
-
-            <div class="chapter-card">
-                <div class="chapter-title">Глава VI. Положительные и отрицательные числа. Координаты на плоскости</div>
-                <ul class="topic-list">
-                    <li>Положительные и отрицательные числа, координатная прямая</li>
-                    <li>Модуль числа и сравнение рациональных чисел</li>
-                    <li>Арифметические действия с рациональными числами</li>
-                    <li>Прямоугольная система координат на плоскости</li>
-                </ul>
-            </div>
-
-            <div class="chapter-card">
-                <div class="chapter-title">Глава VII. Итоговое повторение курса математики за 5 класс</div>
-                <ul class="topic-list">
-                    <li>Систематизация и повторение всех тем за учебный год</li>
-                </ul>
+    <!-- УРОВЕНЬ 3: ВЫБОР ТЕМЫ ИЗ ГЛАВЫ -->
+    <div id="view-topics" class="view-section">
+        <div class="card">
+            <button id="btn-back-to-chapters" class="back-btn">← К выбору глав</button>
+            <h2 id="topics-header-title">Темы главы</h2>
+            <div id="topics-container" class="grid-vertical">
+                <!-- Кнопки тем подгружаются через JavaScript -->
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const btn5Class = document.getElementById('btn-5-class');
-    const btnBackToClasses = document.getElementById('btn-back-to-classes');
+    // База тем по главам 5 класса (Алдамуратова Т.А.)
+    const chaptersData = {
+        1: {
+            title: "Глава I. Натуральные числа и нуль",
+            topics: [
+                "1.1. Натуральные числа и нуль",
+                "1.2. Координатный луч. Изображение натуральных чисел и числа нуль на координатном луче",
+                "1.3. Сравнение натуральных чисел. Двойное неравенство",
+                "1.4. Сложение и вычитание натуральных чисел",
+                "1.5. Умножение и деление натуральных чисел. Основное свойство частного",
+                "1.6. Свойства арифметических действий",
+                "1.7. Арифметические действия над натуральными числами",
+                "1.8. Числовые выражения. Буквенные выражения",
+                "1.9. Упрощение выражений",
+                "1.10. Уравнение",
+                "1.11. Формулы. Вычисление по формулам",
+                "1.12. Числовые последовательности"
+            ]
+        },
+        2: {
+            title: "Глава II. Делимость натуральных чисел",
+            topics: [
+                "2.1. Делители натурального числа. Кратные натурального числа",
+                "2.2. Простые числа. Составные числа",
+                "2.3. Основные свойства делимости",
+                "2.4. Признаки делимости натуральных чисел на 2, 5 и 10",
+                "2.5. Признаки делимости натуральных чисел на 3 и на 9",
+                "2.6. Степень числа",
+                "2.7. Разложение составных чисел на простые множители",
+                "2.8. Наибольший общий делитель. Взаимно простые числа",
+                "2.9. Наименьшее общее кратное",
+                "2.10. Движение по реке"
+            ]
+        },
+        3: {
+            title: "Глава III. Обыкновенные дроби и действия над ними",
+            topics: [
+                "3.1. Обыкновенная дробь. Чтение и запись обыкновенных дробей",
+                "3.2. Основное свойство дроби. Сокращение дробей",
+                "3.3. Правильные дроби. Неправильные дроби",
+                "3.4. Смешанные числа",
+                "3.5. Сложение и вычитание обыкновенных дробей с одинаковыми знаменателями",
+                "3.6. Сложение и вычитание смешанных чисел",
+                "3.7. Вычитание дроби из натурального числа",
+                "3.8. Сложение и вычитание обыкновенных дробей с разными знаменателями"
+            ]
+        },
+        4: {
+            title: "Глава IV. Десятичные дроби и действия над ними",
+            topics: [
+                "4.1. Понятие десятичной дроби",
+                "4.2. Сравнение десятичных дробей",
+                "4.3. Сложение и вычитание десятичных дробей",
+                "4.4. Умножение десятичных дробей",
+                "4.5. Деление десятичных дробей",
+                "4.6. Округление чисел",
+                "4.7. Среднее арифметическое"
+            ]
+        },
+        5: {
+            title: "Глава V. Отношения и пропорции. Проценты",
+            topics: [
+                "5.1. Отношение двух чисел",
+                "5.2. Проценты",
+                "5.3. Пропорция",
+                "5.4. Прямая и обратная пропорциональные зависимости",
+                "5.5. Окружность и круг",
+                "5.6. Шар и сфера"
+            ]
+        },
+        6: {
+            title: "Глава VI. Положительные и отрицательные числа. Координаты на плоскости",
+            topics: [
+                "6.1. Положительные и отрицательные числа",
+                "6.2. Координатная прямая",
+                "6.3. Модуль числа",
+                "6.4. Сравнение рациональных чисел",
+                "6.5. Сложение и вычитание рациональных чисел",
+                "6.6. Умножение и деление рациональных чисел",
+                "6.7. Прямоугольная система координат на плоскости"
+            ]
+        },
+        7: {
+            title: "Глава VII. Итоговое повторение курса математики за 5 класс",
+            topics: [
+                "Повторение: Натуральные числа и нуль",
+                "Повторение: Делимость натуральных чисел",
+                "Повторение: Обыкновенные дроби",
+                "Повторение: Десятичные дроби",
+                "Повторение: Отношения, пропорции и проценты",
+                "Повторение: Рациональные числа и координаты"
+            ]
+        }
+    };
+
+    // Элементы переключения
     const viewClassSelect = document.getElementById('view-class-select');
     const view5ClassChapters = document.getElementById('view-5-class-chapters');
+    const viewTopics = document.getElementById('view-topics');
 
-    // Нажатие на "5 класс" открывает список глав
-    btn5Class.addEventListener('click', (e) => {
-        e.preventDefault();
-        viewClassSelect.classList.remove('active-view');
-        view5ClassChapters.classList.add('active-view');
+    const btn5Class = document.getElementById('btn-5-class');
+    const btnBackToClasses = document.getElementById('btn-back-to-classes');
+    const btnBackToChapters = document.getElementById('btn-back-to-chapters');
+
+    const topicsHeaderTitle = document.getElementById('topics-header-title');
+    const topicsContainer = document.getElementById('topics-container');
+
+    // Открыть выбор глав 5 класса
+    btn5Class.addEventListener('click', () => {
+        showView(view5ClassChapters);
     });
 
-    // Нажатие на "← К выбору классов" возвращает к плиткам
-    btnBackToClasses.addEventListener('click', (e) => {
-        e.preventDefault();
-        view5ClassChapters.classList.remove('active-view');
-        viewClassSelect.classList.add('active-view');
+    // Назад к выбору классов
+    btnBackToClasses.addEventListener('click', () => {
+        showView(viewClassSelect);
     });
+
+    // Назад к выбору глав
+    btnBackToChapters.addEventListener('click', () => {
+        showView(view5ClassChapters);
+    });
+
+    // Функция открытия тем выбранной главы
+    function openTopics(chapterId) {
+        const chapter = chaptersData[chapterId];
+        if (!chapter) return;
+
+        topicsHeaderTitle.textContent = chapter.title;
+        topicsContainer.innerHTML = '';
+
+        chapter.topics.forEach((topic, index) => {
+            const topicBtn = document.createElement('button');
+            topicBtn.className = 'topic-btn';
+            topicBtn.textContent = topic;
+            // Действие при клике на тему (готово к привязке ссылок/уроков)
+            topicBtn.onclick = () => {
+                alert(`Урок по теме "${topic}" в разработке`);
+            };
+            topicsContainer.appendChild(topicBtn);
+        });
+
+        showView(viewTopics);
+    }
+
+    // Переключение видимости блоков
+    function showView(targetView) {
+        [viewClassSelect, view5ClassChapters, viewTopics].forEach(v => v.classList.remove('active-view'));
+        targetView.classList.add('active-view');
+    }
 </script>
 
 </body>
