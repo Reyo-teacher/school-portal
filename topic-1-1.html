@@ -9,6 +9,7 @@
             --bg-dark: #070f1e;
             --card-bg: rgba(15, 23, 42, 0.9);
             --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: rgba(56, 189, 248, 0.25);
@@ -56,11 +57,10 @@
             border: 1px solid var(--border-color);
         }
 
-        h2 { font-size: 20px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
-        h3 { font-size: 17px; color: #7dd3fc; margin-top: 20px; }
+        h2 { font-size: 22px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        h3 { font-size: 18px; color: #7dd3fc; margin-top: 25px; display: flex; align-items: center; gap: 8px; }
 
         p, li { color: #cbd5e1; font-size: 15px; }
-        ul { padding-left: 20px; }
 
         .back-btn {
             display: inline-block;
@@ -78,7 +78,53 @@
         }
         .back-btn:hover { background: var(--accent); color: #0f172a; }
 
-        /* Фильтры уровней */
+        /* ВИЗУАЛЬНЫЕ БЛОКИ ТЕОРИИ */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .info-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            transition: transform 0.2s;
+        }
+        .info-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+        .info-card-title { font-weight: 700; color: var(--accent); margin-bottom: 8px; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+
+        /* ТАБЛИЦА РАЗРЯДОВ */
+        .table-responsive { overflow-x: auto; margin: 20px 0; }
+        .place-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 14px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .place-table th {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--accent);
+            padding: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .place-table td {
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #cbd5e1;
+        }
+        .digit-highlight {
+            font-weight: 800;
+            color: #38bdf8;
+            font-size: 18px;
+        }
+
+        /* ФИЛЬТРЫ И ЗАДАНИЯ */
         .filter-container {
             display: flex;
             gap: 10px;
@@ -99,36 +145,45 @@
             background: var(--accent);
             color: #0f172a;
             border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        /* Карточка задания */
         .task-box {
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 20px;
             margin-top: 15px;
+            transition: border-color 0.2s;
+        }
+        .task-box:hover { border-color: rgba(56, 189, 248, 0.5); }
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
         .task-badge {
-            display: inline-block;
             font-size: 12px;
             font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin-bottom: 8px;
+            padding: 4px 10px;
+            border-radius: 20px;
         }
-        .badge-a { background: rgba(56, 189, 248, 0.2); color: var(--level-a); border: 1px solid var(--level-a); }
-        .badge-b { background: rgba(251, 191, 36, 0.2); color: var(--level-b); border: 1px solid var(--level-b); }
-        .badge-c { background: rgba(244, 63, 94, 0.2); color: var(--level-c); border: 1px solid var(--level-c); }
+        .badge-a { background: rgba(56, 189, 248, 0.15); color: var(--level-a); border: 1px solid var(--level-a); }
+        .badge-b { background: rgba(251, 191, 36, 0.15); color: var(--level-b); border: 1px solid var(--level-b); }
+        .badge-c { background: rgba(244, 63, 94, 0.15); color: var(--level-c); border: 1px solid var(--level-c); }
 
         .task-condition {
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             color: var(--text-main);
+            display: flex;
+            gap: 8px;
         }
         .task-controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -136,32 +191,39 @@
             background: #0f172a;
             border: 1.5px solid var(--border-color);
             color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
             font-size: 15px;
-            width: 220px;
+            width: 230px;
             outline: none;
+            transition: all 0.2s;
         }
         .task-input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
         .check-btn {
             background: var(--accent);
             color: #0f172a;
             border: none;
-            padding: 9px 18px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
         }
-        .check-btn:hover { opacity: 0.9; }
+        .check-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
         
         .feedback {
-            margin-top: 8px;
+            margin-top: 10px;
             font-size: 14px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .feedback.correct { color: var(--success); }
         .feedback.incorrect { color: var(--error); }
@@ -172,166 +234,3 @@
 <div class="wrapper">
     <header>
         <h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1>
-    </header>
-
-    <div class="card">
-        <a href="index.html" class="back-btn">← К списку тем</a>
-        <h2>1.1. Натуральные числа и нуль</h2>
-
-        <h3>📖 Теоретический материал (Лекция)</h3>
-        <p>Числа <strong>1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...</strong>, которые используются при счете предметов, называются <strong>натуральными числами</strong>.</p>
-        <ul>
-            <li><strong>Свойства натурального ряда:</strong> Самое маленькое натуральное число — это 1. Наибольшего натурального числа не существует, так как ряд чисел бесконечен. За каждым натуральным числом следует следующее за ним число (на 1 больше).</li>
-            <li><strong>Роль нуля:</strong> Число <strong>0 (нуль)</strong> не относится к натуральным числам, поскольку оно означает отсутствие предмета. Однако нуль вместе с натуральными числами образует систему для записи любых чисел.</li>
-            <li><strong>Цифры и числа:</strong> Для записи чисел используются десять цифр: <em>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</em>. Запись чисел является позиционной: значение цифры зависит от её места (разряда) в числе.</li>
-            <li><strong>Классы и разряды:</strong> Разряды объединяются в группы по три справа налево — классы: класс единиц (единицы, десятки, сотни), класс тысяч (единицы тысяч, десятки тысяч, сотни тысяч), класс миллионов и т.д.</li>
-        </ul>
-
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
-
-        <h3>✍️ Разноуровневый банк заданий (Уровни А, Б, В)</h3>
-        
-        <div class="filter-container">
-            <button class="filter-btn active" onclick="filterTasks('all')">Все задания</button>
-            <button class="filter-btn" onclick="filterTasks('a')">Уровень А (Базовый)</button>
-            <button class="filter-btn" onclick="filterTasks('b')">Уровень Б (Средний)</button>
-            <button class="filter-btn" onclick="filterTasks('c')">Уровень В (Сложный)</button>
-        </div>
-
-        <div id="tasks-container">
-            <!-- УРОВЕНЬ А -->
-            <div class="task-box" data-level="a">
-                <span class="task-badge badge-a">Уровень А</span>
-                <div class="task-condition">№1. Запишите цифрами число: три миллиона двести пятьдесят тысяч сто сорок пять.</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-1" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(1, '3250145')">Проверить</button>
-                </div>
-                <div id="fb-1" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="a">
-                <span class="task-badge badge-a">Уровень А</span>
-                <div class="task-condition">№2. Какое наименьшее натуральное число?</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-2" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(2, '1')">Проверить</button>
-                </div>
-                <div id="fb-2" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="a">
-                <span class="task-badge badge-a">Уровень А</span>
-                <div class="task-condition">№3. Укажите цифру, стоящую в разряде сотен тысяч в числе 4875231.</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-3" placeholder="Введите цифру...">
-                    <button class="check-btn" onclick="checkAnswer(3, '8')">Проверить</button>
-                </div>
-                <div id="fb-3" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="a">
-                <span class="task-badge badge-a">Уровень А</span>
-                <div class="task-condition">№4. Запишите число, которое следует за числом 9999.</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-4" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(4, '10000')">Проверить</button>
-                </div>
-                <div id="fb-4" class="feedback"></div>
-            </div>
-
-            <!-- УРОВЕНЬ Б -->
-            <div class="task-box" data-level="b">
-                <span class="task-badge badge-b">Уровень Б</span>
-                <div class="task-condition">№5. Найдите сумму наибольшего трехзначного числа и наименьшего двузначного числа.</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-5" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(5, '1009')">Проверить</button>
-                </div>
-                <div id="fb-5" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="b">
-                <span class="task-badge badge-b">Уровень Б</span>
-                <div class="task-condition">№6. Сколько всего двузначных чисел существует в натуральном ряду?</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-6" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(6, '90')">Проверить</button>
-                </div>
-                <div id="fb-6" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="b">
-                <span class="task-badge badge-b">Уровень Б</span>
-                <div class="task-condition">№7. Запишите наибольшее шестизначное число, составленное из цифр 5, 0, 8, 3, 1, 9 без повторений.</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-7" placeholder="Введите число...">
-                    <button class="check-btn" onclick="checkAnswer(7, '985310')">Проверить</button>
-                </div>
-                <div id="fb-7" class="feedback"></div>
-            </div>
-
-            <!-- УРОВЕНЬ В -->
-            <div class="task-box" data-level="c">
-                <span class="task-badge badge-c">Уровень В</span>
-                <div class="task-condition">№8. Сколько всего цифр потребуется для записи всех натуральных чисел от 1 до 50 включительно?</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-8" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(8, '91')">Проверить</button>
-                </div>
-                <div id="fb-8" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="c">
-                <span class="task-badge badge-c">Уровень В</span>
-                <div class="task-condition">№9. К трехзначному числу слева приписали цифру 5. На сколько увеличилось полученное число?</div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-9" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(9, '5000')">Проверить</button>
-                </div>
-                <div id="fb-9" class="feedback"></div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<script>
-    function checkAnswer(taskNum, correctAnswer) {
-        const inputElem = document.getElementById('ans-' + taskNum);
-        const fbElem = document.getElementById('fb-' + taskNum);
-        const userVal = inputElem.value.trim();
-
-        if (userVal === "") {
-            fbElem.textContent = "⚠️ Поле не должно быть пустым!";
-            fbElem.className = "feedback incorrect";
-            return;
-        }
-
-        if (userVal === correctAnswer) {
-            fbElem.textContent = "✅ Верно! Отличная работа!";
-            fbElem.className = "feedback correct";
-        } else {
-            fbElem.textContent = "❌ Неверно. Попробуйте еще раз!";
-            fbElem.className = "feedback incorrect";
-        }
-    }
-
-    function filterTasks(level) {
-        const buttons = document.querySelectorAll('.filter-btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        const boxes = document.querySelectorAll('.task-box');
-        boxes.forEach(box => {
-            if (level === 'all' || box.getAttribute('data-level') === level) {
-                box.style.display = 'block';
-            } else {
-                box.style.display = 'none';
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
