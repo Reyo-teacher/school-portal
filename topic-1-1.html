@@ -78,7 +78,6 @@
         }
         .back-btn:hover { background: var(--accent); color: #0f172a; }
 
-        /* ВИЗУАЛЬНЫЕ БЛОКИ ТЕОРИИ */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -95,7 +94,6 @@
         .info-card:hover { transform: translateY(-3px); border-color: var(--accent); }
         .info-card-title { font-weight: 700; color: var(--accent); margin-bottom: 8px; font-size: 16px; display: flex; align-items: center; gap: 6px; }
 
-        /* ТАБЛИЦА РАЗРЯДОВ */
         .table-responsive { overflow-x: auto; margin: 20px 0; }
         .place-table {
             width: 100%;
@@ -124,7 +122,6 @@
             font-size: 18px;
         }
 
-        /* ФИЛЬТРЫ И ЗАДАНИЯ */
         .filter-container {
             display: flex;
             gap: 10px;
@@ -234,3 +231,270 @@
 <div class="wrapper">
     <header>
         <h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1>
+    </header>
+
+    <div class="card">
+        <a href="index.html" class="back-btn">← К списку тем</a>
+        <h2>1.1. Натуральные числа и нуль</h2>
+
+        <h3>📘 Иллюстрированная лекция</h3>
+        
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-card-title">🔢 Натуральные числа</div>
+                <p>Числа <strong>1, 2, 3, 4, 5, 6, ...</strong>, используемые при подсчёте реальных предметов. <br><br>
+                ✨ <em>Самое маленькое натуральное число — <strong>1</strong>. Наибольшего не существует!</em></p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-title">⭕ Число Нуль (0)</div>
+                <p>Число <strong>0 не является натуральным</strong>, так как мы не говорим «у меня 0 предметов» при счёте.<br><br>
+                💡 <em>Нуль обозначает отсутствие предметов и помогает формировать разряды!</em></p>
+            </div>
+        </div>
+
+        <h3>📊 Таблица классов и разрядов (Десятичная система)</h3>
+        <p>Для записи чисел мы используем 10 цифр: <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code>. Значение цифры зависит от её места в числе:</p>
+
+        <div class="table-responsive">
+            <table class="place-table">
+                <thead>
+                    <tr>
+                        <th colspan="3">Класс Миллионов</th>
+                        <th colspan="3">Класс Тысяч</th>
+                        <th colspan="3">Класс Единиц</th>
+                    </tr>
+                    <tr>
+                        <th>Сотни млн</th>
+                        <th>Десятки млн</th>
+                        <th>Единицы млн</th>
+                        <th>Сотни тыс</th>
+                        <th>Десятки тыс</th>
+                        <th>Единицы тыс</th>
+                        <th>Сотни</th>
+                        <th>Десятки</th>
+                        <th>Единицы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="digit-highlight">5</td>
+                        <td class="digit-highlight">2</td>
+                        <td class="digit-highlight">3</td>
+                        <td class="digit-highlight">0</td>
+                        <td class="digit-highlight">1</td>
+                        <td class="digit-highlight">4</td>
+                        <td class="digit-highlight">5</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p style="text-align: center; font-size: 13px; color: var(--text-muted);">
+            Пример: число <strong>5 230 145</strong> (Пять миллионов двести тридцать тысяч сто сорок пять)
+        </p>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+        <h3>🎯 Практический тренажёр</h3>
+        <p>Выберите уровень сложности задач:</p>
+        
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterTasks('all')">Все задания</button>
+            <button class="filter-btn" onclick="filterTasks('a')">🟢 Уровень А (Базовый)</button>
+            <button class="filter-btn" onclick="filterTasks('b')">🟡 Уровень Б (Средний)</button>
+            <button class="filter-btn" onclick="filterTasks('c')">🔴 Уровень В (Сложный)</button>
+        </div>
+
+        <div id="tasks-container">
+            <!-- УРОВЕНЬ А -->
+            <div class="task-box" data-level="a">
+                <div class="task-header">
+                    <span class="task-badge badge-a">🟢 Уровень А</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №1</span>
+                </div>
+                <div class="task-condition">
+                    <span>📝</span>
+                    <span>Запишите цифрами число: <strong>три миллиона двести пятьдесят тысяч сто сорок пять</strong>.</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-1" placeholder="Введите ответ без пробелов...">
+                    <button class="check-btn" onclick="checkAnswer(1, '3250145')">Проверить</button>
+                </div>
+                <div id="fb-1" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="a">
+                <div class="task-header">
+                    <span class="task-badge badge-a">🟢 Уровень А</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №2</span>
+                </div>
+                <div class="task-condition">
+                    <span>💡</span>
+                    <span>Какое самое маленькое (наименьшее) натуральное число?</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-2" placeholder="Введите число...">
+                    <button class="check-btn" onclick="checkAnswer(2, '1')">Проверить</button>
+                </div>
+                <div id="fb-2" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="a">
+                <div class="task-header">
+                    <span class="task-badge badge-a">🟢 Уровень А</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №3</span>
+                </div>
+                <div class="task-condition">
+                    <span>🔍</span>
+                    <span>Укажите цифру, стоящую в разряде сотен тысяч в числе <strong>4 875 231</strong>.</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-3" placeholder="Введите одну цифру...">
+                    <button class="check-btn" onclick="checkAnswer(3, '8')">Проверить</button>
+                </div>
+                <div id="fb-3" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="a">
+                <div class="task-header">
+                    <span class="task-badge badge-a">🟢 Уровень А</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №4</span>
+                </div>
+                <div class="task-condition">
+                    <span>➡️</span>
+                    <span>Запишите число, которое следует сразу за числом <strong>9 999</strong>.</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-4" placeholder="Введите ответ...">
+                    <button class="check-btn" onclick="checkAnswer(4, '10000')">Проверить</button>
+                </div>
+                <div id="fb-4" class="feedback"></div>
+            </div>
+
+            <!-- УРОВЕНЬ Б -->
+            <div class="task-box" data-level="b">
+                <div class="task-header">
+                    <span class="task-badge badge-b">🟡 Уровень Б</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №5</span>
+                </div>
+                <div class="task-condition">
+                    <span>🧮</span>
+                    <span>Найдите сумму наибольшего трехзначного числа и наименьшего двузначного числа.</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-5" placeholder="Введите число...">
+                    <button class="check-btn" onclick="checkAnswer(5, '1009')">Проверить</button>
+                </div>
+                <div id="fb-5" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="b">
+                <div class="task-header">
+                    <span class="task-badge badge-b">🟡 Уровень Б</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №6</span>
+                </div>
+                <div class="task-condition">
+                    <span>🔢</span>
+                    <span>Сколько всего двузначных чисел существует в натуральном ряду?</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-6" placeholder="Введите количество...">
+                    <button class="check-btn" onclick="checkAnswer(6, '90')">Проверить</button>
+                </div>
+                <div id="fb-6" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="b">
+                <div class="task-header">
+                    <span class="task-badge badge-b">🟡 Уровень Б</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №7</span>
+                </div>
+                <div class="task-condition">
+                    <span>🧩</span>
+                    <span>Запишите наибольшее шестизначное число, составленное из цифр <strong>5, 0, 8, 3, 1, 9</strong> без повторений.</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-7" placeholder="Составьте число...">
+                    <button class="check-btn" onclick="checkAnswer(7, '985310')">Проверить</button>
+                </div>
+                <div id="fb-7" class="feedback"></div>
+            </div>
+
+            <!-- УРОВЕНЬ В -->
+            <div class="task-box" data-level="c">
+                <div class="task-header">
+                    <span class="task-badge badge-c">🔴 Уровень В</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №8</span>
+                </div>
+                <div class="task-condition">
+                    <span>⚙️</span>
+                    <span>Сколько всего отдельный цифр потребуется написать для записи всех чисел от 1 до 50 включительно?</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-8" placeholder="Введите число...">
+                    <button class="check-btn" onclick="checkAnswer(8, '91')">Проверить</button>
+                </div>
+                <div id="fb-8" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="c">
+                <div class="task-header">
+                    <span class="task-badge badge-c">🔴 Уровень В</span>
+                    <span style="font-size: 13px; color: var(--text-muted);">Задание №9</span>
+                </div>
+                <div class="task-condition">
+                    <span>🏆</span>
+                    <span>К трехзначному числу слева приписали цифру 5. На сколько именно увеличилось полученное число?</span>
+                </div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-9" placeholder="Введите разность...">
+                    <button class="check-btn" onclick="checkAnswer(9, '5000')">Проверить</button>
+                </div>
+                <div id="fb-9" class="feedback"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function checkAnswer(taskNum, correctAnswer) {
+        const inputElem = document.getElementById('ans-' + taskNum);
+        const fbElem = document.getElementById('fb-' + taskNum);
+        const userVal = inputElem.value.trim().replace(/\s+/g, '');
+
+        if (userVal === "") {
+            fbElem.innerHTML = "<span>⚠️</span> Поле не должно быть пустым!";
+            fbElem.className = "feedback incorrect";
+            return;
+        }
+
+        if (userVal === correctAnswer) {
+            fbElem.innerHTML = "<span>🎉</span> Отлично! Ответ верный!";
+            fbElem.className = "feedback correct";
+        } else {
+            fbElem.innerHTML = "<span>❌</span> Подумай ещё раз и попробуй снова!";
+            fbElem.className = "feedback incorrect";
+        }
+    }
+
+    function filterTasks(level) {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        const boxes = document.querySelectorAll('.task-box');
+        boxes.forEach(box => {
+            if (level === 'all' || box.getAttribute('data-level') === level) {
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
