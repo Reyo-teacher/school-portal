@@ -16,6 +16,7 @@
             --error: #f87171;
             --level-a: #38bdf8;
             --level-b: #fbbf24;
+            --level-c: #f43f5e;
         }
 
         body {
@@ -61,7 +62,7 @@
         p, li { color: #cbd5e1; font-size: 15px; }
         ul { padding-left: 20px; }
 
-        .back-btn, .action-btn {
+        .back-btn {
             display: inline-block;
             background: rgba(56, 189, 248, 0.15);
             color: var(--accent);
@@ -75,8 +76,32 @@
             text-decoration: none;
             transition: all 0.2s;
         }
-        .back-btn:hover, .action-btn:hover { background: var(--accent); color: #0f172a; }
+        .back-btn:hover { background: var(--accent); color: #0f172a; }
 
+        /* Фильтры уровней */
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            color: #0f172a;
+            border-color: var(--accent);
+        }
+
+        /* Карточка задания */
         .task-box {
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid var(--border-color);
@@ -94,6 +119,7 @@
         }
         .badge-a { background: rgba(56, 189, 248, 0.2); color: var(--level-a); border: 1px solid var(--level-a); }
         .badge-b { background: rgba(251, 191, 36, 0.2); color: var(--level-b); border: 1px solid var(--level-b); }
+        .badge-c { background: rgba(244, 63, 94, 0.2); color: var(--level-c); border: 1px solid var(--level-c); }
 
         .task-condition {
             font-weight: 600;
@@ -141,7 +167,7 @@
         .feedback.incorrect { color: var(--error); }
     </style>
 </head>
-<body onload="generateTasks()">
+<body>
 
 <div class="wrapper">
     <header>
@@ -152,59 +178,118 @@
         <a href="index.html" class="back-btn">← К списку тем</a>
         <h2>1.1. Натуральные числа и нуль</h2>
 
-        <h3>📖 Краткая теория</h3>
-        <p>Числа <strong>1, 2, 3, 4, 5, 6, ...</strong> используются при счете. Нуль не является натуральным числом.</p>
+        <h3>📖 Теоретический материал (Лекция)</h3>
+        <p>Числа <strong>1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...</strong>, которые используются при счете предметов, называются <strong>натуральными числами</strong>.</p>
+        <ul>
+            <li><strong>Свойства натурального ряда:</strong> Самое маленькое натуральное число — это 1. Наибольшего натурального числа не существует, так как ряд чисел бесконечен. За каждым натуральным числом следует следующее за ним число (на 1 больше).</li>
+            <li><strong>Роль нуля:</strong> Число <strong>0 (нуль)</strong> не относится к натуральным числам, поскольку оно означает отсутствие предмета. Однако нуль вместе с натуральными числами образует систему для записи любых чисел.</li>
+            <li><strong>Цифры и числа:</strong> Для записи чисел используются десять цифр: <em>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</em>. Запись чисел является позиционной: значение цифры зависит от её места (разряда) в числе.</li>
+            <li><strong>Классы и разряды:</strong> Разряды объединяются в группы по три справа налево — классы: класс единиц (единицы, десятки, сотни), класс тысяч (единицы тысяч, десятки тысяч, сотни тысяч), класс миллионов и т.д.</li>
+        </ul>
 
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;"0>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
 
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-            <h3>✍️ Интерактивный тренажёр (Генератор задач)</h3>
-            <button class="action-btn" onclick="generateTasks()">🔄 Сгенерировать новые числа</button>
+        <h3>✍️ Разноуровневый банк заданий (Уровни А, Б, В)</h3>
+        
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterTasks('all')">Все задания</button>
+            <button class="filter-btn" onclick="filterTasks('a')">Уровень А (Базовый)</button>
+            <button class="filter-btn" onclick="filterTasks('b')">Уровень Б (Средний)</button>
+            <button class="filter-btn" onclick="filterTasks('c')">Уровень В (Сложный)</button>
         </div>
 
         <div id="tasks-container">
-            <!-- Задание 1: Следующее число -->
-            <div class="task-box">
+            <!-- УРОВЕНЬ А -->
+            <div class="task-box" data-level="a">
                 <span class="task-badge badge-a">Уровень А</span>
-                <div class="task-condition" id="cond-1">Запишите число, следующее за числом...</div>
+                <div class="task-condition">№1. Запишите цифрами число: три миллиона двести пятьдесят тысяч сто сорок пять.</div>
                 <div class="task-controls">
                     <input type="text" class="task-input" id="ans-1" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(1)">Проверить</button>
+                    <button class="check-btn" onclick="checkAnswer(1, '3250145')">Проверить</button>
                 </div>
                 <div id="fb-1" class="feedback"></div>
             </div>
 
-            <!-- Задание 2: Предыдущее число -->
-            <div class="task-box">
+            <div class="task-box" data-level="a">
                 <span class="task-badge badge-a">Уровень А</span>
-                <div class="task-condition" id="cond-2">Запишите число, предшествующее числу...</div>
+                <div class="task-condition">№2. Какое наименьшее натуральное число?</div>
                 <div class="task-controls">
                     <input type="text" class="task-input" id="ans-2" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(2)">Проверить</button>
+                    <button class="check-btn" onclick="checkAnswer(2, '1')">Проверить</button>
                 </div>
                 <div id="fb-2" class="feedback"></div>
             </div>
 
-            <!-- Задание 3: Разряд цифры -->
-            <div class="task-box">
-                <span class="task-badge badge-b">Уровень Б</span>
-                <div class="task-condition" id="cond-3">Укажите цифру, стоящую в разряде сотен в числе...</div>
+            <div class="task-box" data-level="a">
+                <span class="task-badge badge-a">Уровень А</span>
+                <div class="task-condition">№3. Укажите цифру, стоящую в разряде сотен тысяч в числе 4875231.</div>
                 <div class="task-controls">
                     <input type="text" class="task-input" id="ans-3" placeholder="Введите цифру...">
-                    <button class="check-btn" onclick="checkAnswer(3)">Проверить</button>
+                    <button class="check-btn" onclick="checkAnswer(3, '8')">Проверить</button>
                 </div>
                 <div id="fb-3" class="feedback"></div>
             </div>
 
-            <!-- Задание 4: Сумма разрядных слагаемых / сравнение -->
-            <div class="task-box">
-                <span class="task-badge badge-b">Уровень Б</span>
-                <div class="task-condition" id="cond-4">Найдите сумму чисел...</div>
+            <div class="task-box" data-level="a">
+                <span class="task-badge badge-a">Уровень А</span>
+                <div class="task-condition">№4. Запишите число, которое следует за числом 9999.</div>
                 <div class="task-controls">
                     <input type="text" class="task-input" id="ans-4" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(4)">Проверить</button>
+                    <button class="check-btn" onclick="checkAnswer(4, '10000')">Проверить</button>
                 </div>
                 <div id="fb-4" class="feedback"></div>
+            </div>
+
+            <!-- УРОВЕНЬ Б -->
+            <div class="task-box" data-level="b">
+                <span class="task-badge badge-b">Уровень Б</span>
+                <div class="task-condition">№5. Найдите сумму наибольшего трехзначного числа и наименьшего двузначного числа.</div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-5" placeholder="Введите ответ...">
+                    <button class="check-btn" onclick="checkAnswer(5, '1009')">Проверить</button>
+                </div>
+                <div id="fb-5" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="b">
+                <span class="task-badge badge-b">Уровень Б</span>
+                <div class="task-condition">№6. Сколько всего двузначных чисел существует в натуральном ряду?</div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-6" placeholder="Введите ответ...">
+                    <button class="check-btn" onclick="checkAnswer(6, '90')">Проверить</button>
+                </div>
+                <div id="fb-6" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="b">
+                <span class="task-badge badge-b">Уровень Б</span>
+                <div class="task-condition">№7. Запишите наибольшее шестизначное число, составленное из цифр 5, 0, 8, 3, 1, 9 без повторений.</div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-7" placeholder="Введите число...">
+                    <button class="check-btn" onclick="checkAnswer(7, '985310')">Проверить</button>
+                </div>
+                <div id="fb-7" class="feedback"></div>
+            </div>
+
+            <!-- УРОВЕНЬ В -->
+            <div class="task-box" data-level="c">
+                <span class="task-badge badge-c">Уровень В</span>
+                <div class="task-condition">№8. Сколько всего цифр потребуется для записи всех натуральных чисел от 1 до 50 включительно?</div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-8" placeholder="Введите ответ...">
+                    <button class="check-btn" onclick="checkAnswer(8, '91')">Проверить</button>
+                </div>
+                <div id="fb-8" class="feedback"></div>
+            </div>
+
+            <div class="task-box" data-level="c">
+                <span class="task-badge badge-c">Уровень В</span>
+                <div class="task-condition">№9. К трехзначному числу слева приписали цифру 5. На сколько увеличилось полученное число?</div>
+                <div class="task-controls">
+                    <input type="text" class="task-input" id="ans-9" placeholder="Введите ответ...">
+                    <button class="check-btn" onclick="checkAnswer(9, '5000')">Проверить</button>
+                </div>
+                <div id="fb-9" class="feedback"></div>
             </div>
         </div>
 
@@ -212,46 +297,7 @@
 </div>
 
 <script>
-    // Объект для хранения правильных ответов сгенерированных задач
-    let correctAnswers = {};
-
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function generateTasks() {
-        // Очищаем старые поля и отзывы
-        for (let i = 1; i <= 4; i++) {
-            document.getElementById('ans-' + i).value = '';
-            document.getElementById('fb-' + i).textContent = '';
-            document.getElementById('fb-' + i).className = 'feedback';
-        }
-
-        // Задание 1: Следующее число
-        let n1 = getRandomInt(150, 9800);
-        document.getElementById('cond-1').textContent = `№1. Запишите число, следующее за числом ${n1}.`;
-        correctAnswers[1] = (n1 + 1).toString();
-
-        // Задание 2: Предыдущее число (больше 1)
-        let n2 = getRandomInt(200, 5000);
-        document.getElementById('cond-2').textContent = `№2. Запишите число, предшествующее числу ${n2}.`;
-        correctAnswers[2] = (n2 - 1).toString();
-
-        // Задание 3: Цифра в разряде сотен (генерируем 4-значное число)
-        let n3 = getRandomInt(1000, 9999);
-        // Сотни — это вторая цифра с конца (например, в 4875 это 8)
-        let hundreds = Math.floor((n3 % 1000) / 100);
-        document.getElementById('cond-3').textContent = `№3. Укажите цифру, стоящую в разряде сотен в числе ${n3}.`;
-        correctAnswers[3] = hundreds.toString();
-
-        // Задание 4: Сложение двух случайных чисел
-        let a4 = getRandomInt(120, 850);
-        let b4 = getRandomInt(130, 920);
-        document.getElementById('cond-4').textContent = `№4. Найдите значение суммы: ${a4} + ${b4}.`;
-        correctAnswers[4] = (a4 + b4).toString();
-    }
-
-    function checkAnswer(taskNum) {
+    function checkAnswer(taskNum, correctAnswer) {
         const inputElem = document.getElementById('ans-' + taskNum);
         const fbElem = document.getElementById('fb-' + taskNum);
         const userVal = inputElem.value.trim();
@@ -262,13 +308,28 @@
             return;
         }
 
-        if (userVal === correctAnswers[taskNum]) {
+        if (userVal === correctAnswer) {
             fbElem.textContent = "✅ Верно! Отличная работа!";
             fbElem.className = "feedback correct";
         } else {
             fbElem.textContent = "❌ Неверно. Попробуйте еще раз!";
             fbElem.className = "feedback incorrect";
         }
+    }
+
+    function filterTasks(level) {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        const boxes = document.querySelectorAll('.task-box');
+        boxes.forEach(box => {
+            if (level === 'all' || box.getAttribute('data-level') === level) {
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
+        });
     }
 </script>
 
