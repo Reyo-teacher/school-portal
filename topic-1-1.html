@@ -1,500 +1,394 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1.1. Натуральные числа и нуль — Портал Логунова Г.В.</title>
-    <style>
-        :root {
-            --bg-dark: #070f1e;
-            --card-bg: rgba(15, 23, 42, 0.9);
-            --accent: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.3);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(56, 189, 248, 0.25);
-            --success: #34d399;
-            --error: #f87171;
-            --level-a: #38bdf8;
-            --level-b: #fbbf24;
-            --level-c: #f43f5e;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1. Натуральные числа и нуль — Портал Логунова Г.В.</title>
+<style>
+:root{
+  --bg-dark:#070f1e;--card-bg:rgba(15,23,42,.9);--accent:#38bdf8;--accent-glow:rgba(56,189,248,.3);
+  --text-main:#f8fafc;--text-muted:#94a3b8;--border-color:rgba(56,189,248,.25);
+  --success:#34d399;--error:#f87171;--level-a:#38bdf8;--level-b:#fbbf24;--level-c:#f43f5e;
+}
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background-color:var(--bg-dark);
+  background-image:linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px);
+  background-size:32px 32px;color:var(--text-main);margin:0;padding:15px;line-height:1.6}
+.wrapper{max-width:950px;margin:0 auto}
+header{background:var(--card-bg);backdrop-filter:blur(10px);padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);
+  margin-bottom:20px;border:1px solid var(--border-color);border-left:6px solid var(--accent)} /* border-left ПОСЛЕ общей рамки */
+.teacher-name{font-size:18px;font-weight:700;color:var(--accent);margin:0}
+.card{background:var(--card-bg);backdrop-filter:blur(10px);padding:24px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);margin-bottom:20px;border:1px solid var(--border-color)}
+h2{font-size:22px;color:var(--accent);margin-top:0;border-bottom:2px solid var(--border-color);padding-bottom:10px}
+h3{font-size:18px;color:#7dd3fc;margin-top:25px;display:flex;align-items:center;gap:8px}
+p,li{color:#cbd5e1;font-size:15px}
+.back-btn{display:inline-block;background:rgba(56,189,248,.15);color:var(--accent);padding:8px 16px;border-radius:6px;font-size:14px;font-weight:600;margin-bottom:15px;border:1px solid var(--border-color);text-decoration:none;transition:.2s}
+.back-btn:hover{background:var(--accent);color:#0f172a}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-dark);
-            background-image: 
-                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-            background-size: 32px 32px;
-            color: var(--text-main);
-            margin: 0;
-            padding: 15px;
-            line-height: 1.6;
-        }
+/* Лекция */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;margin:20px 0}
+.info-card{background:rgba(30,41,59,.7);border:1px solid var(--border-color);border-radius:10px;padding:16px}
+.info-card-title{font-weight:700;color:var(--accent);margin-bottom:8px;font-size:16px}
+.table-responsive{overflow-x:auto;margin:14px 0}
+.place-table{width:100%;min-width:560px;border-collapse:collapse;text-align:center;font-size:14px;background:rgba(15,23,42,.8);border:1px solid var(--border-color)}
+.place-table th{background:rgba(56,189,248,.2);color:var(--accent);padding:10px;border:1px solid var(--border-color)}
+.place-table td{padding:10px;border:1px solid rgba(255,255,255,.08);color:#475569}
+.place-table td.on{font-weight:800;font-size:20px;color:hsl(var(--h) 85% 68%);background:hsl(var(--h) 80% 60%/.12);animation:pop .3s}
+.demo{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.demo input{background:#0f172a;border:1.5px solid var(--border-color);color:var(--text-main);padding:8px 12px;border-radius:8px;font-size:16px;width:170px}
+.demo-words{font-size:13px;color:var(--text-muted);text-align:center;min-height:2.4em}
 
-        .wrapper { max-width: 950px; margin: 0 auto; }
+/* Панель прогресса */
+.stats{position:sticky;top:8px;z-index:5;background:rgba(7,15,30,.94);backdrop-filter:blur(8px);border:1px solid var(--border-color);border-radius:12px;padding:12px 16px;margin:16px 0}
+.stats-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;font-weight:600}
+.bar{height:10px;border-radius:6px;background:rgba(148,163,184,.2);margin-top:8px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--level-a),var(--success));transition:width .5s}
+#win{display:none;text-align:center;padding:18px;margin-top:16px;border:1px dashed var(--success);border-radius:12px;color:var(--success);font-weight:700;animation:pop .4s}
+#win button{margin-top:8px}
 
-        header {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            border-left: 6px solid var(--accent);
-            border: 1px solid var(--border-color);
-        }
-        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
+/* Фильтр */
+.filter-container{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
+.filter-btn{background:rgba(30,41,59,.8);border:1px solid var(--border-color);color:var(--text-main);padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;transition:.2s}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#0f172a;border-color:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
 
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
+/* Задачи */
+.task-box{position:relative;background:rgba(30,41,59,.6);border:1px solid var(--border-color);border-radius:10px;padding:20px;margin-top:15px;transition:border-color .2s}
+.task-box[hidden]{display:none}
+.task-box.solved{border-color:var(--success);box-shadow:0 0 16px rgba(52,211,153,.2)}
+.task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.num{font-size:13px;color:var(--text-muted)}
+.task-badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
+.badge-a{background:rgba(56,189,248,.15);color:var(--level-a);border:1px solid var(--level-a)}
+.badge-b{background:rgba(251,191,36,.15);color:var(--level-b);border:1px solid var(--level-b)}
+.badge-c{background:rgba(244,63,94,.15);color:var(--level-c);border:1px solid var(--level-c)}
+.task-condition{font-size:16px;font-weight:600;margin-bottom:12px;display:flex;gap:8px}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.tile{width:38px;height:44px;display:grid;place-items:center;font-size:22px;font-weight:800;border-radius:8px;
+  color:hsl(var(--h) 85% 72%);background:hsl(var(--h) 80% 60%/.15);border:1.5px solid hsl(var(--h) 80% 65%/.7);animation:pop .35s both}
+.tiles .gap{width:10px}
+.task-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.task-input{background:#0f172a;border:1.5px solid var(--border-color);color:var(--text-main);padding:10px 14px;border-radius:8px;font-size:15px;flex:1 1 180px;max-width:260px;transition:.2s}
+.task-input:focus{border-color:var(--accent);box-shadow:0 0 10px var(--accent-glow);outline:none}
+.check-btn{background:var(--accent);color:#0f172a;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;transition:.2s}
+.check-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 12px var(--accent-glow)}
+.check-btn:disabled{background:var(--success);cursor:default}
+.refresh{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border-color);background:rgba(56,189,248,.12);color:var(--accent);font-size:22px;line-height:1;cursor:pointer;transition:.2s}
+.refresh:hover{background:var(--accent);color:#0f172a}
+.refresh.spin{animation:spin .5s}
+.feedback{margin-top:10px;font-size:14px;font-weight:600;min-height:1.4em}
+.feedback.correct{color:var(--success)}
+.feedback.incorrect{color:var(--error)}
+.feedback small{display:block;color:var(--text-muted);font-weight:400}
+.shake{animation:shake .35s}
+.burst{position:absolute;left:50%;top:50%;pointer-events:none;animation:fly .9s ease-out forwards;font-size:20px}
 
-        h2 { font-size: 22px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
-        h3 { font-size: 18px; color: #7dd3fc; margin-top: 25px; display: flex; align-items: center; gap: 8px; }
-
-        p, li { color: #cbd5e1; font-size: 15px; }
-
-        .back-btn {
-            display: inline-block;
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent);
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .back-btn:hover { background: var(--accent); color: #0f172a; }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .info-card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 16px;
-            transition: transform 0.2s;
-        }
-        .info-card:hover { transform: translateY(-3px); border-color: var(--accent); }
-        .info-card-title { font-weight: 700; color: var(--accent); margin-bottom: 8px; font-size: 16px; display: flex; align-items: center; gap: 6px; }
-
-        .table-responsive { overflow-x: auto; margin: 20px 0; }
-        .place-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-            font-size: 14px;
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-        .place-table th {
-            background: rgba(56, 189, 248, 0.2);
-            color: var(--accent);
-            padding: 10px;
-            border: 1px solid var(--border-color);
-        }
-        .place-table td {
-            padding: 10px;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #cbd5e1;
-        }
-        .digit-highlight {
-            font-weight: 800;
-            color: #38bdf8;
-            font-size: 18px;
-        }
-
-        .filter-container {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover, .filter-btn.active {
-            background: var(--accent);
-            color: #0f172a;
-            border-color: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        .task-box {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 15px;
-            transition: border-color 0.2s;
-        }
-        .task-box:hover { border-color: rgba(56, 189, 248, 0.5); }
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .task-badge {
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-        .badge-a { background: rgba(56, 189, 248, 0.15); color: var(--level-a); border: 1px solid var(--level-a); }
-        .badge-b { background: rgba(251, 191, 36, 0.15); color: var(--level-b); border: 1px solid var(--level-b); }
-        .badge-c { background: rgba(244, 63, 94, 0.15); color: var(--level-c); border: 1px solid var(--level-c); }
-
-        .task-condition {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--text-main);
-            display: flex;
-            gap: 8px;
-        }
-        .task-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .task-input {
-            background: #0f172a;
-            border: 1.5px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 15px;
-            width: 230px;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .task-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-        .check-btn {
-            background: var(--accent);
-            color: #0f172a;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .check-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-        
-        .feedback {
-            margin-top: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .feedback.correct { color: var(--success); }
-        .feedback.incorrect { color: var(--error); }
-    </style>
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(240deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-
 <div class="wrapper">
-    <header>
-        <h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1>
-    </header>
+  <header><h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1></header>
 
-    <div class="card">
-        <a href="index.html" class="back-btn">← К списку тем</a>
-        <h2>1.1. Натуральные числа и нуль</h2>
+  <div class="card">
+    <a href="index.html" class="back-btn">← К списку тем</a>
+    <h2>1.1. Натуральные числа и нуль</h2>
 
-        <h3>📘 Иллюстрированная лекция</h3>
-        
-        <div class="info-grid">
-            <div class="info-card">
-                <div class="info-card-title">🔢 Натуральные числа</div>
-                <p>Числа <strong>1, 2, 3, 4, 5, 6, ...</strong>, используемые при подсчёте реальных предметов. <br><br>
-                ✨ <em>Самое маленькое натуральное число — <strong>1</strong>. Наибольшего не существует!</em></p>
-            </div>
-
-            <div class="info-card">
-                <div class="info-card-title">⭕ Число Нуль (0)</div>
-                <p>Число <strong>0 не является натуральным</strong>, так как мы не говорим «у меня 0 предметов» при счёте.<br><br>
-                💡 <em>Нуль обозначает отсутствие предметов и помогает формировать разряды!</em></p>
-            </div>
-        </div>
-
-        <h3>📊 Таблица классов и разрядов (Десятичная система)</h3>
-        <p>Для записи чисел мы используем 10 цифр: <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code>. Значение цифры зависит от её места в числе:</p>
-
-        <div class="table-responsive">
-            <table class="place-table">
-                <thead>
-                    <tr>
-                        <th colspan="3">Класс Миллионов</th>
-                        <th colspan="3">Класс Тысяч</th>
-                        <th colspan="3">Класс Единиц</th>
-                    </tr>
-                    <tr>
-                        <th>Сотни млн</th>
-                        <th>Десятки млн</th>
-                        <th>Единицы млн</th>
-                        <th>Сотни тыс</th>
-                        <th>Десятки тыс</th>
-                        <th>Единицы тыс</th>
-                        <th>Сотни</th>
-                        <th>Десятки</th>
-                        <th>Единицы</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>-</td>
-                        <td>-</td>
-                        <td class="digit-highlight">5</td>
-                        <td class="digit-highlight">2</td>
-                        <td class="digit-highlight">3</td>
-                        <td class="digit-highlight">0</td>
-                        <td class="digit-highlight">1</td>
-                        <td class="digit-highlight">4</td>
-                        <td class="digit-highlight">5</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <p style="text-align: center; font-size: 13px; color: var(--text-muted);">
-            Пример: число <strong>5 230 145</strong> (Пять миллионов двести тридцать тысяч сто сорок пять)
-        </p>
-
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
-
-        <h3>🎯 Практический тренажёр</h3>
-        <p>Выберите уровень сложности задач:</p>
-        
-        <div class="filter-container">
-            <button class="filter-btn active" onclick="filterTasks('all')">Все задания</button>
-            <button class="filter-btn" onclick="filterTasks('a')">🟢 Уровень А (Базовый)</button>
-            <button class="filter-btn" onclick="filterTasks('b')">🟡 Уровень Б (Средний)</button>
-            <button class="filter-btn" onclick="filterTasks('c')">🔴 Уровень В (Сложный)</button>
-        </div>
-
-        <div id="tasks-container">
-            <!-- УРОВЕНЬ А -->
-            <div class="task-box" data-level="a">
-                <div class="task-header">
-                    <span class="task-badge badge-a">🟢 Уровень А</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №1</span>
-                </div>
-                <div class="task-condition">
-                    <span>📝</span>
-                    <span>Запишите цифрами число: <strong>три миллиона двести пятьдесят тысяч сто сорок пять</strong>.</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-1" placeholder="Введите ответ без пробелов...">
-                    <button class="check-btn" onclick="checkAnswer(1, '3250145')">Проверить</button>
-                </div>
-                <div id="fb-1" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="a">
-                <div class="task-header">
-                    <span class="task-badge badge-a">🟢 Уровень А</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №2</span>
-                </div>
-                <div class="task-condition">
-                    <span>💡</span>
-                    <span>Какое самое маленькое (наименьшее) натуральное число?</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-2" placeholder="Введите число...">
-                    <button class="check-btn" onclick="checkAnswer(2, '1')">Проверить</button>
-                </div>
-                <div id="fb-2" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="a">
-                <div class="task-header">
-                    <span class="task-badge badge-a">🟢 Уровень А</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №3</span>
-                </div>
-                <div class="task-condition">
-                    <span>🔍</span>
-                    <span>Укажите цифру, стоящую в разряде сотен тысяч в числе <strong>4 875 231</strong>.</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-3" placeholder="Введите одну цифру...">
-                    <button class="check-btn" onclick="checkAnswer(3, '8')">Проверить</button>
-                </div>
-                <div id="fb-3" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="a">
-                <div class="task-header">
-                    <span class="task-badge badge-a">🟢 Уровень А</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №4</span>
-                </div>
-                <div class="task-condition">
-                    <span>➡️</span>
-                    <span>Запишите число, которое следует сразу за числом <strong>9 999</strong>.</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-4" placeholder="Введите ответ...">
-                    <button class="check-btn" onclick="checkAnswer(4, '10000')">Проверить</button>
-                </div>
-                <div id="fb-4" class="feedback"></div>
-            </div>
-
-            <!-- УРОВЕНЬ Б -->
-            <div class="task-box" data-level="b">
-                <div class="task-header">
-                    <span class="task-badge badge-b">🟡 Уровень Б</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №5</span>
-                </div>
-                <div class="task-condition">
-                    <span>🧮</span>
-                    <span>Найдите сумму наибольшего трехзначного числа и наименьшего двузначного числа.</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-5" placeholder="Введите число...">
-                    <button class="check-btn" onclick="checkAnswer(5, '1009')">Проверить</button>
-                </div>
-                <div id="fb-5" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="b">
-                <div class="task-header">
-                    <span class="task-badge badge-b">🟡 Уровень Б</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №6</span>
-                </div>
-                <div class="task-condition">
-                    <span>🔢</span>
-                    <span>Сколько всего двузначных чисел существует в натуральном ряду?</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-6" placeholder="Введите количество...">
-                    <button class="check-btn" onclick="checkAnswer(6, '90')">Проверить</button>
-                </div>
-                <div id="fb-6" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="b">
-                <div class="task-header">
-                    <span class="task-badge badge-b">🟡 Уровень Б</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №7</span>
-                </div>
-                <div class="task-condition">
-                    <span>🧩</span>
-                    <span>Запишите наибольшее шестизначное число, составленное из цифр <strong>5, 0, 8, 3, 1, 9</strong> без повторений.</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-7" placeholder="Составьте число...">
-                    <button class="check-btn" onclick="checkAnswer(7, '985310')">Проверить</button>
-                </div>
-                <div id="fb-7" class="feedback"></div>
-            </div>
-
-            <!-- УРОВЕНЬ В -->
-            <div class="task-box" data-level="c">
-                <div class="task-header">
-                    <span class="task-badge badge-c">🔴 Уровень В</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №8</span>
-                </div>
-                <div class="task-condition">
-                    <span>⚙️</span>
-                    <span>Сколько всего отдельный цифр потребуется написать для записи всех чисел от 1 до 50 включительно?</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-8" placeholder="Введите число...">
-                    <button class="check-btn" onclick="checkAnswer(8, '91')">Проверить</button>
-                </div>
-                <div id="fb-8" class="feedback"></div>
-            </div>
-
-            <div class="task-box" data-level="c">
-                <div class="task-header">
-                    <span class="task-badge badge-c">🔴 Уровень В</span>
-                    <span style="font-size: 13px; color: var(--text-muted);">Задание №9</span>
-                </div>
-                <div class="task-condition">
-                    <span>🏆</span>
-                    <span>К трехзначному числу слева приписали цифру 5. На сколько именно увеличилось полученное число?</span>
-                </div>
-                <div class="task-controls">
-                    <input type="text" class="task-input" id="ans-9" placeholder="Введите разность...">
-                    <button class="check-btn" onclick="checkAnswer(9, '5000')">Проверить</button>
-                </div>
-                <div id="fb-9" class="feedback"></div>
-            </div>
-        </div>
-
+    <h3>📘 Иллюстрированная лекция</h3>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-title">🔢 Натуральные числа</div>
+        <p>Числа <strong>1, 2, 3, 4, 5, 6, ...</strong>, используемые при подсчёте реальных предметов.<br><br>
+        ✨ <em>Самое маленькое натуральное число — <strong>1</strong>. Наибольшего не существует!</em></p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">⭕ Число Нуль (0)</div>
+        <p>Число <strong>0 не является натуральным</strong>, так как мы не говорим «у меня 0 предметов» при счёте.<br><br>
+        💡 <em>Нуль обозначает отсутствие предметов и помогает формировать разряды!</em></p>
+      </div>
     </div>
+
+    <h3>📊 Таблица классов и разрядов</h3>
+    <p>Для записи чисел мы используем 10 цифр: <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code>. Значение цифры зависит от её места в числе. <b>Впишите своё число</b> — таблица заполнится сама:</p>
+    <div class="demo"><label for="demo">Число:</label><input id="demo" inputmode="numeric" maxlength="9" value="5230145"></div>
+    <div class="table-responsive">
+      <table class="place-table">
+        <thead>
+          <tr><th colspan="3">Класс миллионов</th><th colspan="3">Класс тысяч</th><th colspan="3">Класс единиц</th></tr>
+          <tr><th>Сотни млн</th><th>Дес. млн</th><th>Ед. млн</th><th>Сотни тыс</th><th>Дес. тыс</th><th>Ед. тыс</th><th>Сотни</th><th>Десятки</th><th>Единицы</th></tr>
+        </thead>
+        <tbody><tr id="place-row"></tr></tbody>
+      </table>
+    </div>
+    <p class="demo-words" id="demo-words"></p>
+
+    <hr style="border:0;border-top:1px solid var(--border-color);margin:30px 0">
+
+    <h3>🎯 Практический тренажёр</h3>
+    <p>Каждый раз задания новые. Кнопка <b>↻</b> рядом с ответом даст другое задание, а за верные ответы начисляются очки.</p>
+
+    <div class="stats">
+      <div class="stats-row">
+        <span id="st-rank">🌱 Новичок</span>
+        <span id="st-xp">⭐ 0 очков</span>
+        <span id="st-streak">🔥 Серия: 0</span>
+        <span id="st-solved">Решено: 0 из 9</span>
+      </div>
+      <div class="bar" role="progressbar" aria-label="Прогресс"><i id="st-bar"></i></div>
+    </div>
+
+    <div class="filter-container">
+      <button class="filter-btn active" data-f="all">Все задания</button>
+      <button class="filter-btn" data-f="a">🟢 Уровень А (Базовый)</button>
+      <button class="filter-btn" data-f="b">🟡 Уровень Б (Средний)</button>
+      <button class="filter-btn" data-f="c">🔴 Уровень В (Сложный)</button>
+      <button class="filter-btn" id="renew-all" title="Заменить все задания новыми">🔄 Новый набор</button>
+    </div>
+
+    <div id="tasks-container"></div>
+    <div id="win">🏆 Все задания решены! Отличная работа!<br><button class="check-btn" id="win-btn">Решить новый набор</button></div>
+  </div>
 </div>
 
 <script>
-    function checkAnswer(taskNum, correctAnswer) {
-        const inputElem = document.getElementById('ans-' + taskNum);
-        const fbElem = document.getElementById('fb-' + taskNum);
-        const userVal = inputElem.value.trim().replace(/\s+/g, '');
+/* ============ Вспомогательные функции ============ */
+const $ = s => document.querySelector(s);
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = a => a[rnd(0, a.length - 1)];
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');   // 1234567 -> 1 234 567
 
-        if (userVal === "") {
-            fbElem.innerHTML = "<span>⚠️</span> Поле не должно быть пустым!";
-            fbElem.className = "feedback incorrect";
-            return;
-        }
+// «одно», «дву», «трёх»… + окончание: S[3]+'значное' = «трёхзначное»
+const S = ['', 'одно', 'дву', 'трёх', 'четырёх', 'пяти', 'шести', 'семи'];
 
-        if (userVal === correctAnswer) {
-            fbElem.innerHTML = "<span>🎉</span> Отлично! Ответ верный!";
-            fbElem.className = "feedback correct";
-        } else {
-            fbElem.innerHTML = "<span>❌</span> Подумай ещё раз и попробуй снова!";
-            fbElem.className = "feedback incorrect";
-        }
+/* ---------- Число прописью (до миллиардов не доходим: хватает 999 999 999) ---------- */
+const U = ['', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'];
+const T10 = ['десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'];
+const TENS = ['', '', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'];
+const HUN = ['', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'];
+function trio(n, fem) {               // число 0..999; fem — женский род (для «тысяча»)
+  const t = Math.floor(n / 10) % 10, u = n % 10, w = [HUN[Math.floor(n / 100)]];
+  if (t === 1) w.push(T10[u]);
+  else w.push(TENS[t], fem && u < 3 && u > 0 ? ['', 'одна', 'две'][u] : U[u]);
+  return w.filter(Boolean).join(' ');
+}
+function plural(n, f) {               // f = [1 тысяча, 2 тысячи, 5 тысяч]
+  const m = n % 100, d = n % 10;
+  return (m > 10 && m < 20) ? f[2] : d === 1 ? f[0] : (d > 1 && d < 5) ? f[1] : f[2];
+}
+function words(n) {
+  if (n === 0) return 'нуль';
+  const mil = Math.floor(n / 1e6), th = Math.floor(n / 1e3) % 1000, r = n % 1000, p = [];
+  if (mil) p.push(trio(mil), plural(mil, ['миллион', 'миллиона', 'миллионов']));
+  if (th) p.push(trio(th, true), plural(th, ['тысяча', 'тысячи', 'тысяч']));
+  if (r) p.push(trio(r));
+  return p.join(' ');
+}
+
+/* Цветные плитки-цифры. group=true — отделяем классы по 3 цифры */
+function tiles(str, group) {
+  return '<div class="tiles">' + [...str].map((ch, i) =>
+    (group && i && (str.length - i) % 3 === 0 ? '<i class="gap"></i>' : '') +
+    `<span class="tile" style="--h:${ch * 36};animation-delay:${i * 40}ms">${ch}</span>`).join('') + '</div>';
+}
+
+/* ============ Генераторы заданий ============
+   Каждый возвращает { icon, html, ans, hint, ph, tiles }.
+   Чтобы добавить своё задание — допишите функцию в массив G и уровень в LV. */
+const G = [
+  // 1. Число прописью -> цифрами
+  () => {
+    const n = rnd(1, 9) * 1e6 + pick([0, rnd(1, 9) * 1e5, rnd(10, 99) * 1e3, rnd(100, 999) * 1e3]) + pick([0, rnd(1, 999)]);
+    return { icon: '📝', html: `Запишите цифрами число: <strong>${words(n)}</strong>.`, ans: String(n),
+      hint: 'Запишите по классам: миллионы, тысячи, единицы. Пустые разряды заполните нулями.', ph: 'Ответ без пробелов…' };
+  },
+  // 2. Цифра в заданном разряде
+  () => {
+    const n = rnd(1e6, 9999999), P = ['единиц', 'десятков', 'сотен', 'единиц тысяч', 'десятков тысяч', 'сотен тысяч', 'единиц миллионов'], i = rnd(0, 6);
+    return { icon: '🔍', html: `Укажите цифру, стоящую в разряде <strong>${P[i]}</strong> в числе <strong>${fmt(n)}</strong>.`,
+      ans: String(n)[6 - i], hint: 'Разряды считают справа налево: единицы, десятки, сотни…', ph: 'Одна цифра', tiles: tiles(String(n), true) };
+  },
+  // 3. Следующее / предыдущее число
+  () => {
+    const k = rnd(3, 7);
+    return Math.random() < .5
+      ? { icon: '➡️', html: `Запишите число, которое следует сразу за числом <strong>${fmt(10 ** k - 1)}</strong>.`, ans: String(10 ** k), hint: 'К последнему числу натурального ряда нужно прибавить 1.', tiles: tiles(String(10 ** k - 1), true) }
+      : { icon: '⬅️', html: `Запишите число, которое стоит непосредственно перед числом <strong>${fmt(10 ** k)}</strong>.`, ans: String(10 ** k - 1), hint: 'Предыдущее число меньше данного на 1.', tiles: tiles(String(10 ** k), true) };
+  },
+  // 4. Наибольшее / наименьшее k-значное натуральное
+  () => {
+    const k = rnd(1, 7), mx = Math.random() < .5;
+    return { icon: '📏', html: `Запишите ${mx ? 'наибольшее' : 'наименьшее'} <strong>${S[k]}значное</strong> натуральное число.`,
+      ans: String(mx ? 10 ** k - 1 : 10 ** (k - 1)), hint: mx ? 'Самая большая цифра — 9. Поставьте её во все разряды.' : 'Старший разряд не может быть нулём. Что идёт после 1 и нулей?' };
+  },
+  // 5. Сумма наибольшего и наименьшего
+  () => {
+    const k = rnd(2, 4), m = rnd(2, 4);
+    return { icon: '🧮', html: `Найдите сумму наибольшего <strong>${S[k]}значного</strong> и наименьшего <strong>${S[m]}значного</strong> числа.`,
+      ans: String(10 ** k - 1 + 10 ** (m - 1)), hint: 'Сначала запишите каждое число отдельно, потом сложите.' };
+  },
+  // 6. Сколько чисел
+  () => {
+    if (Math.random() < .5) {
+      const k = rnd(2, 4);
+      return { icon: '🔢', html: `Сколько всего существует <strong>${S[k]}значных</strong> натуральных чисел?`, ans: String(9 * 10 ** (k - 1)),
+        hint: 'Из наибольшего числа вычтите наименьшее и прибавьте 1.' };
     }
-
-    function filterTasks(level) {
-        const buttons = document.querySelectorAll('.filter-btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        const boxes = document.querySelectorAll('.task-box');
-        boxes.forEach(box => {
-            if (level === 'all' || box.getAttribute('data-level') === level) {
-                box.style.display = 'block';
-            } else {
-                box.style.display = 'none';
-            }
-        });
+    const a = rnd(10, 200), b = a + rnd(20, 300);
+    return { icon: '🔢', html: `Сколько натуральных чисел расположено от <strong>${a}</strong> до <strong>${b}</strong> включительно?`, ans: String(b - a + 1),
+      hint: 'Количество чисел = последнее − первое + 1 (оба края считаются).' };
+  },
+  // 7. Наибольшее / наименьшее число из цифр (среди них есть 0)
+  () => {
+    const d = shuffle(shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5).concat(0)), mx = Math.random() < .5;
+    let s = [...d].sort((a, b) => b - a);                         // по убыванию = наибольшее
+    if (!mx) { s.reverse(); const i = s.findIndex(x => x > 0); [s[0], s[i]] = [s[i], s[0]]; }   // нуль не может стоять первым
+    return { icon: '🧩', html: `Составьте ${mx ? 'наибольшее' : 'наименьшее'} шестизначное число из цифр <strong>${d.join(', ')}</strong> (без повторений).`,
+      ans: s.join(''), hint: mx ? 'Расставьте цифры от большей к меньшей.' : 'Цифры по возрастанию, но число не может начинаться с нуля!', ph: 'Составьте число…', tiles: tiles(d.join('')) };
+  },
+  // 8. Сколько цифр нужно написать
+  () => {
+    const N = rnd(25, 140); let c = 0;
+    for (let i = 1; i <= N; i++) c += String(i).length;
+    return { icon: '⚙️', html: `Сколько отдельных цифр потребуется, чтобы записать все натуральные числа от 1 до <strong>${N}</strong> включительно?`,
+      ans: String(c), hint: 'Посчитайте отдельно однозначные, двузначные (и трёхзначные) числа.' };
+  },
+  // 9. Приписали цифру
+  () => {
+    if (Math.random() < .5) {
+      const k = rnd(3, 4), d = rnd(1, 9);
+      return { icon: '🏆', html: `К <strong>${S[k]}значному</strong> числу слева приписали цифру <strong>${d}</strong>. На сколько увеличилось полученное число?`,
+        ans: String(d * 10 ** k), hint: 'Цифра попадает в новый старший разряд. Какое значение она там имеет?', ph: 'Введите разность…' };
     }
+    const x = rnd(12, 999);
+    return { icon: '🏆', html: `К числу <strong>${x}</strong> справа приписали нуль. На сколько увеличилось число?`,
+      ans: String(9 * x), hint: 'Новое число в 10 раз больше. Значит, оно больше на 9 таких чисел.', ph: 'Введите разность…' };
+  }
+];
+const LV = ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c'];
+const BADGE = { a: ['🟢 Уровень А', 'badge-a'], b: ['🟡 Уровень Б', 'badge-b'], c: ['🔴 Уровень В', 'badge-c'] };
+
+/* ============ Состояние и очки ============ */
+const RANKS = [[0, '🌱 Новичок'], [30, '🧮 Счетовод'], [70, '📐 Математик'], [120, '🚀 Мастер чисел'], [200, '👑 Гений чисел']];
+const KEY = 'portal_logunov_1_1_xp';
+let xp = 0, streak = 0, state = [];
+try { xp = +localStorage.getItem(KEY) || 0; } catch (e) { /* localStorage может быть недоступен */ }
+
+function stats() {
+  const done = state.filter(s => s.solved).length;
+  $('#st-rank').textContent = [...RANKS].reverse().find(r => xp >= r[0])[1];
+  $('#st-xp').textContent = '⭐ ' + xp + ' очков';
+  $('#st-streak').textContent = '🔥 Серия: ' + streak;
+  $('#st-solved').textContent = `Решено: ${done} из ${LV.length}`;
+  $('#st-bar').style.width = done / LV.length * 100 + '%';
+  $('#win').style.display = done === LV.length ? 'block' : 'none';
+}
+
+/* ============ Отрисовка заданий ============ */
+function build() {
+  $('#tasks-container').innerHTML = LV.map((l, i) => `
+    <div class="task-box" id="t${i}" data-i="${i}" data-level="${l}">
+      <div class="task-header"><span class="task-badge ${BADGE[l][1]}">${BADGE[l][0]}</span><span class="num">Задание №${i + 1}</span></div>
+      <div class="task-condition"><span class="ic"></span><span class="tx"></span></div>
+      <div class="vis"></div>
+      <div class="task-controls">
+        <input type="text" class="task-input" inputmode="numeric" autocomplete="off" aria-label="Ответ к заданию ${i + 1}">
+        <button class="check-btn">Проверить</button>
+        <button class="refresh" title="Другое задание" aria-label="Другое задание">↻</button>
+      </div>
+      <div class="feedback" aria-live="polite"></div>
+    </div>`).join('');
+  LV.forEach((_, i) => fresh(i));
+}
+
+function fresh(i) {                       // новое задание в ячейке i
+  state[i] = { t: G[i](), tries: 0, solved: false };
+  const b = $('#t' + i), t = state[i].t, inp = b.querySelector('input'), f = b.querySelector('.feedback');
+  b.querySelector('.ic').textContent = t.icon;
+  b.querySelector('.tx').innerHTML = t.html;
+  b.querySelector('.vis').innerHTML = t.tiles || '';
+  inp.value = ''; inp.readOnly = false; inp.placeholder = t.ph || 'Введите ответ…';
+  b.querySelector('.check-btn').disabled = false;
+  b.querySelector('.check-btn').textContent = 'Проверить';
+  f.textContent = ''; f.className = 'feedback';
+  b.classList.remove('solved');
+  stats();
+}
+
+function say(b, cls, html) { const f = b.querySelector('.feedback'); f.className = 'feedback ' + cls; f.innerHTML = html; }
+
+function check(i) {
+  const s = state[i], b = $('#t' + i), inp = b.querySelector('input');
+  const v = inp.value.replace(/[\s\u00A0]/g, '');
+  if (s.solved) return;
+  if (!v) return say(b, 'incorrect', '⚠️ Поле не должно быть пустым!');
+  s.tries++;
+  if (v === s.t.ans) {
+    s.solved = true; streak++;
+    const gain = (s.tries === 1 ? 10 : 5) + (streak >= 3 ? 2 : 0);          // бонус за серию
+    xp += gain; try { localStorage.setItem(KEY, xp); } catch (e) {}
+    b.classList.add('solved'); inp.readOnly = true;
+    const btn = b.querySelector('.check-btn'); btn.disabled = true; btn.textContent = '✓ Верно';
+    say(b, 'correct', `🎉 Отлично! Ответ верный! <small>+${gain} очков${streak >= 3 ? ' (бонус за серию 🔥)' : ''}</small>`);
+    burst(b);
+  } else {
+    streak = 0;
+    b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');   // перезапуск анимации
+    say(b, 'incorrect', '❌ Подумай ещё раз и попробуй снова!' + (s.tries >= 2 ? `<small>💡 Подсказка: ${s.t.hint}</small>` : ''));
+  }
+  stats();
+}
+
+function burst(b) {                       // вспышка эмодзи при верном ответе
+  for (let k = 0; k < 14; k++) {
+    const e = document.createElement('span');
+    e.className = 'burst'; e.textContent = pick(['🎉', '⭐', '✨', '🔢', '💡']);
+    e.style.setProperty('--dx', rnd(-140, 140) + 'px'); e.style.setProperty('--dy', rnd(-110, 60) + 'px');
+    b.appendChild(e); setTimeout(() => e.remove(), 950);
+  }
+}
+
+/* ============ События ============ */
+const box = $('#tasks-container');
+box.addEventListener('click', e => {
+  const t = e.target.closest('.task-box'); if (!t) return;
+  const i = +t.dataset.i;
+  if (e.target.closest('.check-btn')) check(i);
+  if (e.target.closest('.refresh')) {
+    const r = e.target.closest('.refresh'); r.classList.remove('spin'); void r.offsetWidth; r.classList.add('spin');
+    fresh(i);
+  }
+});
+box.addEventListener('keydown', e => {   // Enter в поле = «Проверить»
+  if (e.key === 'Enter' && e.target.matches('.task-input')) check(+e.target.closest('.task-box').dataset.i);
+});
+
+function renewAll() { streak = 0; LV.forEach((_, i) => fresh(i)); }
+$('#renew-all').addEventListener('click', renewAll);
+$('#win-btn').addEventListener('click', () => { renewAll(); $('#t0').scrollIntoView({ behavior: 'smooth' }); });
+
+document.querySelectorAll('.filter-btn[data-f]').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.filter-btn[data-f]').forEach(b => b.classList.toggle('active', b === btn));
+  document.querySelectorAll('.task-box').forEach(t => t.hidden = !(btn.dataset.f === 'all' || t.dataset.level === btn.dataset.f));
+}));
+
+/* ============ Живая таблица разрядов ============ */
+function renderTable() {
+  const raw = $('#demo').value.replace(/\D/g, '').slice(0, 9), n = raw ? +raw : 0, v = String(n);
+  $('#place-row').innerHTML = v.padStart(9, '-').split('').map(c =>
+    c === '-' ? '<td>–</td>' : `<td class="on" style="--h:${c * 36}">${c}</td>`).join('');
+  const w = words(n);
+  $('#demo-words').innerHTML = `<strong>${fmt(n)}</strong> — ${w.charAt(0).toUpperCase() + w.slice(1)}`;
+}
+$('#demo').addEventListener('input', renderTable);
+
+renderTable();
+build();
 </script>
-
 </body>
 </html>
