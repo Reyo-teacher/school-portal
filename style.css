@@ -1,0 +1,109 @@
+/* ===== Общая светлая тема портала (для 5 класса) ===== */
+:root{
+  --bg:#eef7ff;--ink:#1e293b;--muted:#64748b;
+  --blue:#2563eb;--blue-d:#1e40af;--sky:#e0f2fe;--line:#bfdbfe;
+  --ok:#15803d;--err:#dc2626;
+  --a:#16a34a;--a-bg:#dcfce7;--b:#ea580c;--b-bg:#ffedd5;--c:#c026d3;--c-bg:#fae8ff;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:14px;font-family:'Nunito',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);line-height:1.6;
+  background-color:var(--bg);background-image:radial-gradient(#cfe6ff 2px,transparent 2px);background-size:26px 26px}
+.wrapper{max-width:950px;margin:0 auto}
+button{font-family:inherit}
+:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+
+header{background:linear-gradient(100deg,#38bdf8,#8b5cf6);color:#fff;padding:16px 22px;border-radius:20px;margin-bottom:18px;box-shadow:0 6px 0 rgba(30,64,175,.25)}
+.teacher-name{margin:0;font-size:19px;font-weight:800}
+.card{background:#fff;padding:24px;border-radius:24px;margin-bottom:20px;border:3px solid var(--line);box-shadow:0 7px 0 rgba(37,99,235,.14)}
+h2{font-size:24px;font-weight:800;color:var(--blue-d);margin:0 0 6px;padding-bottom:10px;border-bottom:3px dashed var(--line)}
+h3{font-size:19px;font-weight:800;color:#7c3aed;margin:28px 0 10px}
+p,li{font-size:16px;color:#334155}
+.back-btn{display:inline-block;margin-bottom:14px;padding:8px 18px;border-radius:30px;background:var(--sky);color:var(--blue-d);font-weight:800;font-size:14px;text-decoration:none;border:2px solid var(--line);transition:.15s}
+.back-btn:hover{background:var(--blue);color:#fff}
+
+/* Лекция: цветные карточки */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:18px 0}
+.info-card{border-radius:18px;padding:16px 18px;border:3px solid;background:var(--sky);border-color:#7dd3fc}
+.info-card:nth-child(2){background:#fef9c3;border-color:#fde047}
+.info-card:nth-child(3){background:#fce7f3;border-color:#f9a8d4}
+.info-card-title{font-weight:800;font-size:17px;margin-bottom:6px}
+.rule{border-radius:16px;background:#fef08a;padding:12px 18px;font-weight:800;color:#713f12;transform:rotate(-.4deg);margin:16px 0}
+.steps{padding-left:22px}
+
+/* Таблица разрядов */
+.table-responsive,.ray-wrap{overflow-x:auto;margin:12px 0}
+.place-table{width:100%;min-width:560px;border-collapse:separate;border-spacing:4px;text-align:center;font-size:14px}
+.place-table th{background:var(--sky);color:var(--blue-d);padding:8px;border-radius:10px;font-weight:800}
+.place-table td{padding:10px;border-radius:10px;background:#f1f5f9;color:#94a3b8}
+.place-table td.on{font-weight:800;font-size:22px;color:hsl(var(--h) 70% 32%);background:hsl(var(--h) 90% 88%);animation:pop .3s}
+.demo{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-weight:800}
+.demo input{width:170px;font:inherit;font-size:18px;font-weight:800;padding:8px 14px;border:3px solid #93c5fd;border-radius:14px;color:var(--ink)}
+.demo-words{text-align:center;font-weight:700;color:#475569;min-height:2.4em}
+
+/* Помощник-сова и путь из звёздочек */
+.coach{position:sticky;top:8px;z-index:5;background:#fff;border:3px solid #fbbf24;border-radius:20px;padding:10px 14px;margin:16px 0;box-shadow:0 5px 0 rgba(245,158,11,.25)}
+.coach-top{display:flex;align-items:center;gap:12px}
+.owl{font-size:40px;line-height:1}
+.owl.hop{animation:hop .5s}
+.bubble{flex:1;background:#fffbeb;border-radius:14px;padding:6px 12px;font-weight:800;font-size:15px;color:#78350f}
+.coach-stats{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:14px;font-weight:800;color:#475569}
+.path{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;background:#e2e8f0;color:#64748b;transition:.3s}
+.dot.done{background:#fde047;color:#713f12;transform:scale(1.12);box-shadow:0 0 0 3px #fef08a}
+
+#win{display:none;text-align:center;padding:18px;margin-top:16px;border:3px dashed #22c55e;border-radius:18px;background:#f0fdf4;color:var(--ok);font-weight:800;animation:pop .4s}
+
+/* Кнопки */
+.filter-container{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
+.filter-btn,.check-btn{border:none;border-radius:14px;font-weight:800;cursor:pointer;transition:.12s}
+.filter-btn{background:#fff;color:var(--blue-d);padding:9px 16px;border:2.5px solid var(--line);box-shadow:0 3px 0 var(--line)}
+.filter-btn:hover,.filter-btn.active{background:var(--blue);color:#fff;border-color:var(--blue-d);box-shadow:0 3px 0 var(--blue-d)}
+.check-btn{background:#22c55e;color:#fff;padding:11px 22px;font-size:15px;box-shadow:0 4px 0 #15803d}
+.check-btn:hover:not(:disabled){filter:brightness(1.06)}
+.check-btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #15803d}
+.check-btn:disabled{background:#86efac;box-shadow:none;cursor:default;color:#14532d}
+.refresh{width:44px;height:44px;border-radius:50%;border:none;background:#8b5cf6;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 4px 0 #6d28d9;transition:.12s}
+.refresh:active{transform:translateY(3px);box-shadow:0 1px 0 #6d28d9}
+.refresh.spin{animation:spin .5s}
+
+/* Задания */
+.task-box{position:relative;background:#fff;border:3px solid var(--line);border-left-width:10px;border-radius:20px;padding:18px 20px;margin-top:16px;transition:.2s}
+.task-box[data-level=a]{border-left-color:var(--a)}
+.task-box[data-level=b]{border-left-color:var(--b)}
+.task-box[data-level=c]{border-left-color:var(--c)}
+.task-box[hidden]{display:none}
+.task-box.solved{background:#f0fdf4;border-color:#86efac}
+.task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.num{font-size:13px;color:var(--muted);font-weight:700}
+.task-badge{font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px}
+.badge-a{background:var(--a-bg);color:var(--a)}
+.badge-b{background:var(--b-bg);color:var(--b)}
+.badge-c{background:var(--c-bg);color:var(--c)}
+.task-condition{display:flex;gap:10px;font-size:17px;font-weight:700;margin-bottom:12px}
+.ic{font-size:28px;line-height:1.2}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.tile{width:40px;height:48px;display:grid;place-items:center;font-size:24px;font-weight:800;border-radius:12px;color:hsl(var(--h) 70% 30%);
+  background:hsl(var(--h) 90% 88%);border:2.5px solid hsl(var(--h) 70% 62%);box-shadow:0 3px 0 hsl(var(--h) 70% 62%);animation:pop .35s both}
+.tiles .gap{width:10px}
+.task-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.task-input{flex:1 1 180px;max-width:270px;font:inherit;font-size:17px;font-weight:700;padding:10px 14px;border:3px solid #93c5fd;border-radius:14px;color:var(--ink);background:#fff}
+.task-input:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 4px rgba(37,99,235,.15)}
+.feedback{margin-top:10px;font-weight:800;min-height:1.4em}
+.feedback.correct{color:var(--ok)}
+.feedback.incorrect{color:var(--err)}
+.feedback small{display:block;color:#92400e;background:#fef3c7;border-radius:10px;padding:4px 10px;margin-top:6px;font-weight:700}
+
+/* Координатный луч (для темы 1.2) */
+.ray{display:block;width:100%;min-width:480px;height:auto}
+.ray .tk{font-size:15px;fill:#475569;text-anchor:middle;font-weight:700}
+.ray .pl{font-size:19px;font-weight:800;text-anchor:middle}
+
+.shake{animation:shake .35s}
+.burst{position:absolute;left:50%;top:50%;pointer-events:none;font-size:22px;animation:fly .9s ease-out forwards}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes hop{30%{transform:translateY(-12px) rotate(-8deg)}60%{transform:translateY(0) rotate(6deg)}}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(240deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:520px){.owl{font-size:32px}.card{padding:18px}}
