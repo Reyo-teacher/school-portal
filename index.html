@@ -1,196 +1,255 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Образовательный портал — Логунов Г.В.</title>
-    <style>
-        :root {
-            --bg-dark: #070f1e;
-            --card-bg: rgba(15, 23, 42, 0.9);
-            --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(56, 189, 248, 0.25);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Образовательный портал — Логунов Г.В.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Шрифт Nunito (есть кириллица). Если не загрузится — сработает системный -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070f1e;--card:rgba(15,23,42,.9);--accent:#38bdf8;--text:#f8fafc;--muted:#94a3b8;--line:rgba(56,189,248,.25);
+  --ok:#34d399;--err:#f87171;
+}
+*{box-sizing:border-box}
+body{font-family:'Nunito',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background-color:var(--bg);
+  background-image:linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px);
+  background-size:32px 32px;color:var(--text);margin:0;padding:15px;line-height:1.5}
+.wrapper{max-width:1100px;margin:0 auto}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-        /* Научно-математическая сетка */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-dark);
-            background-image: 
-                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-            background-size: 32px 32px;
-            color: var(--text-main);
-            margin: 0;
-            padding: 15px;
-            line-height: 1.5;
-        }
+header{background:linear-gradient(110deg,rgba(56,189,248,.18),rgba(15,23,42,.92) 55%);padding:18px 20px;border-radius:14px;margin-bottom:18px;
+  border:1px solid var(--line);border-left:6px solid var(--accent)} /* border-left после общей рамки */
+.teacher-name{font-size:20px;font-weight:800;color:var(--accent);margin:0}
+.teacher-title{font-size:14px;color:var(--muted);margin:4px 0 0}
 
-        .wrapper {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+/* Герой */
+.hero{position:relative;overflow:hidden;border-radius:18px;padding:44px 28px;margin-bottom:20px;text-align:center;
+  background:radial-gradient(circle at 15% 20%,rgba(56,189,248,.28),transparent 45%),radial-gradient(circle at 85% 80%,rgba(251,146,60,.22),transparent 45%),radial-gradient(circle at 60% 10%,rgba(167,139,250,.22),transparent 40%),#0b1730;
+  border:1px solid var(--line)}
+.hero h2{position:relative;font-size:clamp(26px,5vw,44px);font-weight:800;line-height:1.15;margin:0 0 12px;border:0;padding:0;color:var(--text)}
+.hero p{position:relative;max-width:560px;margin:0 auto 22px;color:#cbd5e1;font-size:16px}
+.hero-btns{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 24px;border-radius:10px;font-weight:800;font-size:15px;text-decoration:none;border:2px solid var(--accent);cursor:pointer;transition:.2s}
+.btn-main{background:var(--accent);color:#0f172a}
+.btn-main:hover{box-shadow:0 0 18px rgba(56,189,248,.55);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--accent)}
+.btn-ghost:hover{background:rgba(56,189,248,.15)}
+.float{position:absolute;font-weight:800;color:rgba(248,250,252,.14);animation:drift 14s ease-in-out infinite;user-select:none;pointer-events:none}
+@keyframes drift{50%{transform:translateY(-14px) rotate(8deg)}}
 
-        /* Шапка */
-        header {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            border-left: 6px solid var(--accent);
-            border: 1px solid var(--border-color);
-        }
-        .teacher-name { font-size: 20px; font-weight: 700; color: var(--accent); margin: 0; }
-        .teacher-title { font-size: 14px; color: var(--text-muted); margin: 5px 0 0 0; }
+/* Предметы: у каждого свой цвет */
+.subjects{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:20px}
+.subject{--rgb:56,189,248;display:block;text-decoration:none;color:var(--text);padding:22px;border-radius:16px;
+  background:linear-gradient(160deg,rgba(var(--rgb),.22),rgba(15,23,42,.92) 65%);border:1.5px solid rgba(var(--rgb),.45);transition:.2s;-webkit-tap-highlight-color:transparent}
+.subject:hover,.subject:focus-visible{transform:translateY(-5px);box-shadow:0 8px 28px rgba(var(--rgb),.35);border-color:rgb(var(--rgb))}
+.s-ico{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:30px;background:rgba(var(--rgb),.22);margin-bottom:12px}
+.subject h3{margin:0 0 4px;font-size:21px;font-weight:800;color:rgb(var(--rgb))}
+.subject p{margin:0 0 14px;font-size:14px;color:#cbd5e1}
+.s-go{display:inline-block;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:800;color:#0f172a;background:rgb(var(--rgb))}
+.s-math{--rgb:56,189,248}.s-inf{--rgb:52,211,153}.s-rob{--rgb:251,146,60}
 
-        /* Две колонки */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-        @media (max-width: 768px) {
-            .main-layout { grid-template-columns: 1fr; }
-        }
+/* Карточки */
+.layout{display:grid;grid-template-columns:3fr 2fr;gap:20px}
+@media (max-width:768px){.layout{grid-template-columns:1fr}.hero{padding:34px 18px}}
+.card{background:var(--card);padding:20px;border-radius:14px;margin-bottom:20px;border:1px solid var(--line)}
+.card h2{font-size:18px;font-weight:800;color:var(--accent);margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
 
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
+/* Мои очки */
+.me{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.me-rank{font-size:22px;font-weight:800}
+.me-xp{color:#fbbf24;font-weight:800}
+.bar{height:10px;border-radius:6px;background:rgba(148,163,184,.2);margin:10px 0 4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#38bdf8,#a78bfa,#fb923c);transition:width .6s}
+.small{font-size:13px;color:var(--muted)}
 
-        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+/* Задача дня */
+.daily-q{font-size:17px;font-weight:600;margin:6px 0 12px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row input{flex:1 1 160px;max-width:240px;background:#0f172a;border:1.5px solid var(--line);color:var(--text);padding:10px 14px;border-radius:8px;font-size:15px;font-family:inherit}
+.row input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 10px rgba(56,189,248,.3)}
+.row .btn{padding:10px 20px}
+#d-fb{margin-top:10px;font-weight:700;min-height:1.4em}
+#d-fb.ok{color:var(--ok)}#d-fb.bad{color:var(--err)}
+#d-fb small{display:block;color:var(--muted);font-weight:400}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
-        /* Сетка плиток каталога */
-        .grid-tiles {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 15px;
-        }
-        
-        /* Плитки-ссылки */
-        .tile-link {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1.5px solid var(--border-color);
-            padding: 18px 12px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text-main);
-            text-decoration: none;
-            transition: all 0.2s;
-            display: block;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .tile-link:hover, .tile-link:active {
-            background: var(--accent);
-            color: #0f172a;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-        }
+/* Новости */
+.news{padding:11px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.news:last-child{border-bottom:0}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 9px;border-radius:12px;margin-bottom:3px;color:#0f172a}
+.t-new{background:#34d399}.t-upd{background:#38bdf8}.t-soon{background:#fbbf24}
 
-        /* Правая колонка: нововведения */
-        .news-item {
-            font-size: 13px;
-            padding: 10px 0;
-            border-bottom: 1px dashed var(--border-color);
-        }
-        .news-item:last-child { border-bottom: none; }
-        .news-date { font-size: 11px; color: var(--accent); font-weight: bold; }
-
-        /* Цитаты */
-        .quotes-section {
-            margin-top: 25px;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            border: 1px solid var(--border-color);
-        }
-        .quote-box {
-            background: rgba(30, 41, 59, 0.5);
-            border-left: 4px solid var(--accent);
-            padding: 12px 15px;
-            margin-bottom: 12px;
-            border-radius: 0 8px 8px 0;
-            font-size: 14px;
-        }
-        .quote-author { font-size: 12px; color: var(--text-muted); text-align: right; margin-top: 5px; font-style: italic; }
-    </style>
+/* Цитата */
+.quote{border-left:4px solid #a78bfa;background:rgba(30,41,59,.5);padding:14px 16px;border-radius:0 10px 10px 0;font-size:16px;min-height:96px}
+.q-author{text-align:right;color:var(--muted);font-style:italic;font-size:13px;margin-top:6px}
+.q-next{margin-top:12px;background:none;border:1.5px solid rgba(167,139,250,.6);color:#c4b5fd;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer}
+.q-next:hover{background:rgba(167,139,250,.18)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-
 <div class="wrapper">
-    <!-- Шапка -->
-    <header>
-        <h1 class="teacher-name">Логунов Григорий Владимирович</h1>
-        <p class="teacher-title">Учитель математики, информатики и робототехники</p>
-    </header>
+  <header>
+    <h1 class="teacher-name">Логунов Григорий Владимирович</h1>
+    <p class="teacher-title">Учитель математики, информатики и робототехники</p>
+  </header>
 
-    <div class="main-layout">
-        <!-- ЛЕВАЯ КОЛОНКА: Каталог предметов -->
-        <div>
-            <div class="card">
-                <h2>Каталог предметов</h2>
-                <p style="font-size:14px; color:var(--text-muted);">Выберите нужное направление для перехода к материалам и тестам:</p>
-                <div class="grid-tiles">
-                    <a href="math.html" class="tile-link">📐 Математика</a>
-                    <a href="inf.html" class="tile-link">💻 Информатика</a>
-                    <a href="rob.html" class="tile-link">🤖 Робототехника</a>
-                </div>
-            </div>
-        </div>
+  <!-- Герой: приветствие и главная кнопка -->
+  <section class="hero">
+    <span class="float" style="left:6%;top:14%;font-size:44px">π</span>
+    <span class="float" style="left:22%;bottom:10%;font-size:30px;animation-delay:-4s">∑</span>
+    <span class="float" style="right:8%;top:12%;font-size:36px;animation-delay:-7s">√</span>
+    <span class="float" style="right:20%;bottom:8%;font-size:22px;animation-delay:-2s">101010</span>
+    <span class="float" style="left:44%;top:6%;font-size:30px;animation-delay:-9s">⚙</span>
+    <span class="float" style="left:3%;bottom:24%;font-size:26px;animation-delay:-5s">∞</span>
+    <h2>Учись, считай, программируй, строй</h2>
+    <p>Математика, информатика и робототехника: темы, тренажёры и тесты. Задания каждый раз новые, а за верные ответы начисляются очки.</p>
+    <div class="hero-btns">
+      <a class="btn btn-main" href="math.html">📐 Начать с математики</a>
+      <a class="btn btn-ghost" href="#daily">⚡ Задача дня</a>
+    </div>
+  </section>
 
-        <!-- ПРАВАЯ КОЛОНКА: Нововведения -->
-        <div>
-            <div class="card">
-                <h2>🚀 Что нового</h2>
-                <div class="news-item">
-                    <div class="news-date">Октябрь 2026</div>
-                    <div>Запущен новый мультистраничный образовательный портал!</div>
-                </div>
-                <div class="news-item">
-                    <div class="news-date">Обновление</div>
-                    <div>Улучшена скорость загрузки и адаптивность под мобильные устройства.</div>
-                </div>
-                <div class="news-item">
-                    <div class="news-date">В планах</div>
-                    <div>Загрузка полных банков тестов ЕНТ и практических заданий по Python.</div>
-                </div>
-            </div>
+  <!-- Каталог предметов -->
+  <nav class="subjects" aria-label="Предметы">
+    <a href="math.html" class="subject s-math">
+      <div class="s-ico">📐</div><h3>Математика</h3>
+      <p>Темы, тренажёры и тесты по уровням сложности.</p><span class="s-go">Перейти</span>
+    </a>
+    <a href="inf.html" class="subject s-inf">
+      <div class="s-ico">💻</div><h3>Информатика</h3>
+      <p>Логика, алгоритмы и программирование на Python.</p><span class="s-go">Перейти</span>
+    </a>
+    <a href="rob.html" class="subject s-rob">
+      <div class="s-ico">🤖</div><h3>Робототехника</h3>
+      <p>LEGO, датчики и программы для роботов.</p><span class="s-go">Перейти</span>
+    </a>
+  </nav>
+
+  <div class="layout">
+    <div>
+      <!-- Задача дня: одна и та же для всех в течение суток -->
+      <div class="card" id="daily">
+        <h2>⚡ Задача дня</h2>
+        <div class="daily-q" id="d-q"></div>
+        <div class="row">
+          <input id="d-in" inputmode="numeric" autocomplete="off" placeholder="Твой ответ…" aria-label="Ответ на задачу дня">
+          <button class="btn btn-main" id="d-btn">Проверить</button>
         </div>
+        <div id="d-fb" aria-live="polite"></div>
+      </div>
+
+      <!-- Очки ученика (читаем из тренажёров) -->
+      <div class="card">
+        <h2>🏅 Мои достижения</h2>
+        <div class="me"><span class="me-rank" id="me-rank"></span><span class="me-xp" id="me-xp"></span></div>
+        <div class="bar" role="progressbar" aria-label="Путь до следующего звания"><i id="me-bar"></i></div>
+        <div class="small" id="me-next"></div>
+      </div>
     </div>
 
-    <!-- Цитаты внизу -->
-    <div class="quotes-section">
+    <div>
+      <div class="card">
+        <h2>🚀 Что нового</h2>
+        <div class="news"><span class="tag t-new">Новое</span><div>Тренажёр в теме 1.1 каждый раз выдаёт новые задания, есть очки, звания и подсказки.</div></div>
+        <div class="news"><span class="tag t-new">Октябрь 2026</span><div>Запущен новый мультистраничный образовательный портал!</div></div>
+        <div class="news"><span class="tag t-upd">Обновление</span><div>Улучшена скорость загрузки и адаптивность под мобильные устройства.</div></div>
+        <div class="news"><span class="tag t-soon">В планах</span><div>Загрузка полных банков тестов ЕНТ и практических заданий по Python.</div></div>
+      </div>
+
+      <div class="card">
         <h2>💡 Мудрость точных наук</h2>
-        <div class="quote-box">
-            <span>«Математику уже затем учить следует, что она ум в порядок приводит.»</span>
-            <div class="quote-author">— Михаил Ломоносов</div>
-        </div>
-        <div class="quote-box">
-            <span>«Информатика — это не столько наука о компьютерах, сколько геометрия мышления и логика.»</span>
-            <div class="quote-author">— Харолд Абельсон</div>
-        </div>
-        <div class="quote-box">
-            <span>«Робототехника объединяет механику, электронику и код, воплощая абстрактную логику в реальном мире.»</span>
-            <div class="quote-author">— Инженерное кредо</div>
-        </div>
+        <div class="quote"><span id="q-text"></span><div class="q-author" id="q-author"></div></div>
+        <button class="q-next" id="q-next">Другая цитата</button>
+      </div>
     </div>
+  </div>
 </div>
 
+<script>
+const $ = s => document.querySelector(s);
+const dayNum = Math.floor((Date.now() - new Date().getTimezoneOffset() * 6e4) / 864e5);   // номер дня (по местному времени)
+
+/* ---------- Очки и звания (тот же ключ, что в тренажёрах) ---------- */
+const XP_KEY = 'portal_logunov_1_1_xp', DAILY_KEY = 'portal_logunov_daily';
+const RANKS = [[0, '🌱 Новичок'], [30, '🧮 Счетовод'], [70, '📐 Математик'], [120, '🚀 Мастер чисел'], [200, '👑 Гений чисел']];
+const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const save = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+function showMe() {
+  const xp = +load(XP_KEY) || 0;
+  const i = RANKS.reduce((acc, r, idx) => xp >= r[0] ? idx : acc, 0), next = RANKS[i + 1];
+  $('#me-rank').textContent = RANKS[i][1];
+  $('#me-xp').textContent = '⭐ ' + xp + ' очков';
+  $('#me-bar').style.width = next ? (xp - RANKS[i][0]) / (next[0] - RANKS[i][0]) * 100 + '%' : '100%';
+  $('#me-next').textContent = next ? `До звания «${next[1].slice(3)}» осталось ${next[0] - xp} очк.` : 'Высшее звание получено!';
+  if (xp === 0) $('#me-next').textContent = 'Решай задания в тренажёрах, и очки появятся здесь.';
+}
+
+/* ---------- Задача дня: генератор с «зерном» от даты ---------- */
+let seed = dayNum * 2654435761 | 0;
+function rand() {                               // mulberry32: один день = одна и та же последовательность
+  seed = seed + 0x6D2B79F5 | 0;
+  let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+  return ((t ^ t >>> 14) >>> 0) / 4294967296;
+}
+const ri = (a, b) => Math.floor(rand() * (b - a + 1)) + a;
+const S = ['', 'одно', 'дву', 'трёх', 'четырёх', 'пяти', 'шести', 'семи'];
+const DT = [
+  () => { const N = ri(30, 130); let c = 0; for (let i = 1; i <= N; i++) c += String(i).length;
+    return { q: `Сколько цифр нужно, чтобы записать все числа от 1 до <b>${N}</b>?`, a: c, h: 'Считайте отдельно однозначные, двузначные и трёхзначные числа.' }; },
+  () => { const k = ri(3, 6);
+    return { q: `Какое число следует сразу за числом <b>${'9'.repeat(k)}</b>?`, a: 10 ** k, h: 'Прибавьте 1 и посмотрите, сколько получится нулей.' }; },
+  () => { const k = ri(2, 3), m = ri(2, 3);
+    return { q: `Найдите сумму наибольшего <b>${S[k]}значного</b> и наименьшего <b>${S[m]}значного</b> числа.`, a: 10 ** k - 1 + 10 ** (m - 1), h: 'Запишите оба числа отдельно, затем сложите.' }; },
+  () => { const a = ri(10, 200), b = a + ri(20, 200);
+    return { q: `Сколько натуральных чисел от <b>${a}</b> до <b>${b}</b> включительно?`, a: b - a + 1, h: 'Последнее минус первое плюс 1.' }; }
+];
+const daily = DT[dayNum % DT.length]();
+const today = String(dayNum);
+let tries = 0;
+$('#d-q').innerHTML = daily.q;
+
+function fb(cls, html) { const f = $('#d-fb'); f.className = cls; f.innerHTML = html; }
+function lockDaily() { $('#d-in').readOnly = true; $('#d-btn').disabled = true; $('#d-btn').textContent = '✓ Решено'; }
+
+if (load(DAILY_KEY) === today) { lockDaily(); $('#d-in').value = daily.a; fb('ok', '🎉 Сегодняшняя задача уже решена. Новая появится завтра!'); }
+
+function checkDaily() {
+  if (load(DAILY_KEY) === today) return;
+  const v = $('#d-in').value.replace(/[\s\u00A0]/g, '');
+  if (!v) return fb('bad', '⚠️ Введи ответ!');
+  tries++;
+  if (v === String(daily.a)) {
+    save(DAILY_KEY, today);
+    save(XP_KEY, (+load(XP_KEY) || 0) + 10);                    // награда за задачу дня
+    lockDaily(); showMe();
+    fb('ok', '🎉 Верно! <small>+10 очков. Возвращайся завтра за новой задачей.</small>');
+  } else {
+    const box = $('#d-in'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+    fb('bad', '❌ Не совсем. Попробуй ещё раз!' + (tries >= 2 ? `<small>💡 Подсказка: ${daily.h}</small>` : ''));
+  }
+}
+$('#d-btn').addEventListener('click', checkDaily);
+$('#d-in').addEventListener('keydown', e => { if (e.key === 'Enter') checkDaily(); });
+
+/* ---------- Цитата дня + кнопка «Другая» ---------- */
+const QUOTES = [
+  ['Математику уже затем учить следует, что она ум в порядок приводит.', 'Михаил Ломоносов'],
+  ['Информатика — это не столько наука о компьютерах, сколько геометрия мышления и логика.', 'Харолд Абельсон'],
+  ['Робототехника объединяет механику, электронику и код, воплощая абстрактную логику в реальном мире.', 'Инженерное кредо']
+];
+let qi = dayNum % QUOTES.length;
+function showQuote() { $('#q-text').textContent = '«' + QUOTES[qi][0] + '»'; $('#q-author').textContent = '— ' + QUOTES[qi][1]; }
+$('#q-next').addEventListener('click', () => { qi = (qi + 1) % QUOTES.length; showQuote(); });
+
+showMe(); showQuote();
+</script>
 </body>
 </html>
