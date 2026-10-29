@@ -1,378 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Математика — Портал Логунова Г.В.</title>
-    <style>
-        :root {
-            --bg-dark: #070f1e;
-            --card-bg: rgba(15, 23, 42, 0.9);
-            --accent: #38bdf8;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(56, 189, 248, 0.25);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-dark);
-            background-image: 
-                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-            background-size: 32px 32px;
-            color: var(--text-main);
-            margin: 0;
-            padding: 15px;
-            line-height: 1.5;
-        }
-
-        .wrapper { max-width: 900px; margin: 0 auto; }
-
-        header {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            border-left: 6px solid var(--accent);
-            border: 1px solid var(--border-color);
-        }
-        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
-
-        /* Сетка для классов */
-        .grid-tiles {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        /* Сетка для глав и тем */
-        .grid-vertical {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .tile-link {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1.5px solid var(--border-color);
-            padding: 18px 12px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text-main);
-            text-decoration: none;
-            transition: all 0.2s;
-            display: block;
-            box-sizing: border-box;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .tile-link:hover, .tile-link:active {
-            background: var(--accent);
-            color: #0f172a;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-        }
-        
-        .chapter-btn {
-            text-align: left;
-            padding: 16px 20px;
-            font-size: 15px;
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 600;
-        }
-        .chapter-btn:hover {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .topic-btn {
-            text-align: left;
-            padding: 14px 18px;
-            font-size: 14px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid var(--accent);
-            border-radius: 6px;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: block;
-        }
-        .topic-btn:hover {
-            background: var(--accent);
-            color: #0f172a;
-            font-weight: 600;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
-        }
-
-        .tile-link.ent {
-            background: rgba(14, 165, 233, 0.25);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        .tile-link.trainers {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: #34d399;
-            color: #34d399;
-            grid-column: span 2;
-        }
-
-        .back-btn {
-            display: inline-block;
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent);
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            text-decoration: none;
-        }
-        .back-btn:hover { background: var(--accent); color: #0f172a; }
-
-        /* Переключение уровней навигации */
-        .view-section { display: none; }
-        .view-section.active-view { display: block; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Математика — Портал Логунова Г.В.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Только для списка тем */
+.intro{display:flex;align-items:center;gap:12px;margin:14px 0 6px}
+.intro .owl{font-size:44px}
+.topics{display:grid;gap:14px;margin-top:14px}
+.topic{display:flex;align-items:center;gap:16px;text-decoration:none;color:#fff;padding:16px 20px;border-radius:20px;
+  background:linear-gradient(120deg,var(--c1),var(--c2));box-shadow:0 6px 0 rgba(0,0,0,.2);transition:.15s;-webkit-tap-highlight-color:transparent}
+.topic:hover{transform:translateY(-3px);box-shadow:0 9px 0 rgba(0,0,0,.2)}
+.topic:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.t-num{flex:none;min-width:58px;height:58px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.28);font-size:19px;font-weight:800}
+.t-title{font-size:18px;font-weight:800;line-height:1.3}
+.t-sub{font-size:14px;font-weight:700;opacity:.95}
+.c1{--c1:#0284c7;--c2:#1d4ed8}.c2{--c1:#16a34a;--c2:#15803d}.c3{--c1:#ea580c;--c2:#c2410c}
+.c4{--c1:#9333ea;--c2:#7e22ce}.c5{--c1:#db2777;--c2:#be185d}
+</style>
 </head>
 <body>
-
 <div class="wrapper">
-    <header>
-        <h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1>
-    </header>
+  <header><h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1></header>
 
-    <!-- УРОВЕНЬ 1: ВЫБОР КЛАССА -->
-    <div id="view-class-select" class="view-section active-view">
-        <div class="card">
-            <a href="index.html" class="back-btn">← На главную</a>
-            <h2>Выберите класс или направление</h2>
-            <div class="grid-tiles">
-                <button id="btn-5-class" class="tile-link">5 класс</button>
-                <button onclick="alert('Материалы 6 класса в разработке');" class="tile-link">6 класс</button>
-                <button onclick="alert('Материалы 7 класса в разработке');" class="tile-link">7 класс</button>
-                <button onclick="alert('Материалы 8 класса в разработке');" class="tile-link">8 класс</button>
-                <button onclick="alert('Материалы 9 класса в разработке');" class="tile-link">9 класс</button>
-                <button onclick="alert('Материалы 10 класса в разработке');" class="tile-link">10 класс</button>
-                <button onclick="alert('Материалы 11 класса в разработке');" class="tile-link">11 класс</button>
-                <a href="ent.html" class="tile-link ent">🎯 ЕНТ Подготовка</a>
-                <a href="trainers.html" class="tile-link trainers">⚡ Интерактивные тренажёры</a>
-            </div>
-        </div>
+  <div class="card">
+    <a href="index.html" class="back-btn">← На главную</a>
+    <h2>📐 Математика</h2>
+    <div class="intro"><span class="owl">🦉</span><div class="bubble">Выбирай тему: в каждой есть лекция и тренажёр с новыми заданиями!</div></div>
+
+    <div class="topics">
+      <a class="topic c1" href="tema-1-1.html">
+        <span class="t-num">1.1</span>
+        <span><span class="t-title">Натуральные числа и нуль</span></span>
+      </a>
+      <a class="topic c2" href="tema-1-2.html">
+        <span class="t-num">1.2</span>
+        <span><span class="t-title">Координатный луч. Изображение натуральных чисел и числа нуль на координатном луче</span></span>
+      </a>
+
+      <!-- Чтобы добавить тему: скопируйте блок <a class="topic ..."> целиком, поменяйте
+           номер, название и ссылку href. Цвета по кругу: c1, c2, c3, c4, c5. -->
     </div>
-
-    <!-- УРОВЕНЬ 2: ВЫБОР ГЛАВЫ 5 КЛАССА -->
-    <div id="view-5-class-chapters" class="view-section">
-        <div class="card">
-            <button id="btn-back-to-classes" class="back-btn">← К выбору классов</button>
-            <h2>5 класс — Выберите главу</h2>
-
-            <div class="grid-vertical">
-                <button class="chapter-btn" onclick="openTopics(1)">Глава I. Натуральные числа и нуль</button>
-                <button class="chapter-btn" onclick="openTopics(2)">Глава II. Делимость натуральных чисел</button>
-                <button class="chapter-btn" onclick="openTopics(3)">Глава III. Обыкновенные дроби и действия над ними</button>
-                <button class="chapter-btn" onclick="openTopics(4)">Глава IV. Десятичные дроби и действия над ними</button>
-                <button class="chapter-btn" onclick="openTopics(5)">Глава V. Отношения и пропорции. Проценты</button>
-                <button class="chapter-btn" onclick="openTopics(6)">Глава VI. Положительные и отрицательные числа. Координаты</button>
-                <button class="chapter-btn" onclick="openTopics(7)">Глава VII. Итоговое повторение курса математики за 5 класс</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- УРОВЕНЬ 3: ВЫБОР ТЕМЫ ИЗ ГЛАВЫ -->
-    <div id="view-topics" class="view-section">
-        <div class="card">
-            <button id="btn-back-to-chapters" class="back-btn">← К выбору глав</button>
-            <h2 id="topics-header-title">Темы главы</h2>
-            <div id="topics-container" class="grid-vertical">
-                <!-- Кнопки тем подгружаются через JavaScript -->
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
-
-<script>
-    // Список созданных готовых страниц тем
-    // Добавляйте сюда названия файлов по мере их создания (например: 'topic-1-2.html')
-    const activeTopics = [
-        'topic-1-1.html'
-    ];
-
-    // База тем по главам 5 класса (Алдамуратова Т.А.)
-    const chaptersData = {
-        1: {
-            title: "Глава I. Натуральные числа и нуль",
-            topics: [
-                { title: "1.1. Натуральные числа и нуль", file: "topic-1-1.html" },
-                { title: "1.2. Координатный луч. Изображение натуральных чисел и числа нуль на координатном луче", file: "topic-1-2.html" },
-                { title: "1.3. Сравнение натуральных чисел. Двойное неравенство", file: "topic-1-3.html" },
-                { title: "1.4. Сложение и вычитание натуральных чисел", file: "topic-1-4.html" },
-                { title: "1.5. Умножение и деление натуральных чисел. Основное свойство частного", file: "topic-1-5.html" },
-                { title: "1.6. Свойства арифметических действий", file: "topic-1-6.html" },
-                { title: "1.7. Арифметические действия над натуральными числами", file: "topic-1-7.html" },
-                { title: "1.8. Числовые выражения. Буквенные выражения", file: "topic-1-8.html" },
-                { title: "1.9. Упрощение выражений", file: "topic-1-9.html" },
-                { title: "1.10. Уравнение", file: "topic-1-10.html" },
-                { title: "1.11. Формулы. Вычисление по формулам", file: "topic-1-11.html" },
-                { title: "1.12. Числовые последовательности", file: "topic-1-12.html" }
-            ]
-        },
-        2: {
-            title: "Глава II. Делимость натуральных чисел",
-            topics: [
-                { title: "2.1. Делители натурального числа. Кратные натурального числа", file: "topic-2-1.html" },
-                { title: "2.2. Простые числа. Составные числа", file: "topic-2-2.html" },
-                { title: "2.3. Основные свойства делимости", file: "topic-2-3.html" },
-                { title: "2.4. Признаки делимости натуральных чисел на 2, 5 и 10", file: "topic-2-4.html" },
-                { title: "2.5. Признаки делимости натуральных чисел на 3 и на 9", file: "topic-2-5.html" },
-                { title: "2.6. Степень числа", file: "topic-2-6.html" },
-                { title: "2.7. Разложение составных чисел на простые множители", file: "topic-2-7.html" },
-                { title: "2.8. Наибольший общий делитель. Взаимно простые числа", file: "topic-2-8.html" },
-                { title: "2.9. Наименьшее общее кратное", file: "topic-2-9.html" },
-                { title: "2.10. Движение по реке", file: "topic-2-10.html" }
-            ]
-        },
-        3: {
-            title: "Глава III. Обыкновенные дроби и действия над ними",
-            topics: [
-                { title: "3.1. Обыкновенная дробь. Чтение и запись обыкновенных дробей", file: "topic-3-1.html" },
-                { title: "3.2. Основное свойство дроби. Сокращение дробей", file: "topic-3-2.html" },
-                { title: "3.3. Правильные дроби. Неправильные дроби", file: "topic-3-3.html" },
-                { title: "3.4. Смешанные числа", file: "topic-3-4.html" },
-                { title: "3.5. Сложение и вычитание обыкновенных дробей с одинаковыми знаменателями", file: "topic-3-5.html" },
-                { title: "3.6. Сложение и вычитание смешанных чисел", file: "topic-3-6.html" },
-                { title: "3.7. Вычитание дроби из натурального числа", file: "topic-3-7.html" },
-                { title: "3.8. Сложение и вычитание обыкновенных дробей с разными знаменателями", file: "topic-3-8.html" }
-            ]
-        },
-        4: {
-            title: "Глава IV. Десятичные дроби и действия над ними",
-            topics: [
-                { title: "4.1. Понятие десятичной дроби", file: "topic-4-1.html" },
-                { title: "4.2. Сравнение десятичных дробей", file: "topic-4-2.html" },
-                { title: "4.3. Сложение и вычитание десятичных дробей", file: "topic-4-3.html" },
-                { title: "4.4. Умножение десятичных дробей", file: "topic-4-4.html" },
-                { title: "4.5. Деление десятичных дробей", file: "topic-4-5.html" },
-                { title: "4.6. Округление чисел", file: "topic-4-6.html" },
-                { title: "4.7. Среднее арифметическое", file: "topic-4-7.html" }
-            ]
-        },
-        5: {
-            title: "Глава V. Отношения и пропорции. Проценты",
-            topics: [
-                { title: "5.1. Отношение двух чисел", file: "topic-5-1.html" },
-                { title: "5.2. Проценты", file: "topic-5-2.html" },
-                { title: "5.3. Пропорция", file: "topic-5-3.html" },
-                { title: "5.4. Прямая и обратная пропорциональные зависимости", file: "topic-5-4.html" },
-                { title: "5.5. Окружность и круг", file: "topic-5-5.html" },
-                { title: "5.6. Шар и сфера", file: "topic-5-6.html" }
-            ]
-        },
-        6: {
-            title: "Глава VI. Положительные и отрицательные числа. Координаты на плоскости",
-            topics: [
-                { title: "6.1. Положительные и отрицательные числа", file: "topic-6-1.html" },
-                { title: "6.2. Координатная прямая", file: "topic-6-2.html" },
-                { title: "6.3. Модуль числа", file: "topic-6-3.html" },
-                { title: "6.4. Сравнение рациональных чисел", file: "topic-6-4.html" },
-                { title: "6.5. Сложение и вычитание рациональных чисел", file: "topic-6-5.html" },
-                { title: "6.6. Умножение и деление рациональных чисел", file: "topic-6-6.html" },
-                { title: "6.7. Прямоугольная система координат на плоскости", file: "topic-6-7.html" }
-            ]
-        },
-        7: {
-            title: "Глава VII. Итоговое повторение курса математики за 5 класс",
-            topics: [
-                { title: "7.1. Повторение: Натуральные числа и нуль", file: "topic-7-1.html" },
-                { title: "7.2. Повторение: Делимость натуральных чисел", file: "topic-7-2.html" },
-                { title: "7.3. Повторение: Обыкновенные дроби", file: "topic-7-3.html" },
-                { title: "7.4. Повторение: Десятичные дроби", file: "topic-7-4.html" },
-                { title: "7.5. Повторение: Отношения, пропорции и проценты", file: "topic-7-5.html" },
-                { title: "7.6. Повторение: Рациональные числа и координаты", file: "topic-7-6.html" }
-            ]
-        }
-    };
-
-    // Элементы навигации
-    const viewClassSelect = document.getElementById('view-class-select');
-    const view5ClassChapters = document.getElementById('view-5-class-chapters');
-    const viewTopics = document.getElementById('view-topics');
-
-    const btn5Class = document.getElementById('btn-5-class');
-    const btnBackToClasses = document.getElementById('btn-back-to-classes');
-    const btnBackToChapters = document.getElementById('btn-back-to-chapters');
-
-    const topicsHeaderTitle = document.getElementById('topics-header-title');
-    const topicsContainer = document.getElementById('topics-container');
-
-    // Переход к главам
-    btn5Class.addEventListener('click', () => showView(view5ClassChapters));
-    btnBackToClasses.addEventListener('click', () => showView(viewClassSelect));
-    btnBackToChapters.addEventListener('click', () => showView(view5ClassChapters));
-
-    // Функция отрисовки тем выбранной главы
-    function openTopics(chapterId) {
-        const chapter = chaptersData[chapterId];
-        if (!chapter) return;
-
-        topicsHeaderTitle.textContent = chapter.title;
-        topicsContainer.innerHTML = '';
-
-        chapter.topics.forEach(t => {
-            const topicBtn = document.createElement('a');
-            topicBtn.className = 'topic-btn';
-            topicBtn.textContent = t.title;
-
-            // Если файл темы внесён в активный список — ставим прямую ссылку
-            if (activeTopics.includes(t.file)) {
-                topicBtn.href = t.file;
-            } else {
-                topicBtn.href = '#';
-                topicBtn.onclick = (e) => {
-                    e.preventDefault();
-                    alert(`Урок по теме "${t.title}" находится в разработке.`);
-                };
-            }
-
-            topicsContainer.appendChild(topicBtn);
-        });
-
-        showView(viewTopics);
-    }
-
-    function showView(targetView) {
-        [viewClassSelect, view5ClassChapters, viewTopics].forEach(v => v.classList.remove('active-view'));
-        targetView.classList.add('active-view');
-    }
-</script>
-
 </body>
 </html>
