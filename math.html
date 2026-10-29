@@ -9,19 +9,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-/* Только для списка тем */
-.intro{display:flex;align-items:center;gap:12px;margin:14px 0 6px}
-.intro .owl{font-size:44px}
-.topics{display:grid;gap:14px;margin-top:14px}
-.topic{display:flex;align-items:center;gap:16px;text-decoration:none;color:#fff;padding:16px 20px;border-radius:20px;
-  background:linear-gradient(120deg,var(--c1),var(--c2));box-shadow:0 6px 0 rgba(0,0,0,.2);transition:.15s;-webkit-tap-highlight-color:transparent}
-.topic:hover{transform:translateY(-3px);box-shadow:0 9px 0 rgba(0,0,0,.2)}
-.topic:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
-.t-num{flex:none;min-width:58px;height:58px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.28);font-size:19px;font-weight:800}
-.t-title{font-size:18px;font-weight:800;line-height:1.3}
-.t-sub{font-size:14px;font-weight:700;opacity:.95}
-.c1{--c1:#0284c7;--c2:#1d4ed8}.c2{--c1:#16a34a;--c2:#15803d}.c3{--c1:#ea580c;--c2:#c2410c}
-.c4{--c1:#9333ea;--c2:#7e22ce}.c5{--c1:#db2777;--c2:#be185d}
+/* Только для выбора класса (остальное в style.css) */
+.intro{display:flex;align-items:center;gap:12px;margin:14px 0 18px}
+.intro .owl{font-size:46px}
+.classes{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+.cls{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:112px;text-decoration:none;color:#fff;border-radius:22px;
+  background:linear-gradient(150deg,var(--c1),var(--c2));box-shadow:0 6px 0 rgba(0,0,0,.2);transition:.15s;-webkit-tap-highlight-color:transparent}
+.cls:hover{transform:translateY(-4px);box-shadow:0 10px 0 rgba(0,0,0,.2)}
+.cls:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.cls b{font-size:44px;line-height:1;font-weight:800;text-shadow:0 3px 0 rgba(0,0,0,.18)}
+.cls span{font-size:15px;font-weight:800}
+.special{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:18px}
+.wide{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;padding:18px 22px;border-radius:22px;
+  background:linear-gradient(120deg,var(--c1),var(--c2));box-shadow:0 6px 0 rgba(0,0,0,.2);transition:.15s}
+.wide:hover{transform:translateY(-4px);box-shadow:0 10px 0 rgba(0,0,0,.2)}
+.wide:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.wide i{font-style:normal;font-size:36px}
+.wide strong{display:block;font-size:20px}
+.wide small{font-size:14px;font-weight:700;opacity:.95}
+.k5{--c1:#0284c7;--c2:#1d4ed8}.k6{--c1:#16a34a;--c2:#15803d}.k7{--c1:#ea580c;--c2:#c2410c}
+.k8{--c1:#9333ea;--c2:#7e22ce}.k9{--c1:#db2777;--c2:#be185d}.k10{--c1:#0d9488;--c2:#0f766e}.k11{--c1:#4f46e5;--c2:#3730a3}
+.ent{--c1:#d97706;--c2:#b45309}.trn{--c1:#0891b2;--c2:#0e7490}
 </style>
 </head>
 <body>
@@ -30,21 +38,23 @@
 
   <div class="card">
     <a href="index.html" class="back-btn">← На главную</a>
-    <h2>📐 Математика</h2>
-    <div class="intro"><span class="owl">🦉</span><div class="bubble">Выбирай тему: в каждой есть лекция и тренажёр с новыми заданиями!</div></div>
+    <h2>Выбери класс или направление</h2>
+    <div class="intro"><span class="owl">🦉</span><div class="bubble">Привет! Выбери свой класс, и мы начнём заниматься вместе.</div></div>
 
-    <div class="topics">
-      <a class="topic c1" href="tema-1-1.html">
-        <span class="t-num">1.1</span>
-        <span><span class="t-title">Натуральные числа и нуль</span></span>
-      </a>
-      <a class="topic c2" href="tema-1-2.html">
-        <span class="t-num">1.2</span>
-        <span><span class="t-title">Координатный луч. Изображение натуральных чисел и числа нуль на координатном луче</span></span>
-      </a>
+    <!-- ПРОВЕРЬТЕ ссылки (href): у каждого класса должна быть ваша настоящая страница -->
+    <nav class="classes" aria-label="Классы">
+      <a class="cls k5"  href="grade-5.html"><b>5</b><span>класс</span></a>
+      <a class="cls k6"  href="grade-6.html"><b>6</b><span>класс</span></a>
+      <a class="cls k7"  href="grade-7.html"><b>7</b><span>класс</span></a>
+      <a class="cls k8"  href="grade-8.html"><b>8</b><span>класс</span></a>
+      <a class="cls k9"  href="grade-9.html"><b>9</b><span>класс</span></a>
+      <a class="cls k10" href="grade-10.html"><b>10</b><span>класс</span></a>
+      <a class="cls k11" href="grade-11.html"><b>11</b><span>класс</span></a>
+    </nav>
 
-      <!-- Чтобы добавить тему: скопируйте блок <a class="topic ..."> целиком, поменяйте
-           номер, название и ссылку href. Цвета по кругу: c1, c2, c3, c4, c5. -->
+    <div class="special">
+      <a class="wide ent" href="ent.html"><i>🎯</i><span><strong>ЕНТ Подготовка</strong><small>Тесты и задания для экзамена</small></span></a>
+      <a class="wide trn" href="trainers.html"><i>🎮</i><span><strong>Тренажёры</strong><small>Тренируйся и набирай очки</small></span></a>
     </div>
   </div>
 </div>
