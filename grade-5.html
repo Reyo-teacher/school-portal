@@ -48,8 +48,10 @@ a.tp:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
 
 <script>
 /* ============ ДАННЫЕ ============
-   READY — номера тем, для которых уже есть страница topic-N-M.html.
+   GRADE — номер класса. Для 6 класса скопируйте файл, назовите grade-6.html и поставьте GRADE = 6.
+   READY — номера тем, для которых уже есть страница topic-КЛАСС-ГЛАВА-ТЕМА.html (например, topic-5-1-3.html).
    Новая тема готова? Добавьте её номер в READY, и она станет кнопкой. */
+const GRADE = 5;
 const READY = ['1.1', '1.2'];
 
 const CH = [
@@ -118,7 +120,7 @@ const $ = s => document.querySelector(s);
 const isReady = (c, t) => READY.includes(`${c + 1}.${t + 1}`);
 
 function showChapters() {
-  $('#title').textContent = '5 класс. Выбери раздел';
+  $('#title').textContent = `${GRADE} класс. Выбери раздел`;
   $('#hint').textContent = 'Выбирай раздел, а внутри найдёшь темы с лекциями и тренажёрами!';
   $('#back').textContent = '← К выбору класса'; $('#back').href = 'math.html';
   $('#app').innerHTML = '<div class="grid">' + CH.map((c, i) => {
@@ -136,7 +138,7 @@ function showTopics(i) {
   $('#app').innerHTML = '<div class="list">' + c.tp.map((t, j) => {
     const n = `${i + 1}.${j + 1}`;
     return isReady(i, j)
-      ? `<a class="tp ok c${i}" href="topic-${i + 1}-${j + 1}.html"><span class="badge">${n}</span><span>${t}</span><span class="pill">Открыть</span></a>`
+      ? `<a class="tp ok c${i}" href="topic-${GRADE}-${i + 1}-${j + 1}.html"><span class="badge">${n}</span><span>${t}</span><span class="pill">Открыть</span></a>`
       : `<div class="tp soon"><span class="badge">${n}</span><span>${t}</span><span class="pill">Скоро</span></div>`;
   }).join('') + '</div>';
 }
