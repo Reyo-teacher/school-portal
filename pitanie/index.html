@@ -308,18 +308,8 @@ const NAMES = {
   "Синило Арсений","Смирнова Ангелина"]
 };
 
-const SUMS = {
-"Слепко Тимофей":2500,"Бород Арсений":3500,"Козленко Максим":2500,"Синило Арсений":3500,
-"Мамчий Лилия":7000,"Мутас Таисия":5000,"Мустафина Александра":5500,"Лютер Дмитрий":8000,
-"Городянская Анна":8500,"Байсултанова Сания":8500,"Григорьев Олег":7500,"Кулинич Ростислав":7500,
-"Кучукова Ясмин":7500,"Маминова Дарья":7500,"Ныязов Мансур":7500,"Олларь Владислав":7500,
-"Васильев Даниил":7500,"Дигас Дарья":7500,"Стоцкая София":7500,"Трутнева Алёна":7500,
-"Шувалова Рада":7500,"Кучуков Ерназар":7500,"Легедза Ясмин":7500,"Лютер Анастасия":7500,
-"Макаров Александр":7500,"Петраков Вадим":7500,"Чемезов Богдан":7500,"Олларь Дарина":8000,
-"Кулинич Мария":8500,"Ерік Ерасыл":8500,"Бондаренко Дмитрий":13500,"Смотрич Степан":5000,
-"Бород Ирина":7500,"Бород Яна":7500,"Слепко Леонид":5000,"Стоцкая Юлия":7500,
-"Рейм Михаил":1000,"Дигас Варвара":7500,"Олларь Ярослав":7500,"Легедза Тимофей":7500
-};
+// Суммы обнулены! Теперь все ученики начинают с 0 ₸
+const SUMS = {};
 
 const STATUS_LABEL = { paid:'платник', free:'бесплатник', none:'не питается' };
 
@@ -373,6 +363,7 @@ function buildDefaultDB(){
         id: sid, cls, name,
         statusHistory: [{ from:'2026-09-01', status: isPrimaryClass(cls) ? 'free' : 'paid' }]
       });
+      // Так как SUMS пустой, этот блок не выполнится, и платежей не будет
       if (sum > 0){
         payments.push({
           id: 'p' + (pn++), sid, amount: sum, date:'2026-09-01',
@@ -616,14 +607,12 @@ function statsOf(sid, dates){
   return { plus:p, minus:m, du:d };
 }
 
-// Списания за конкретный месяц (для отображения в колонке "Списано" в Питании)
 function chargedOf(st, dates){
   let c = 0;
   for (const d of dates){ if (markOf(st.id, d) === '+' && statusOn(st, d) === 'paid') c += db.cost; }
   return c;
 }
 
-// ГЛОБАЛЬНОЕ списание за всё время (для честного подсчета Остатка)
 function totalChargedOf(st){
   let c = 0;
   const prefix = st.id + '|';
@@ -642,7 +631,6 @@ function mealsOf(st, dates){
   return n;
 }
 
-// ЧЕСТНЫЙ ОСТАТОК: Все внесенные деньги - Все списания за всё время
 function balanceOf(st){ return sumOfStudent(st) - totalChargedOf(st); }
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -733,9 +721,9 @@ function monthSelector(){
   const months = getMonthsForYear(ui.year);
   return `<select class="month-pick" data-change="month">${months.map(m=>`<option value="${m}" ${m===ui.viewMonth?'selected':''}>${monthTitle(m)}</option>`).join('')}</select>`;
 }
-function statusDot(st){
-  const cur = currentStatus(st);
-  return `<span class="st-dot st-${cur.status}" title="${STATUS_LABEL[cur.status]}"></span>`;
+function statusDot(st, date){
+  const status = statusOn(st, date || getEffectiveToday());
+  return `<span class="st-dot st-${status}" title="${STATUS_LABEL[status]}"></span>`;
 }
 
 function viewJournal(){
@@ -771,12 +759,12 @@ function journalDay(studs, dates){
 
   const rows = studs.map(s=>{
     const v = markOf(s.id, day);
-    const cur = currentStatus(s);
+    const curStatus = statusOn(s, day);
     const btn = (val,label,cls) => `<button class="${v===val?cls:''}" data-act="set" data-sid="${s.id}" data-date="${day}" data-val="${val}">${label}</button>`;
     return `<div class="stu-row">
       <div class="nm">
-        <div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div>
-        <div class="status-mini">${STATUS_LABEL[cur.status]}</div>
+        <div class="name-wrap">${statusDot(s, day)}<span>${esc(s.name)}</span></div>
+        <div class="status-mini">${STATUS_LABEL[curStatus]}</div>
       </div>
       <div class="seg">
         ${btn('+','+','on-p')}
@@ -801,7 +789,7 @@ function journalGrid(studs, dates){
   const head = `<tr><th class="name sticky-col">Ученик</th>${dates.map(d=>`<th title="${weekday(d)}">${dayNum(d)}</th>`).join('')}<th style="color:var(--green)">+</th><th style="color:var(--red)">−</th><th style="color:var(--amber)">Д</th><th>Остаток</th></tr>`;
   const body = studs.map(s=>{
     const st = statsOf(s.id, dates);
-    const bal = balanceOf(s); // Честный остаток
+    const bal = balanceOf(s);
     const cells = dates.map(d=>{
       const v = markOf(s.id, d);
       const cl = v === '+' ? 'm-plus' : v === '-' ? 'm-minus' : v === 'Д/У' ? 'm-du' : 'm-empty';
@@ -852,7 +840,7 @@ function viewStats(){
 
   const trRows = studs.map(s=>{
     const st = statsOf(s.id, dates);
-    const bal = balanceOf(s); // Честный
+    const bal = balanceOf(s);
     const cur = currentStatus(s);
     const pct = dates.length ? Math.round(st.plus/dates.length*100) : 0;
     return `<tr>
@@ -867,7 +855,7 @@ function viewStats(){
 
   const mobileCards = studs.map(s=>{
     const st = statsOf(s.id, dates);
-    const bal = balanceOf(s); // Честный
+    const bal = balanceOf(s);
     const cur = currentStatus(s);
     const pct = dates.length ? Math.round(st.plus/dates.length*100) : 0;
     return `<div class="mobile-card">
@@ -916,9 +904,9 @@ function viewFood(){
 
   const trRows = studs.map(s=>{
     const cur = currentStatus(s);
-    const charged = chargedOf(s, dates); // Траты за ТЕКУЩИЙ месяц
+    const charged = chargedOf(s, dates);
     const meals = mealsOf(s, dates);
-    const bal = balanceOf(s); // Честный остаток
+    const bal = balanceOf(s);
     return `<tr>
       <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
       <td><span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span></td>
@@ -960,7 +948,7 @@ function viewFood(){
     </div>`;
   }).join('');
 
-  const totalBal = studs.reduce((a,s)=>a + balanceOf(s), 0); // Честный
+  const totalBal = studs.reduce((a,s)=>a + balanceOf(s), 0);
   const totalSum = studs.reduce((a,s)=>a + sumOfStudent(s), 0);
   const debts    = studs.filter(s => balanceOf(s) < 0).length;
   const paidCount = studs.filter(s => currentStatus(s).status === 'paid').length;
