@@ -62,8 +62,8 @@ input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(3
 .who{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .who .btn.ghost{background:#eef2f9;border-color:#e0e6f0;color:var(--txt)}
 .who .btn.ghost:hover{background:#e4eaf5}
-.sync{font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap}
-.sync-idle{display:none}
+.sync{font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;transition: opacity 0.3s;}
+.sync-idle{opacity:0; pointer-events:none;}
 .sync-saving{background:#fef3c7;color:#92400e}
 .sync-ok{background:#dcfce7;color:#166534}
 .sync-err{background:#fee2e2;color:#991b1b}
@@ -181,27 +181,15 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
   .desktop-only { display: none; }
   .mobile-only { display: flex; flex-direction: column; gap: 10px; }
 
-  /* Карточка в журнале */
-  .stu-row{
-    flex-direction:column; align-items:stretch; padding:10px; gap:10px;
-  }
-  .stu-row .nm{
-    text-align:center; white-space:normal; font-size:15px; line-height:1.2; padding:0 10px;
-  }
+  .stu-row{ flex-direction:column; align-items:stretch; padding:10px; gap:10px; }
+  .stu-row .nm{ text-align:center; white-space:normal; font-size:15px; line-height:1.2; padding:0 10px; }
   .name-wrap{ justify-content:center; }
   .status-mini{ text-align:center; margin-top:4px; }
   .seg{ width:100%; gap:6px; }
   .seg button{ flex:1; width:auto; height:48px; font-size:20px; }
 
-  /* Карточки в питании и статистике */
-  .mobile-card {
-    background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
-  }
-  .mc-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 10px; border-bottom: 1px solid var(--line); padding-bottom: 8px;
-    flex-wrap: wrap; gap: 6px;
-  }
+  .mobile-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .mc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px solid var(--line); padding-bottom: 8px; flex-wrap: wrap; gap: 6px; }
   .mc-header .name-wrap { font-weight: 700; font-size: 15px; }
   .mc-body { display: flex; flex-direction: column; gap: 8px; }
   .mc-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -495,14 +483,20 @@ function getLocalDB() {
 }
 
 async function pushPatch(patch){
+  // Показываем "сохранение" только если запрос длится дольше 0.3 секунды
+  let timer = setTimeout(() => {
+    setSyncStatus('saving', '⟳ в очереди…');
+  }, 300);
+  
   try {
-    setSyncStatus('saving', '⟳ сохранение…');
     await gasPost(patch);
+    clearTimeout(timer);
     setSyncStatus('ok', '✓ сохранено');
     setTimeout(() => {
       if (document.getElementById('syncStatus')?.classList.contains('sync-ok')) setSyncStatus('idle', '');
     }, 2000);
   } catch(e){
+    clearTimeout(timer);
     console.error('[GAS] ошибка сохранения:', e);
     setSyncStatus('err', '✗ не сохранилось');
   }
@@ -512,7 +506,7 @@ let markBuffer = {}, markTimer = null;
 function queueMark(sid, date, val){
   markBuffer[sid + '|' + date] = { sid, date, val };
   if (markTimer) clearTimeout(markTimer);
-  markTimer = setTimeout(flushMarks, 700);
+  markTimer = setTimeout(flushMarks, 300); // Уменьшили задержку до 0.3 сек
 }
 function flushMarks(){
   markTimer = null;
@@ -839,7 +833,6 @@ function viewStats(){
     </div>`;
   }
 
-  // Десктопная таблица
   const trRows = studs.map(s=>{
     const st = statsOf(s.id, dates);
     const bal = balanceOf(s, dates);
@@ -855,7 +848,6 @@ function viewStats(){
     </tr>`;
   }).join('');
 
-  // Мобильные карточки
   const mobileCards = studs.map(s=>{
     const st = statsOf(s.id, dates);
     const bal = balanceOf(s, dates);
@@ -905,7 +897,6 @@ function viewFood(){
   const dates = getDatesInMonth(ui.viewMonth);
   const studs = db.students.filter(s => s.cls === cls);
 
-  // Десктопная таблица
   const trRows = studs.map(s=>{
     const cur = currentStatus(s);
     const charged = chargedOf(s, dates);
@@ -924,7 +915,6 @@ function viewFood(){
     </tr>`;
   }).join('');
 
-  // Мобильные карточки
   const mobileCards = studs.map(s=>{
     const cur = currentStatus(s);
     const charged = chargedOf(s, dates);
