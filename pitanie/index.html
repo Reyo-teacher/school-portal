@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Учёт питания и посещаемости</title>
+<style>
+:root{
+  --bg:#f4f6fa; --card:#fff; --line:#e3e8f0; --txt:#111827; --muted:#6b7280;
+  --primary:#2563eb; --primary-d:#1d4ed8; --green:#16a34a; --red:#dc2626;
+  --amber:#d97706; --r:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--txt);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-text-size-adjust:100%}
+h1,h2,h3{margin:0 0 8px;line-height:1.2}
+h2{font-size:19px} h3{font-size:16px}
+.muted{color:var(--muted);font-size:13px}
+.hidden{display:none!important}
+[hidden]{display:none!important}
+
+.login-wrap{min-height:100%;display:grid;place-items:center;padding:20px;
+  background:linear-gradient(160deg,#2563eb 0%,#1e3a8a 100%)}
+.login-card{width:100%;max-width:360px;background:#fff;border-radius:20px;padding:26px 22px;
+  box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.login-card h1{font-size:21px;text-align:center}
+.login-card p{text-align:center;margin:0 0 18px}
+.login-card label{display:block;margin-bottom:12px;font-size:13px;color:var(--muted);font-weight:600}
+.login-card input{width:100%;margin-top:6px}
+.login-card input[type=checkbox]{width:auto;margin:0}
+.err{color:var(--red);font-size:13px;min-height:18px;margin-top:10px;text-align:center}
+.hint{margin-top:14px;font-size:13px;color:var(--muted)}
+.hint summary{cursor:pointer}
+.remember{display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+
+input,select,button{font:inherit}
+input,select{padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;
+  color:var(--txt);width:100%;outline:none;transition:.15s}
+input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1.5px solid var(--line);
+  background:#fff;color:var(--txt);padding:10px 16px;border-radius:10px;cursor:pointer;
+  font-weight:600;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:#c9d3e3;background:#f7f9fc}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.primary:hover{background:var(--primary-d);border-color:var(--primary-d)}
+.btn.sm{padding:6px 11px;font-size:13px;border-radius:9px}
+.btn.ghost{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.35);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.28)}
+.btn.danger{color:var(--red);border-color:#f3c7c7}
+.btn.danger:hover{background:#fdf2f2}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:10px 12px;background:#fff;border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:30;flex-wrap:wrap}
+.brand{font-weight:800;font-size:15px;white-space:nowrap}
+.who{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.who .btn.ghost{background:#eef2f9;border-color:#e0e6f0;color:var(--txt)}
+.who .btn.ghost:hover{background:#e4eaf5}
+.sync{font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.sync-idle{display:none}
+.sync-saving{background:#fef3c7;color:#92400e}
+.sync-ok{background:#dcfce7;color:#166534}
+.sync-err{background:#fee2e2;color:#991b1b}
+.year-pick{max-width:140px;padding:6px 8px;font-size:13px}
+
+.tabs{display:flex;gap:6px;padding:10px 12px 0;overflow-x:auto;background:#fff;
+  border-bottom:1px solid var(--line);position:sticky;top:52px;z-index:29}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:9px 14px;border-radius:10px 10px 0 0;border:none;background:transparent;
+  cursor:pointer;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary);background:#f4f7ff}
+
+main{padding:12px;max-width:1400px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;margin-bottom:14px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toolbar select,.toolbar input{width:auto;min-width:130px}
+.month-nav{display:flex;gap:6px;align-items:center}
+.month-pick{padding:8px 10px;font-size:14px;min-width:150px}
+
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;-webkit-overflow-scrolling:touch}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
+th,td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--line)}
+thead th{background:#f7f9fc;font-size:12px;color:var(--muted);font-weight:700;
+  position:sticky;top:0;z-index:3}
+td.name,th.name{text-align:left;padding-left:12px;min-width:190px;font-weight:600}
+.sticky-col{position:sticky;left:0;background:#fff;z-index:2;box-shadow:1px 0 0 var(--line)}
+thead .sticky-col{background:#f7f9fc;z-index:4}
+
+td.cell{cursor:pointer;min-width:36px;font-weight:700;user-select:none;transition:.1s}
+td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
+.m-plus{background:#e8f7ee;color:var(--green)}
+.m-minus{background:#fdeaea;color:var(--red)}
+.m-du{background:#fef6e7;color:var(--amber)}
+.m-empty{color:#c8d0dd}
+
+.num{font-variant-numeric:tabular-nums;font-weight:700}
+.pos{color:var(--green)} .neg{color:var(--red)} .zero{color:var(--muted)}
+.clickable{cursor:pointer}
+.clickable:hover{background:#f4f7ff}
+
+.day-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;-webkit-overflow-scrolling:touch}
+.day-chips::-webkit-scrollbar{height:5px}
+.chip{padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;
+  cursor:pointer;font-weight:700;white-space:nowrap;font-size:13px;flex-shrink:0;min-width:52px}
+.chip.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.chip small{display:block;font-weight:500;font-size:10px;opacity:.8}
+.chip.today:not(.active){border-color:var(--primary);color:var(--primary)}
+
+.stu-list{display:flex;flex-direction:column;gap:8px}
+.stu-row{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);
+  border-radius:12px;background:#fff}
+.stu-row .nm{flex:1;font-weight:600;font-size:14px;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stu-row .status-mini{font-size:11px;color:var(--muted);font-weight:500}
+.seg{display:flex;gap:6px}
+.seg button{width:48px;height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
+  cursor:pointer;font-weight:800;font-size:18px;color:var(--muted);transition:.1s;padding:0;
+  display:flex;align-items:center;justify-content:center}
+.seg button:active{transform:scale(.95)}
+.seg button.on-p{background:var(--green);border-color:var(--green);color:#fff}
+.seg button.on-m{background:var(--red);border-color:var(--red);color:#fff}
+.seg button.on-d{background:var(--amber);border-color:var(--amber);color:#fff}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.kpi .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.row{display:flex;gap:8px;align-items:center}
+.row input{flex:1}
+
+.st-dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;flex-shrink:0}
+.st-dot.st-paid{background:#3b82f6}
+.st-dot.st-free{background:#22c55e}
+.st-dot.st-none{background:#9ca3af}
+.badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:6px;font-weight:700;white-space:nowrap}
+.badge.st-paid{background:#dbeafe;color:#1e40af}
+.badge.st-free{background:#dcfce7;color:#166534}
+.badge.st-none{background:#f3f4f6;color:#4b5563}
+.name-wrap{display:flex;align-items:center;gap:7px;min-width:0}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;border-radius:16px;padding:22px;width:100%;max-width:420px;
+  box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.modal h3{margin-bottom:10px}
+.modal label{display:block;margin-top:12px;font-size:12px;color:var(--muted);font-weight:700}
+.modal input{margin-top:5px}
+
+.loading-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);flex-direction:column;gap:14px}
+.spinner{width:44px;height:44px;border:4px solid #dbeafe;border-top-color:var(--primary);
+  border-radius:50%;animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* мобильный — акцент на день */
+@media(max-width:640px){
+  main{padding:8px}
+  .card{padding:10px;border-radius:12px}
+  td.name,th.name{min-width:130px;font-size:13px}
+  .tabs{top:50px;padding:8px 8px 0}
+  .tab{padding:8px 12px;font-size:13px}
+  .who span.name{display:none}
+  .brand{font-size:14px}
+  .topbar{padding:8px 10px}
+  .seg button{width:52px;height:52px;font-size:20px}
+  .stu-row{padding:10px 8px}
+  .stu-row .nm{font-size:13px}
+  .month-pick{min-width:130px;font-size:13px;padding:7px 8px}
+  .chip{padding:7px 10px;font-size:12px;min-width:46px}
+}
+</style>
+</head>
+<body>
+
+<div id="loadingScreen" class="loading-screen">
+  <div class="spinner"></div>
+  <p class="muted">Загрузка данных…</p>
+</div>
+
+<div id="loginScreen" class="login-wrap" hidden>
+  <form class="login-card" id="loginForm" autocomplete="on">
+    <h1>🍽 Учёт питания</h1>
+    <p class="muted">Вход для учителей и администратора</p>
+    <label>Логин
+      <input name="login" autocomplete="username" required placeholder="class5">
+    </label>
+    <label>Пароль
+      <input name="pass" type="password" autocomplete="current-password" required placeholder="••••">
+    </label>
+    <label class="remember">
+      <input type="checkbox" id="rememberMe"> Запомнить меня
+    </label>
+    <button class="btn primary" type="submit" style="width:100%">Войти</button>
+    <div class="err" id="loginErr"></div>
+    <details class="hint">
+      <summary>Демо-доступы</summary>
+      <p style="text-align:left">
+        Администратор: <b>admin / admin</b><br>
+        Учитель 1 класса: <b>class1 / 1234</b><br>
+        Учитель 5 класса: <b>class5 / 1234</b><br>
+        <span class="muted">(остальные: class2…class11 / 1234)</span>
+      </p>
+    </details>
+  </form>
+</div>
+
+<div id="appScreen" hidden>
+  <header class="topbar">
+    <div class="brand">🍽 Учёт</div>
+    <div class="who">
+      <span id="syncStatus" class="sync sync-idle"></span>
+      <select id="yearPicker" class="year-pick" data-change="year" hidden></select>
+      <span id="whoName" class="name"></span>
+      <button class="btn ghost sm" data-act="refresh" title="Загрузить свежие данные">↻</button>
+      <button class="btn ghost sm" data-act="logout">Выйти</button>
+    </div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="main"></main>
+</div>
+
+<div id="payModal" class="modal-backdrop" hidden>
+  <div class="modal">
+    <h3>💰 Внести оплату</h3>
+    <p class="muted" id="payStudentName" style="margin-bottom:6px"></p>
+    <label>Сумма, ₸
+      <input type="number" id="payAmount" step="100" min="1" placeholder="например, 5000">
+    </label>
+    <label>Дата
+      <input type="date" id="payDate">
+    </label>
+    <label>Примечание (необязательно)
+      <input type="text" id="payNote" placeholder="например, за октябрь">
+    </label>
+    <div class="row" style="justify-content:flex-end;margin-top:16px">
+      <button class="btn" type="button" data-act="close-pay">Отмена</button>
+      <button class="btn primary" type="button" data-act="save-pay">Внести</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby3_cQcpqBrkX5I8Hig3K-u_MO_XhiCN4gDGVi_8M9iuu5cSr8w8YcMXNlnR26rWvpG/exec';
+
+/* ============================================================
+   СПРАВОЧНИКИ
+   ============================================================ */
+const CLASS_NAMES = ["1 класс","2 класс","3 класс","4 класс","5 класс","6 класс",
+                     "7 класс","8 класс","9 класс","10 класс","11 класс"];
+
+const NAMES = {
+"1 класс":["Рейм Игнат Иванович","Остапенко Иван Анатольевич","Кучер София Егоровна",
+  "Рейм Варвара Вячеславовна","Старкас Радион Максимович","Кулинич Фаина Васильевна",
+  "Боднарук Глафира Викторовна","Санжарулы Расул","Пантелеев Михаил Дмитриевич",
+  "Межевитин Денис Вадимович","Стоцкая Карина Александровна"],
+"2 класс":["Санжарұлы Хакім","Шишкин Даниил","Мельник Виктория","Ковальчук Вероника",
+  "Кулинич Алиса","Полякова Ирина","Баянова Анастасия","Мутас Полина","Мамчий София",
+  "Лютер Екатерина","Байгужинов Дамир"],
+"3 класс":["Васильева Алёна","Гирш Николь","Калинин Денис","Козленко Таисия","Косманова Дияна",
+  "Кошля Олеся","Лабутина Эвелина","Легедза Богдан","Логунова Алиана","Олларь Юлия",
+  "Опалихин Александр","Байсултанов Саян","Рейм Илья","Смотрич Артём","Старкас Александра",
+  "Чемезова Алиса"],
+"4 класс":["Байгужинова Оксана","Боднарук Агафья","Городянский Николай","Ерік Айару",
+  "Калинина Дарьяна","Кононенко Иван","Маминова Ксения","Нургожина Зухра",
+  "Опалихин Вадим","Шерияздан Дамир"],
+"5 класс":["Байгужинова Кристина","Остапенко Мария","Григорьев Олег","Кулинич Ростислав",
+  "Кучукова Ясмин","Маминова Дарья","Ныязов Мансур","Олларь Владислав","Васильев Даниил",
+  "Дигас Дарья","Стоцкая София","Трутнева Алёна","Шувалова Рада","Ревякин Иван"],
+"6 класс":["Городянская Анна","Лютер Дмитрий","Мустафина Александра","Мутас Таисия",
+  "Мамчий Лилия","Байсултанова Сания","Кравченко Валерия","Косманова Рияна","Мамчий Алексей"],
+"7 класс":["Бород Ирина","Бород Яна","Дигас Варвара","Олларь Ярослав","Рейм Михаил",
+  "Слепко Леонид","Стоцкая Юлия","Золотоноша Глеб","Легедза Тимофей","Линд Ева",
+  "Мильниченко Артем","Опалихина Милана","Остапенко Владимир","Ковальчук Юрий"],
+"8 класс":["Бондаренко Дмитрий","Ерік Ерасыл","Олларь Дарина","Кулинич Мария",
+  "Астафьева Татьяна","Смотрич Степан","Косманов Камиль","Остапенко Дарья",
+  "Сартисон Софья","Кулинич Ариана"],
+"9 класс":["Ковальчук Виталий","Петраков Вадим","Карюк Евгения","Чемезов Богдан",
+  "Кучуков Ерназар","Легедза Ясмин","Лютер Анастасия","Макаров Александр",
+  "Сартисон Леонид","Кравченко София"],
+"10 класс":["Полищук Арсений","Тулегенулы Тамерлан","Легедза Евгений","Смирнов Егор"],
+"11 класс":["Бород Арсений","Козленко Максим","Лабутин Тимофей","Слепко Тимофей",
+  "Синило Арсений","Смирнова Ангелина"]
+};
+
+const SUMS = {
+"Слепко Тимофей":2500,"Бород Арсений":3500,"Козленко Максим":2500,"Синило Арсений":3500,
+"Мамчий Лилия":7000,"Мутас Таисия":5000,"Мустафина Александра":5500,"Лютер Дмитрий":8000,
+"Городянская Анна":8500,"Байсултанова Сания":8500,"Григорьев Олег":7500,"Кулинич Ростислав":7500,
+"Кучукова Ясмин":7500,"Маминова Дарья":7500,"Ныязов Мансур":7500,"Олларь Владислав":7500,
+"Васильев Даниил":7500,"Дигас Дарья":7500,"Стоцкая София":7500,"Трутнева Алёна":7500,
+"Шувалова Рада":7500,"Кучуков Ерназар":7500,"Легедза Ясмин":7500,"Лютер Анастасия":7500,
+"Макаров Александр":7500,"Петраков Вадим":7500,"Чемезов Богдан":7500,"Олларь Дарина":8000,
+"Кулинич Мария":8500,"Ерік Ерасыл":8500,"Бондаренко Дмитрий":13500,"Смотрич Степан":5000,
+"Бород Ирина":7500,"Бород Яна":7500,"Слепко Леонид":5000,"Стоцкая Юлия":7500,
+"Рейм Михаил":1000,"Дигас Варвара":7500,"Олларь Ярослав":7500,"Легедза Тимофей":7500
+};
+
+const STATUS_LABEL = { paid:'платник', free:'бесплатник', none:'не питается' };
+
+/* Праздники и каникулы по учебным годам */
+const HOLIDAYS_2026_2027 = [
+  '2026-10-25','2026-10-26','2026-12-16',
+  '2026-10-24','2026-10-27','2026-10-28','2026-10-29','2026-10-30','2026-10-31',
+  '2026-11-01','2026-11-02',
+  '2026-12-28','2026-12-29','2026-12-30','2026-12-31',
+  '2027-01-01','2027-01-02','2027-01-03','2027-01-04','2027-01-05','2027-01-06',
+  '2027-01-07','2027-01-08','2027-01-09','2027-01-10',
+  '2027-02-08','2027-02-09','2027-02-10','2027-02-11','2027-02-12','2027-02-13','2027-02-14',
+  '2027-03-08','2027-03-21','2027-03-22','2027-03-23',
+  '2027-03-24','2027-03-25','2027-03-26','2027-03-27','2027-03-28',
+  '2027-05-01','2027-05-03','2027-05-07','2027-05-09','2027-05-10'
+];
+
+const HOLIDAYS_2027_2028 = [
+  '2027-08-30','2027-10-25','2027-12-16',
+  '2027-10-25','2027-10-26','2027-10-27','2027-10-28','2027-10-29','2027-10-30','2027-10-31',
+  '2027-11-01',
+  '2027-12-28','2027-12-29','2027-12-30','2027-12-31',
+  '2028-01-01','2028-01-02','2028-01-03','2028-01-04','2028-01-05','2028-01-06',
+  '2028-01-07','2028-01-08','2028-01-09','2028-01-10',
+  '2028-02-08','2028-02-09','2028-02-10','2028-02-11','2028-02-12','2028-02-13','2028-02-14',
+  '2028-03-08','2028-03-21','2028-03-22','2028-03-23',
+  '2028-03-20','2028-03-24','2028-03-25','2028-03-26',
+  '2028-05-01','2028-05-07','2028-05-09','2028-05-03'
+];
+
+const KNOWN_HOLIDAYS = {
+  '2026-2027': HOLIDAYS_2026_2027,
+  '2027-2028': HOLIDAYS_2027_2028
+};
+
+const SESSION_KEY = 'school_meal_session';
+const REMEMBER_KEY = 'school_meal_login';
+
+function isPrimaryClass(cls){
+  return ['1 класс','2 класс','3 класс','4 класс'].includes(cls);
+}
+
+/* ============================================================
+   ДЕФОЛТНАЯ БАЗА
+   ============================================================ */
+function buildDefaultDB(){
+  const students = [], payments = [];
+  let n = 1, pn = 1;
+  for (const cls of CLASS_NAMES){
+    for (const name of NAMES[cls]){
+      const sid = 's' + (n++);
+      const sum = SUMS[name] || 0;
+      students.push({
+        id: sid, cls, name,
+        statusHistory: [{ from:'2026-09-01', status: isPrimaryClass(cls) ? 'free' : 'paid' }]
+      });
+      if (sum > 0){
+        payments.push({
+          id: 'p' + (pn++), sid, amount: sum, date:'2026-09-01',
+          by:'admin', note:'начальный взнос'
+        });
+      }
+    }
+  }
+  const users = [{ login:'admin', pass:'admin', role:'admin', name:'Администратор', cls:'' }];
+  CLASS_NAMES.forEach((c,i)=>{
+    users.push({ login:'class'+(i+1), pass:'1234', role:'teacher',
+      name:'Учитель '+(i+1)+' класса', cls:c });
+  });
+  return {
+    version: 4,
+    academicYear: '2026-2027',
+    years: {
+      '2026-2027': { holidays: [...HOLIDAYS_2026_2027] }
+    },
+    cost: 500,
+    users, students, payments,
+    marks: {},
+    graduated: []
+  };
+}
+
+function migrateDB(data){
+  if (!data || !data.students) return buildDefaultDB();
+
+  /* v2 → v3 */
+  if (!data.version || data.version < 3){
+    for (const st of data.students){
+      if (!st.statusHistory){
+        st.statusHistory = [{ from:'2026-09-01',
+          status: isPrimaryClass(st.cls) ? 'free' : 'paid' }];
+      }
+    }
+    if (!data.payments) data.payments = [];
+    data.version = 3;
+  }
+
+  /* v3 → v4 */
+  if (data.version < 4){
+    const year = '2026-2027';
+    data.academicYear = year;
+    data.years = {
+      [year]: { holidays: data.holidays || [...HOLIDAYS_2026_2027] }
+    };
+    delete data.month;
+    delete data.holidays;
+    data.graduated = data.graduated || [];
+    data.version = 4;
+  }
+
+  if (!data.graduated) data.graduated = [];
+  if (!data.years) data.years = {};
+  for (const y of Object.keys(data.years)){
+    if (!data.years[y].holidays) data.years[y].holidays = [];
+  }
+
+  return data;
+}
+
+/* ============================================================
+   СОСТОЯНИЕ
+   ============================================================ */
+let db = null;
+let session = null;
+let ui = {
+  tab: 'journal',
+  cls: CLASS_NAMES[0],
+  year: null,          // учебный год для просмотра
+  viewMonth: null,     // 'YYYY-MM'
+  viewDay: null,       // 'YYYY-MM-DD'
+  mode: 'day',         // 'day' | 'grid'
+  payFilter: 'all'
+};
+
+/* ============================================================
+   СИНХРОНИЗАЦИЯ
+   ============================================================ */
+function setSyncStatus(state, text){
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.className = 'sync sync-' + state;
+  el.textContent = text || '';
+}
+
+async function gasGet(){
+  const res = await fetch(GAS_API_URL + '?t=' + Date.now(), { method:'GET' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  if (data && data.error) throw new Error(data.error);
+  return data;
+}
+
+async function gasPost(payload){
+  const res = await fetch(GAS_API_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const result = await res.json();
+  if (result.status !== 'success') throw new Error(result.message || 'ошибка');
+  return result;
+}
+
+async function loadDB(){
+  try {
+    setSyncStatus('saving', '⟳ загрузка…');
+    const raw = await gasGet();
+    if (!raw || Object.keys(raw).length === 0){
+      const fresh = buildDefaultDB();
+      await gasPost({ action:'init', db: fresh });
+      setSyncStatus('ok', '✓ готово');
+      return fresh;
+    }
+    const wasOld = !raw.version || raw.version < 4;
+    const migrated = migrateDB(raw);
+    if (wasOld){
+      // Сохраняем миграцию, чтобы все видели новую структуру
+      await gasPost({ action:'init', db: migrated });
+    }
+    setSyncStatus('ok', '✓ готово');
+    return migrated;
+  } catch(e){
+    console.error('[GAS] ошибка загрузки:', e);
+    setSyncStatus('err', '✗ ошибка загрузки');
+    alert('Не удалось загрузить данные.\n' + e.message +
+          '\nПриложение работает на пустой копии. Изменения НЕ сохранятся.');
+    return buildDefaultDB();
+  }
+}
+
+async function pushPatch(patch){
+  try {
+    setSyncStatus('saving', '⟳ сохранение…');
+    await gasPost(patch);
+    setSyncStatus('ok', '✓ сохранено');
+    setTimeout(() => {
+      if (document.getElementById('syncStatus')?.classList.contains('sync-ok')){
+        setSyncStatus('idle', '');
+      }
+    }, 2000);
+  } catch(e){
+    console.error('[GAS] ошибка сохранения:', e);
+    setSyncStatus('err', '✗ не сохранилось');
+  }
+}
+
+let markBuffer = {}, markTimer = null;
+
+function queueMark(sid, date, val){
+  markBuffer[sid + '|' + date] = { sid, date, val };
+  if (markTimer) clearTimeout(markTimer);
+  markTimer = setTimeout(flushMarks, 700);
+}
+function flushMarks(){
+  markTimer = null;
+  const entries = Object.values(markBuffer);
+  markBuffer = {};
+  if (!entries.length) return;
+  if (entries.length === 1){
+    pushPatch({ action:'setMark', sid: entries[0].sid, date: entries[0].date, val: entries[0].val });
+  } else {
+    pushPatch({ action:'setMarks', pairs: entries });
+  }
+}
+function isBusy(){
+  return markTimer || Object.keys(markBuffer).length > 0;
+}
+
+/* ============================================================
+   ДАТЫ И УЧЕБНЫЙ ГОД
+   ============================================================ */
+const pad = n => String(n).padStart(2,'0');
+const todayISO = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+};
+const monthOf = iso => iso.slice(0,7);
+
+function getMonthsForYear(yearStr){
+  const [y1, y2] = yearStr.split('-').map(Number);
+  const out = [];
+  for (let m = 9; m <= 12; m++) out.push(`${y1}-${pad(m)}`);
+  for (let m = 1; m <= 5; m++) out.push(`${y2}-${pad(m)}`);
+  return out;
+}
+
+function getDatesInMonth(monthStr){
+  const year = ui.year || db.academicYear;
+  const holidays = (db.years[year] && db.years[year].holidays) || [];
+  const [y, m] = monthStr.split('-').map(Number);
+  const days = new Date(y, m, 0).getDate();
+  const out = [];
+  for (let d = 1; d <= days; d++){
+    const dt = new Date(y, m-1, d);
+    const wd = dt.getDay();
+    if (wd === 0 || wd === 6) continue;
+    const key = `${y}-${pad(m)}-${pad(d)}`;
+    if (holidays.includes(key)) continue;
+    out.push(key);
+  }
+  return out;
+}
+
+function monthTitle(monthStr){
+  const [y, m] = monthStr.split('-').map(Number);
+  return new Date(y, m-1, 1).toLocaleDateString('ru-RU',{month:'long', year:'numeric'});
+}
+const shortDate  = k => k.slice(8,10) + '.' + k.slice(5,7);
+const dayNum     = k => Number(k.slice(8,10));
+const weekday    = k => ['вс','пн','вт','ср','чт','пт','сб'][new Date(k+'T00:00:00').getDay()];
+
+function initUIForToday(){
+  // Все доступные годы
+  const years = Object.keys(db.years).sort();
+  if (!ui.year || !years.includes(ui.year)){
+    ui.year = db.academicYear;
+  }
+
+  const months = getMonthsForYear(ui.year);
+  const today = todayISO();
+  const todayMonth = monthOf(today);
+
+  if (months.includes(todayMonth)){
+    ui.viewMonth = todayMonth;
+    const dates = getDatesInMonth(todayMonth);
+    ui.viewDay = dates.includes(today) ? today : (dates[0] || null);
+  } else {
+    // Сегодняшняя дата вне текущего года — показываем последний месяц
+    const lastMonth = months[months.length - 1];
+    ui.viewMonth = lastMonth;
+    const dates = getDatesInMonth(lastMonth);
+    ui.viewDay = dates[dates.length - 1] || null;
+  }
+}
+
+/* ============================================================
+   БИЗНЕС-ЛОГИКА
+   ============================================================ */
+function statusOn(st, date){
+  let s = 'none';
+  for (const e of st.statusHistory || []){
+    if (date >= e.from) s = e.status;
+  }
+  return s;
+}
+function currentStatus(st){
+  const h = st.statusHistory || [];
+  if (!h.length) return { status:'none', from:'' };
+  return h[h.length - 1];
+}
+function setStatusOn(st, status, from){
+  if (!st.statusHistory) st.statusHistory = [];
+  st.statusHistory = st.statusHistory.filter(e => e.from < from);
+  st.statusHistory.push({ from, status });
+  st.statusHistory.sort((a,b) => a.from.localeCompare(b.from));
+}
+function sumOfStudent(st){
+  return db.payments.filter(p => p.sid === st.id).reduce((a,p) => a + p.amount, 0);
+}
+function teacherOf(login){
+  const u = db.users.find(x => x.login === login);
+  return u ? u.name : (login || '—');
+}
+
+const markOf  = (sid,d) => db.marks[sid+'|'+d] || '';
+const setMark = (sid,d,v) => {
+  const k = sid+'|'+d;
+  if (v) db.marks[k] = v; else delete db.marks[k];
+};
+const CYCLE = ['+','-','Д/У',''];
+
+function statsOf(sid, dates){
+  let p=0, m=0, d=0;
+  for (const dt of dates){
+    const v = markOf(sid, dt);
+    if (v === '+') p++; else if (v === '-') m++; else if (v === 'Д/У') d++;
+  }
+  return { plus:p, minus:m, du:d };
+}
+function chargedOf(st, dates){
+  let c = 0;
+  for (const d of dates){
+    if (markOf(st.id, d) === '+' && statusOn(st, d) === 'paid') c += db.cost;
+  }
+  return c;
+}
+function mealsOf(st, dates){
+  let n = 0;
+  for (const d of dates) if (markOf(st.id, d) === '+') n++;
+  return n;
+}
+function balanceOf(st, dates){ return sumOfStudent(st) - chargedOf(st, dates); }
+
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function currentClass(){
+  if (session && session.role === 'teacher') return session.cls;
+  if (!CLASS_NAMES.includes(ui.cls)) ui.cls = CLASS_NAMES[0];
+  return ui.cls;
+}
+
+/* Перевод в следующий учебный год */
+function promoteToNextYear(){
+  if (session.role !== 'admin') return;
+  const [y1, y2] = db.academicYear.split('-').map(Number);
+  const newYear = `${y1+1}-${y2+1}`;
+
+  if (db.years[newYear] && db.years[newYear].initialized){
+    alert('Учебный год ' + newYear + ' уже существует');
+    return;
+  }
+
+  if (!confirm(`Перевести всех учеников в следующий класс?\n` +
+    `11-классники станут выпускниками.\n\n` +
+    `Учебный год ${db.academicYear} → ${newYear}`)) return;
+
+  const newStudents = [];
+  const graduated = [];
+
+  for (const st of db.students){
+    const idx = CLASS_NAMES.indexOf(st.cls);
+    if (idx === 10){
+      graduated.push({ ...st, graduatedFrom: st.cls, graduatedAt: newYear });
+    } else {
+      newStudents.push({ ...st, cls: CLASS_NAMES[idx + 1] });
+    }
+  }
+
+  db.graduated = db.graduated || [];
+  db.graduated.push(...graduated);
+  db.students = newStudents;
+  db.academicYear = newYear;
+
+  if (!db.years[newYear]){
+    db.years[newYear] = {
+      holidays: [...(KNOWN_HOLIDAYS[newYear] || [])],
+      initialized: true
+    };
+  } else {
+    db.years[newYear].initialized = true;
+    if (!db.years[newYear].holidays || !db.years[newYear].holidays.length){
+      db.years[newYear].holidays = [...(KNOWN_HOLIDAYS[newYear] || [])];
+    }
+  }
+
+  ui.year = newYear;
+  initUIForToday();
+
+  render();
+  pushPatch({ action:'init', db });
+  alert(`Готово!\nНовый учебный год: ${newYear}\nУчителя теперь ведут классы на ступень выше — в них уже новые ученики.`);
+}
+
+/* ============================================================
+   РЕНДЕР
+   ============================================================ */
+function render(){
+  if (!db) return;
+  document.getElementById('loadingScreen').hidden = true;
+
+  if (!session){
+    document.getElementById('loginScreen').hidden = false;
+    document.getElementById('appScreen').hidden   = true;
+    return;
+  }
+  document.getElementById('loginScreen').hidden = true;
+  document.getElementById('appScreen').hidden   = false;
+
+  // Селект года в topbar (если годов > 1)
+  const years = Object.keys(db.years).sort();
+  const yearSel = document.getElementById('yearPicker');
+  if (years.length > 1){
+    yearSel.hidden = false;
+    yearSel.innerHTML = years.map(y =>
+      `<option ${y===ui.year?'selected':''}>${y}</option>`).join('');
+  } else {
+    yearSel.hidden = true;
+  }
+
+  document.getElementById('whoName').textContent =
+    session.name + (session.role === 'admin' ? ' • админ' : '');
+
+  renderTabs();
+  const main = document.getElementById('main');
+  if (ui.tab === 'journal')  main.innerHTML = viewJournal();
+  if (ui.tab === 'stats')    main.innerHTML = viewStats();
+  if (ui.tab === 'food')     main.innerHTML = viewFood();
+  if (ui.tab === 'payments') main.innerHTML = viewPayments();
+  if (ui.tab === 'admin')    main.innerHTML = session.role === 'admin' ? viewAdmin() : viewJournal();
+}
+
+const TABS = [
+  { id:'journal',  label:'📋 Журнал' },
+  { id:'stats',    label:'📊 Статистика' },
+  { id:'food',     label:'🍽 Питание' },
+  { id:'payments', label:'💰 Взносы' },
+  { id:'admin',    label:'⚙️ Настройки', admin:true }
+];
+function renderTabs(){
+  const tabs = TABS.filter(t => !t.admin || session.role === 'admin');
+  document.getElementById('tabs').innerHTML = tabs.map(t =>
+    `<button class="tab ${ui.tab===t.id?'active':''}" data-act="tab" data-tab="${t.id}">${t.label}</button>`
+  ).join('');
+}
+function classSelector(){
+  if (session.role !== 'admin') return '';
+  return `<select data-change="class" style="max-width:140px">
+    ${CLASS_NAMES.map(c=>`<option ${c===currentClass()?'selected':''}>${c}</option>`).join('')}
+  </select>`;
+}
+function monthSelector(){
+  const months = getMonthsForYear(ui.year);
+  return `<select class="month-pick" data-change="month">
+    ${months.map(m=>`<option value="${m}" ${m===ui.viewMonth?'selected':''}>${monthTitle(m)}</option>`).join('')}
+  </select>`;
+}
+function statusDot(st){
+  const cur = currentStatus(st);
+  return `<span class="st-dot st-${cur.status}" title="${STATUS_LABEL[cur.status]}"></span>`;
+}
+
+function viewJournal(){
+  const cls = currentClass();
+  const dates = getDatesInMonth(ui.viewMonth);
+  const studs = db.students.filter(s => s.cls === cls);
+  if (!studs.length){
+    return `<div class="card">
+      <div class="toolbar">${classSelector()} ${monthSelector()}</div>
+      <p class="muted">В этом классе пока нет учеников.</p></div>`;
+  }
+
+  const head = `<div class="toolbar">
+    ${classSelector()} ${monthSelector()}
+    <div style="display:flex;gap:6px;margin-left:auto">
+      <button class="btn sm ${ui.mode==='day'?'primary':''}"  data-act="mode" data-mode="day">📅 По дню</button>
+      <button class="btn sm ${ui.mode==='grid'?'primary':''}" data-act="mode" data-mode="grid">📋 Таблица</button>
+    </div>
+  </div>`;
+
+  const content = ui.mode === 'day'
+    ? journalDay(studs, dates)
+    : journalGrid(studs, dates);
+
+  return `<div class="card">${head}${content}${legend()}</div>`;
+}
+
+function journalDay(studs, dates){
+  if (!dates.length){
+    return `<p class="muted">В этом месяце нет учебных дней (каникулы/праздники).</p>`;
+  }
+  // Если ui.viewDay вне месяца — берём первый
+  let day = ui.viewDay;
+  if (!day || !dates.includes(day)) day = dates[0];
+
+  const today = todayISO();
+  const chips = `<div class="day-chips">${dates.map(d=>{
+    const n = studs.filter(s=>markOf(s.id,d)==='+').length;
+    const isToday = d === today;
+    return `<button class="chip ${d===day?'active':''} ${isToday?'today':''}" data-act="day" data-date="${d}">
+      ${dayNum(d)}<small>${weekday(d)}·${n}</small></button>`;
+  }).join('')}</div>`;
+
+  const rows = studs.map(s=>{
+    const v = markOf(s.id, day);
+    const cur = currentStatus(s);
+    const btn = (val,label,cls) =>
+      `<button class="${v===val?cls:''}" data-act="set" data-sid="${s.id}" data-date="${day}" data-val="${val}">${label}</button>`;
+    return `<div class="stu-row">
+      <div class="nm">
+        <div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div>
+        <div class="status-mini">${STATUS_LABEL[cur.status]}</div>
+      </div>
+      <div class="seg">
+        ${btn('+','+','on-p')}
+        ${btn('-','−','on-m')}
+        ${btn('Д/У','Д','on-d')}
+        <button data-act="set" data-sid="${s.id}" data-date="${day}" data-val="">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const dayTitle = `${dayNum(day)} ${monthTitle(ui.viewMonth)} · ${weekday(day)}`;
+
+  return `${chips}
+    <div class="toolbar" style="margin:0 0 10px">
+      <strong style="font-size:14px">${dayTitle}</strong>
+      <button class="btn sm" style="margin-left:auto" data-act="allplus" data-date="${day}">✓ Все «+»</button>
+      <button class="btn sm" data-act="clearall" data-date="${day}">Очистить</button>
+    </div>
+    <div class="stu-list">${rows}</div>`;
+}
+
+function journalGrid(studs, dates){
+  if (!dates.length) return `<p class="muted">В этом месяце нет учебных дней.</p>`;
+  const head = `<tr>
+    <th class="name sticky-col">Ученик</th>
+    ${dates.map(d=>`<th title="${weekday(d)}">${dayNum(d)}</th>`).join('')}
+    <th style="color:var(--green)">+</th>
+    <th style="color:var(--red)">−</th>
+    <th style="color:var(--amber)">Д</th>
+    <th>Остаток</th>
+  </tr>`;
+  const body = studs.map(s=>{
+    const st = statsOf(s.id, dates);
+    const bal = balanceOf(s, dates);
+    const cells = dates.map(d=>{
+      const v = markOf(s.id, d);
+      const cl = v === '+' ? 'm-plus' : v === '-' ? 'm-minus' : v === 'Д/У' ? 'm-du' : 'm-empty';
+      const lb = v === '+' ? '+' : v === '-' ? '−' : v === 'Д/У' ? 'Д' : '·';
+      return `<td class="cell ${cl}" data-act="mark" data-sid="${s.id}" data-date="${d}">${lb}</td>`;
+    }).join('');
+    return `<tr>
+      <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
+      ${cells}
+      <td class="num pos">${st.plus}</td>
+      <td class="num neg">${st.minus}</td>
+      <td class="num" style="color:var(--amber)">${st.du}</td>
+      <td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="table-wrap"><table>
+    <thead>${head}</thead><tbody>${body}</tbody>
+  </table></div>`;
+}
+
+function legend(){
+  return `<div class="legend">
+    <span><i class="dot" style="background:#e8f7ee;border:1px solid #b9e6cb"></i> «+» был</span>
+    <span><i class="dot" style="background:#fdeaea;border:1px solid #f2c0c0"></i> «−» не был</span>
+    <span><i class="dot" style="background:#fef6e7;border:1px solid #f0d9a8"></i> «Д/У»</span>
+    <span style="color:#c8d0dd">|</span>
+    <span><i class="st-dot st-paid"></i> платник</span>
+    <span><i class="st-dot st-free"></i> бесплатник</span>
+    <span><i class="st-dot st-none"></i> не питается</span>
+  </div>`;
+}
+
+function viewStats(){
+  const cls = currentClass();
+  const dates = getDatesInMonth(ui.viewMonth);
+  const studs = db.students.filter(s => s.cls === cls);
+
+  let summary = '';
+  if (session.role === 'admin'){
+    const rows = CLASS_NAMES.map(c=>{
+      const ss = db.students.filter(s=>s.cls===c);
+      const cells = dates.map(d=>{
+        const n = ss.filter(s=>markOf(s.id,d)==='+').length;
+        return `<td class="num ${n?'':'zero'}">${n||''}</td>`;
+      }).join('');
+      const total = ss.reduce((a,s)=>a+statsOf(s.id,dates).plus,0);
+      return `<tr><td class="name sticky-col">${c}</td>${cells}<td class="num pos">${total}</td></tr>`;
+    }).join('');
+    summary = `<div class="card">
+      <h3>Сводка по школе</h3>
+      <div class="table-wrap" style="margin-top:10px"><table>
+        <thead><tr><th class="name sticky-col">Класс</th>
+          ${dates.map(d=>`<th>${dayNum(d)}</th>`).join('')}<th>Всего</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+  }
+
+  const rows = studs.map(s=>{
+    const st = statsOf(s.id, dates);
+    const bal = balanceOf(s, dates);
+    const cur = currentStatus(s);
+    const pct = dates.length ? Math.round(st.plus/dates.length*100) : 0;
+    return `<tr>
+      <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
+      <td><span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span></td>
+      <td class="num pos">${st.plus}</td>
+      <td class="num neg">${st.minus}</td>
+      <td class="num" style="color:var(--amber)">${st.du}</td>
+      <td class="num">${pct}%</td>
+      <td class="num">${sumOfStudent(s).toLocaleString('ru-RU')}</td>
+      <td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')}</td>
+    </tr>`;
+  }).join('');
+
+  const totPlus = studs.reduce((a,s)=>a+statsOf(s.id,dates).plus,0);
+  const totMin  = studs.reduce((a,s)=>a+statsOf(s.id,dates).minus,0);
+
+  return `<div class="toolbar">${classSelector()} ${monthSelector()}</div>
+    ${summary}
+    <div class="card">
+      <h3>${cls} · ${monthTitle(ui.viewMonth)}</h3>
+      <div class="kpis" style="margin-top:12px">
+        <div class="kpi"><div class="l">Учеников</div><div class="v">${studs.length}</div></div>
+        <div class="kpi"><div class="l">«+»</div><div class="v pos">${totPlus}</div></div>
+        <div class="kpi"><div class="l">«−»</div><div class="v neg">${totMin}</div></div>
+        <div class="kpi"><div class="l">Дней</div><div class="v">${dates.length}</div></div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th class="name sticky-col">Ученик</th><th>Статус</th><th>Был</th><th>Не был</th>
+          <th>Д/У</th><th>%</th><th>Внесено</th><th>Остаток</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+}
+
+function viewFood(){
+  const cls = currentClass();
+  const dates = getDatesInMonth(ui.viewMonth);
+  const studs = db.students.filter(s => s.cls === cls);
+
+  const rows = studs.map(s=>{
+    const cur = currentStatus(s);
+    const charged = chargedOf(s, dates);
+    const meals = mealsOf(s, dates);
+    const bal = sumOfStudent(s) - charged;
+    return `<tr>
+      <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
+      <td><span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span></td>
+      <td class="num clickable" style="color:var(--primary)"
+          data-act="pay" data-sid="${s.id}" title="Кликните, чтобы внести оплату">
+        ${sumOfStudent(s).toLocaleString('ru-RU')} <b>+</b>
+      </td>
+      <td class="num">${meals}</td>
+      <td class="num">−${charged.toLocaleString('ru-RU')}</td>
+      <td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">
+        ${bal.toLocaleString('ru-RU')}
+        <div class="muted" style="font-size:11px;font-weight:500">
+          ${bal<0?'долг':bal<db.cost?'мало':'ок'}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalBal = studs.reduce((a,s)=>a + balanceOf(s, dates), 0);
+  const totalSum = studs.reduce((a,s)=>a + sumOfStudent(s), 0);
+  const debts    = studs.filter(s => balanceOf(s, dates) < 0).length;
+  const paidCount = studs.filter(s => currentStatus(s).status === 'paid').length;
+  const freeCount = studs.filter(s => currentStatus(s).status === 'free').length;
+  const noneCount = studs.filter(s => currentStatus(s).status === 'none').length;
+
+  return `<div class="toolbar">${classSelector()} ${monthSelector()}</div>
+    <div class="card">
+      <h3>Питание · ${monthTitle(ui.viewMonth)}</h3>
+      <div class="kpis" style="margin-top:12px">
+        <div class="kpi"><div class="l">Платников</div><div class="v" style="color:#3b82f6">${paidCount}</div></div>
+        <div class="kpi"><div class="l">Бесплатников</div><div class="v" style="color:#16a34a">${freeCount}</div></div>
+        <div class="kpi"><div class="l">Не питаются</div><div class="v" style="color:#6b7280">${noneCount}</div></div>
+        <div class="kpi"><div class="l">Внесено</div><div class="v">${totalSum.toLocaleString('ru-RU')}</div></div>
+        <div class="kpi"><div class="l">Остаток</div><div class="v ${totalBal<0?'neg':'pos'}">${totalBal.toLocaleString('ru-RU')}</div></div>
+        <div class="kpi"><div class="l">С долгом</div><div class="v ${debts?'neg':''}">${debts}</div></div>
+      </div>
+      <p class="muted">Остаток = Внесено − «+» (пока платник) × ${db.cost} ₸. Кликните по сумме — внести оплату.</p>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th class="name sticky-col">Ученик</th><th>Статус</th><th>Внесено</th>
+          <th>Обедов</th><th>Списано</th><th>Остаток</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+}
+
+function viewPayments(){
+  const isAdmin = session.role === 'admin';
+  let payments = db.payments.slice();
+
+  if (!isAdmin){
+    payments = payments.filter(p => {
+      const st = db.students.find(s => s.id === p.sid);
+      return st && st.cls === session.cls;
+    });
+  }
+  if (isAdmin && ui.payFilter !== 'all'){
+    payments = payments.filter(p => {
+      const st = db.students.find(s => s.id === p.sid);
+      return st && st.cls === ui.payFilter;
+    });
+  }
+  payments.sort((a,b) => (b.date||'').localeCompare(a.date||'') || (b.id||'').localeCompare(a.id||''));
+  const totalFiltered = payments.reduce((a,p) => a + p.amount, 0);
+
+  let summary = '';
+  if (isAdmin){
+    const byTeacher = {};
+    for (const p of db.payments){
+      const key = p.by || 'admin';
+      if (!byTeacher[key]) byTeacher[key] = { total:0, count:0 };
+      byTeacher[key].total += p.amount;
+      byTeacher[key].count++;
+    }
+    const rows = Object.entries(byTeacher).map(([login, d])=>{
+      const u = db.users.find(x => x.login === login);
+      const name = u ? u.name : (login === 'admin' ? 'Администратор' : login);
+      const cls = u ? u.cls : '';
+      return `<tr>
+        <td class="name">${esc(name)}</td>
+        <td>${cls || '—'}</td>
+        <td class="num">${d.count}</td>
+        <td class="num pos">${d.total.toLocaleString('ru-RU')} ₸</td>
+      </tr>`;
+    }).join('');
+    summary = `<div class="card">
+      <h3>Собрано по классным руководителям</h3>
+      <div class="table-wrap" style="margin-top:10px"><table>
+        <thead><tr>
+          <th class="name">Кл. руководитель</th><th>Класс</th>
+          <th>Платежей</th><th>Сумма</th>
+        </tr></thead>
+        <tbody>${rows || '<tr><td colspan="4" class="muted">Пока нет взносов</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
+  }
+
+  const detailRows = payments.map(p=>{
+    const st = db.students.find(s => s.id === p.sid);
+    if (!st) return '';
+    return `<tr>
+      <td>${p.date || '—'}</td>
+      <td class="name">${esc(st.name)}</td>
+      <td>${st.cls}</td>
+      <td>${esc(teacherOf(p.by))}</td>
+      <td class="num pos">${p.amount.toLocaleString('ru-RU')} ₸</td>
+      <td class="muted">${esc(p.note || '')}</td>
+      ${isAdmin ? `<td><button class="btn sm danger" data-act="del-payment" data-id="${p.id}">✕</button></td>` : ''}
+    </tr>`;
+  }).join('');
+
+  const filterUI = isAdmin ? `
+    <select data-change="payFilter" style="max-width:140px">
+      <option value="all" ${ui.payFilter==='all'?'selected':''}>Все классы</option>
+      ${CLASS_NAMES.map(c=>`<option ${ui.payFilter===c?'selected':''}>${c}</option>`).join('')}
+    </select>` : '';
+
+  return `${summary}
+    <div class="card">
+      <div class="toolbar">
+        <h2 style="margin:0">💰 Взносы${isAdmin ? '' : ' · ' + session.cls}</h2>
+        ${filterUI}
+        <span class="muted" style="margin-left:auto">
+          Итого: <b class="pos">${totalFiltered.toLocaleString('ru-RU')} ₸</b> (${payments.length})
+        </span>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>Дата</th><th class="name">Ученик</th><th>Класс</th><th>Внёс</th>
+          <th>Сумма</th><th>Примечание</th>${isAdmin?'<th></th>':''}
+        </tr></thead>
+        <tbody>${detailRows || `<tr><td colspan="${isAdmin?7:6}" class="muted">Пока нет взносов</td></tr>`}</tbody>
+      </table></div>
+    </div>`;
+}
+
+function viewAdmin(){
+  const cls = currentClass();
+  const studs = db.students.filter(s => s.cls === cls);
+  const year = ui.year || db.academicYear;
+  const yearHolidays = (db.years[year] && db.years[year].holidays) || [];
+
+  const studRows = studs.map(s=>{
+    const cur = currentStatus(s);
+    return `<tr>
+      <td><input value="${esc(s.name)}" data-change="sname" data-sid="${s.id}"></td>
+      <td class="num clickable" style="color:var(--primary)"
+          data-act="pay" data-sid="${s.id}">
+        ${sumOfStudent(s).toLocaleString('ru-RU')} <b>+</b>
+      </td>
+      <td>
+        <select data-change="status" data-sid="${s.id}" style="width:130px">
+          <option value="paid" ${cur.status==='paid'?'selected':''}>платник</option>
+          <option value="free" ${cur.status==='free'?'selected':''}>бесплатник</option>
+          <option value="none" ${cur.status==='none'?'selected':''}>не питается</option>
+        </select>
+      </td>
+      <td><input type="date" value="${cur.from}" data-change="statusFrom" data-sid="${s.id}" style="width:135px"></td>
+      <td><button class="btn sm danger" data-act="del-student" data-sid="${s.id}">✕</button></td>
+    </tr>`;
+  }).join('');
+
+  const userRows = db.users.map((u,i)=>`<tr>
+    <td><input value="${esc(u.login)}" data-change="user" data-i="${i}" data-f="login" style="width:110px"></td>
+    <td><input value="${esc(u.pass)}"  data-change="user" data-i="${i}" data-f="pass"  style="width:100px"></td>
+    <td>
+      <select data-change="user" data-i="${i}" data-f="role" style="width:110px">
+        <option value="teacher" ${u.role==='teacher'?'selected':''}>учитель</option>
+        <option value="admin"   ${u.role==='admin'?'selected':''}>админ</option>
+      </select>
+    </td>
+    <td>
+      <select data-change="user" data-i="${i}" data-f="cls" style="width:130px">
+        <option value="">—</option>
+        ${CLASS_NAMES.map(c=>`<option ${u.cls===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </td>
+    <td><input value="${esc(u.name)}" data-change="user" data-i="${i}" data-f="name" style="width:160px"></td>
+    <td><button class="btn sm danger" data-act="del-user" data-i="${i}">✕</button></td>
+  </tr>`).join('');
+
+  return `
+  <div class="grid2">
+    <div class="card">
+      <h3>Параметры</h3>
+      <div class="field"><label>Активный учебный год</label>
+        <input type="text" value="${db.academicYear}" disabled style="background:#f7f9fc"></div>
+      <div class="field"><label>Стоимость одного питания, ₸</label>
+        <input type="number" step="50" min="0" value="${db.cost}" data-change="cost"></div>
+      <div class="field"><label>Праздники / каникулы · год ${year}</label>
+        <input value="${yearHolidays.join(', ')}" data-change="holidays"></div>
+      <p class="muted">Даты — в формате YYYY-MM-DD через запятую. Праздники относятся к выбранному в шапке году.</p>
+      <button class="btn sm primary" data-act="promote">🎓 Перевести в следующий год</button>
+    </div>
+    <div class="card">
+      <h3>Данные</h3>
+      <div class="row" style="flex-wrap:wrap;gap:8px">
+        <button class="btn sm" data-act="export-json">⬇ Резервная копия (JSON)</button>
+        <button class="btn sm" data-act="export-csv">⬇ CSV / Excel</button>
+        <label class="btn sm" style="cursor:pointer">⬆ Загрузить JSON
+          <input type="file" accept=".json" data-change="import" hidden></label>
+        <button class="btn sm danger" data-act="reset">Сбросить всё</button>
+      </div>
+      <p class="muted" style="margin-top:10px">Выпускники: ${db.graduated.length}</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="toolbar">
+      ${classSelector()}
+      <h3 style="margin:0">Ученики · ${cls}</h3>
+      <button class="btn sm primary" style="margin-left:auto" data-act="add-student">+ Добавить</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th class="name">Ф.И.О.</th><th>Внесено</th><th>Статус</th><th>С даты</th><th></th>
+      </tr></thead>
+      <tbody>${studRows}</tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="toolbar">
+      <h3 style="margin:0">Пользователи</h3>
+      <button class="btn sm primary" style="margin-left:auto" data-act="add-user">+ Добавить</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Логин</th><th>Пароль</th><th>Роль</th><th>Класс</th><th>Подпись</th><th></th></tr></thead>
+      <tbody>${userRows}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ============================================================
+   МОДАЛ ОПЛАТЫ
+   ============================================================ */
+let payState = { sid: null };
+
+function openPayModal(sid){
+  const st = db.students.find(s => s.id === sid);
+  if (!st) return;
+  payState.sid = sid;
+  document.getElementById('payStudentName').textContent = st.name + ' · ' + st.cls;
+  document.getElementById('payAmount').value = '';
+  document.getElementById('payDate').value = todayISO();
+  document.getElementById('payNote').value = '';
+  document.getElementById('payModal').hidden = false;
+  setTimeout(() => document.getElementById('payAmount').focus(), 30);
+}
+function closePayModal(){
+  document.getElementById('payModal').hidden = true;
+  payState.sid = null;
+}
+function savePayment(){
+  const amt  = Number(document.getElementById('payAmount').value);
+  const date = document.getElementById('payDate').value;
+  const note = document.getElementById('payNote').value.trim();
+  if (!amt || amt <= 0){ alert('Укажите сумму больше 0'); return; }
+  if (!date){ alert('Укажите дату'); return; }
+  const st = db.students.find(s => s.id === payState.sid);
+  if (!st) return;
+  const payment = {
+    id: 'p' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+    sid: st.id, amount: amt, date, by: session.login, note
+  };
+  db.payments.push(payment);
+  closePayModal();
+  render();
+  pushPatch({ action:'addPayment', payment });
+}
+
+/* ============================================================
+   ВХОД
+   ============================================================ */
+document.getElementById('loginForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const login = String(f.get('login')).trim();
+  const pass  = String(f.get('pass'));
+  const u = db.users.find(x => x.login === login && x.pass === pass);
+  if (!u){
+    document.getElementById('loginErr').textContent = 'Неверный логин или пароль';
+    return;
+  }
+  document.getElementById('loginErr').textContent = '';
+  session = { login:u.login, role:u.role, name:u.name, cls:u.cls };
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+
+  // Запомнить логин
+  if (document.getElementById('rememberMe').checked){
+    localStorage.setItem(REMEMBER_KEY, login);
+  } else {
+    localStorage.removeItem(REMEMBER_KEY);
+  }
+
+  ui.cls = u.role === 'teacher' ? u.cls : CLASS_NAMES[0];
+  initUIForToday();
+  e.target.reset();
+  render();
+});
+
+document.getElementById('payAmount').addEventListener('keydown', e=>{
+  if (e.key === 'Enter'){ e.preventDefault(); savePayment(); }
+});
+
+/* ============================================================
+   КЛИКИ
+   ============================================================ */
+document.addEventListener('click', e=>{
+  if (e.target.id === 'payModal'){ closePayModal(); return; }
+
+  const t = e.target.closest('[data-act]');
+  if (!t) return;
+  const a = t.dataset.act;
+
+  if (a === 'logout'){ session = null; sessionStorage.removeItem(SESSION_KEY); render(); return; }
+  if (a === 'refresh'){
+    (async () => {
+      const fresh = await loadDB();
+      db = fresh;
+      render();
+    })();
+    return;
+  }
+  if (a === 'tab'){ ui.tab = t.dataset.tab; render(); return; }
+  if (a === 'mode'){ ui.mode = t.dataset.mode; render(); return; }
+  if (a === 'day'){ ui.viewDay = t.dataset.date; render(); return; }
+
+  if (a === 'mark'){
+    const sid = t.dataset.sid, d = t.dataset.date;
+    const cur = markOf(sid, d);
+    const next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
+    setMark(sid, d, next); render();
+    queueMark(sid, d, next);
+    return;
+  }
+  if (a === 'set'){
+    const sid = t.dataset.sid, d = t.dataset.date, v = t.dataset.val;
+    setMark(sid, d, v); render();
+    queueMark(sid, d, v);
+    return;
+  }
+  if (a === 'allplus'){
+    const d = t.dataset.date;
+    const pairs = [];
+    db.students.filter(s => s.cls === currentClass()).forEach(s => {
+      setMark(s.id, d, '+');
+      pairs.push({ sid: s.id, date: d, val: '+' });
+    });
+    render();
+    pushPatch({ action:'setMarks', pairs });
+    return;
+  }
+  if (a === 'clearall'){
+    const d = t.dataset.date;
+    const pairs = [];
+    db.students.filter(s => s.cls === currentClass()).forEach(s => {
+      setMark(s.id, d, '');
+      pairs.push({ sid: s.id, date: d, val: '' });
+    });
+    render();
+    pushPatch({ action:'setMarks', pairs });
+    return;
+  }
+
+  if (a === 'pay'){ openPayModal(t.dataset.sid); return; }
+  if (a === 'close-pay'){ closePayModal(); return; }
+  if (a === 'save-pay'){ savePayment(); return; }
+  if (a === 'del-payment'){
+    if (session.role !== 'admin') return;
+    if (!confirm('Удалить этот платёж?')) return;
+    db.payments = db.payments.filter(p => p.id !== t.dataset.id);
+    render();
+    pushPatch({ action:'delPayment', id: t.dataset.id });
+    return;
+  }
+
+  if (a === 'promote'){ promoteToNextYear(); return; }
+
+  if (a === 'add-student'){
+    const name = prompt('Ф.И.О. ученика:');
+    if (!name) return;
+    const cls = currentClass();
+    const student = {
+      id: 's' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+      cls, name: name.trim(),
+      statusHistory: [{ from: todayISO(),
+                        status: isPrimaryClass(cls) ? 'free' : 'paid' }]
+    };
+    db.students.push(student);
+    render();
+    pushPatch({ action:'addStudent', student });
+    return;
+  }
+  if (a === 'del-student'){
+    if (!confirm('Удалить ученика и все его платежи?')) return;
+    const sid = t.dataset.sid;
+    db.students = db.students.filter(s => s.id !== sid);
+    db.payments = db.payments.filter(p => p.sid !== sid);
+    Object.keys(db.marks).forEach(k => { if (k.startsWith(sid + '|')) delete db.marks[k]; });
+    render();
+    pushPatch({ action:'delStudent', sid });
+    return;
+  }
+  if (a === 'add-user'){
+    const user = { login:'new'+db.users.length, pass:'1234', role:'teacher',
+                   name:'Новый учитель', cls:CLASS_NAMES[0] };
+    db.users.push(user);
+    render();
+    pushPatch({ action:'addUser', user });
+    return;
+  }
+  if (a === 'del-user'){
+    if (!confirm('Удалить пользователя?')) return;
+    const index = Number(t.dataset.i);
+    db.users.splice(index, 1);
+    render();
+    pushPatch({ action:'delUser', index });
+    return;
+  }
+  if (a === 'export-json'){
+    download('backup-' + db.academicYear + '.json', JSON.stringify(db, null, 2), 'application/json'); return;
+  }
+  if (a === 'export-csv'){ exportCSV(); return; }
+  if (a === 'reset'){
+    if (!confirm('Сбросить ВСЕ данные и пересоздать базу?')) return;
+    db = buildDefaultDB();
+    ui.year = db.academicYear;
+    initUIForToday();
+    render();
+    pushPatch({ action:'init', db });
+    return;
+  }
+});
+
+/* ============================================================
+   ИЗМЕНЕНИЯ ПОЛЕЙ
+   ============================================================ */
+document.addEventListener('change', e=>{
+  const t = e.target.closest('[data-change]');
+  if (!t) return;
+  const c = t.dataset.change;
+
+  if (c === 'year'){
+    ui.year = t.value;
+    // при смене года — на сегодня если это текущий год, иначе первый месяц
+    const months = getMonthsForYear(ui.year);
+    const today = todayISO();
+    const todayMonth = monthOf(today);
+    if (months.includes(todayMonth) && ui.year === db.academicYear){
+      ui.viewMonth = todayMonth;
+      const dates = getDatesInMonth(todayMonth);
+      ui.viewDay = dates.includes(today) ? today : (dates[0] || null);
+    } else {
+      ui.viewMonth = months[0];
+      const dates = getDatesInMonth(months[0]);
+      ui.viewDay = dates[0] || null;
+    }
+    render(); return;
+  }
+
+  if (c === 'class'){ ui.cls = t.value; render(); return; }
+  if (c === 'month'){
+    ui.viewMonth = t.value;
+    const dates = getDatesInMonth(t.value);
+    // при смене месяца — на сегодня если это текущий, иначе первый день
+    const today = todayISO();
+    ui.viewDay = dates.includes(today) ? today : (dates[0] || null);
+    render(); return;
+  }
+  if (c === 'payFilter'){ ui.payFilter = t.value; render(); return; }
+
+  if (c === 'cost'){
+    db.cost = Math.max(0, Number(t.value) || 0); render();
+    pushPatch({ action:'setParam', key:'cost', value: db.cost });
+    return;
+  }
+  if (c === 'holidays'){
+    const year = ui.year || db.academicYear;
+    const arr = t.value.split(',').map(s => s.trim())
+      .filter(s => /^\d{4}-\d{2}-\d{2}$/.test(s));
+    if (!db.years[year]) db.years[year] = { holidays: [] };
+    db.years[year].holidays = arr;
+    render();
+    pushPatch({ action:'setParam', key:'holidays', year, value: arr });
+    return;
+  }
+
+  if (c === 'sname'){
+    const s = db.students.find(x => x.id === t.dataset.sid);
+    if (s){
+      s.name = t.value.trim();
+      pushPatch({ action:'updateStudent', sid: s.id, name: s.name });
+    }
+    return;
+  }
+  if (c === 'status'){
+    const s = db.students.find(x => x.id === t.dataset.sid);
+    if (s){
+      const today = todayISO();
+      setStatusOn(s, t.value, today);
+      render();
+      pushPatch({ action:'setStatus', sid: s.id, status: t.value, from: today });
+    }
+    return;
+  }
+  if (c === 'statusFrom'){
+    const s = db.students.find(x => x.id === t.dataset.sid);
+    if (s && t.value){
+      const cur = currentStatus(s);
+      setStatusOn(s, cur.status, t.value);
+      render();
+      pushPatch({ action:'setStatus', sid: s.id, status: cur.status, from: t.value });
+    }
+    return;
+  }
+  if (c === 'user'){
+    const index = Number(t.dataset.i);
+    const u = db.users[index];
+    if (u){
+      u[t.dataset.f] = t.value;
+      pushPatch({ action:'updateUser', index, field: t.dataset.f, value: t.value });
+    }
+    return;
+  }
+  if (c === 'import'){
+    const file = t.files && t.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const data = migrateDB(JSON.parse(r.result));
+        if (!data.students || !data.users) throw new Error('bad file');
+        db = data;
+        ui.year = db.academicYear;
+        initUIForToday();
+        render();
+        pushPatch({ action:'init', db });
+        alert('Данные загружены и отправлены на сервер');
+      }catch(err){ alert('Ошибка: ' + err.message); }
+    };
+    r.readAsText(file);
+  }
+});
+
+/* ============================================================
+   ЭКСПОРТ
+   ============================================================ */
+function download(filename, text, type){
+  const blob = new Blob(['\ufeff' + text], { type: type + ';charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function exportCSV(){
+  const cls = currentClass();
+  const dates = getDatesInMonth(ui.viewMonth);
+  const studs = db.students.filter(s => s.cls === cls);
+  const sep = ';';
+  const head = ['Ученик','Статус', ...dates.map(shortDate),
+                'Был','Не был','Д/У','Внесено','Списано','Остаток'];
+  const rows = [head];
+  studs.forEach(s=>{
+    const st = statsOf(s.id, dates);
+    const charged = chargedOf(s, dates);
+    const bal = sumOfStudent(s) - charged;
+    const cur = currentStatus(s);
+    rows.push([s.name, STATUS_LABEL[cur.status],
+      ...dates.map(d => markOf(s.id, d) || ''),
+      st.plus, st.minus, st.du, sumOfStudent(s), charged, bal]);
+  });
+  const csv = rows.map(r => r.map(v =>
+    String(v).includes(sep) ? '"' + v + '"' : v).join(sep)).join('\r\n');
+  download(`Питание_${cls}_${ui.viewMonth}.csv`, csv, 'text/csv');
+}
+
+/* ============================================================
+   АВТООБНОВЛЕНИЕ
+   ============================================================ */
+setInterval(async () => {
+  if (!session || !db) return;
+  if (!document.getElementById('payModal').hidden) return;
+  if (isBusy()) return;
+  const ae = document.activeElement;
+  if (ae && ['INPUT','SELECT','TEXTAREA'].includes(ae.tagName)) return;
+  try {
+    const fresh = await gasGet();
+    if (fresh && fresh.students){
+      db = migrateDB(fresh);
+      render();
+    }
+  } catch(e){ /* нет сети */ }
+}, 60000);
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+(async function init(){
+  db = await loadDB();
+
+  const saved = sessionStorage.getItem(SESSION_KEY);
+  if (saved){ try{ session = JSON.parse(saved); }catch(e){} }
+  if (session && session.role === 'teacher') ui.cls = session.cls;
+
+  // Дефолт: сегодня
+  initUIForToday();
+
+  // Запомненный логин
+  const savedLogin = localStorage.getItem(REMEMBER_KEY);
+  if (savedLogin){
+    const inp = document.querySelector('input[name="login"]');
+    if (inp){ inp.value = savedLogin; }
+    document.getElementById('rememberMe').checked = true;
+    setTimeout(() => document.querySelector('input[name="pass"]')?.focus(), 50);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
