@@ -52,6 +52,8 @@ input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(3
 .btn.ghost:hover{background:rgba(255,255,255,.28)}
 .btn.danger{color:var(--red);border-color:#f3c7c7}
 .btn.danger:hover{background:#fdf2f2}
+.btn.pay-btn{background:#eff6ff;color:var(--primary);border-color:#bfdbfe;font-weight:700}
+.btn.pay-btn:hover{background:#dbeafe}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;
   padding:10px 12px;background:#fff;border-bottom:1px solid var(--line);
@@ -79,8 +81,11 @@ main{padding:12px;max-width:1400px;margin:0 auto}
   padding:14px;margin-bottom:14px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
 .toolbar select,.toolbar input{width:auto;min-width:130px}
-.month-nav{display:flex;gap:6px;align-items:center}
 .month-pick{padding:8px 10px;font-size:14px;min-width:150px}
+
+/* ТАБЛИЦЫ (Десктоп) */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
 
 .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;-webkit-overflow-scrolling:touch}
 table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
@@ -100,8 +105,6 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
 
 .num{font-variant-numeric:tabular-nums;font-weight:700}
 .pos{color:var(--green)} .neg{color:var(--red)} .zero{color:var(--muted)}
-.clickable{cursor:pointer}
-.clickable:hover{background:#f4f7ff}
 
 .day-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;-webkit-overflow-scrolling:touch}
 .day-chips::-webkit-scrollbar{height:5px}
@@ -164,7 +167,7 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
   border-radius:50%;animation:spin 0.9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Мобильная версия: имя на всю ширину, кнопки огромные снизу */
+/* МОБИЛЬНАЯ ВЕРСИЯ */
 @media(max-width:640px){
   main{padding:8px}
   .card{padding:10px;border-radius:12px}
@@ -175,36 +178,36 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
   .topbar{padding:8px 10px}
   .month-pick{min-width:130px;font-size:13px;padding:7px 8px}
   
+  .desktop-only { display: none; }
+  .mobile-only { display: flex; flex-direction: column; gap: 10px; }
+
+  /* Карточка в журнале */
   .stu-row{
-    flex-direction:column;
-    align-items:stretch;
-    padding:10px;
-    gap:10px;
+    flex-direction:column; align-items:stretch; padding:10px; gap:10px;
   }
   .stu-row .nm{
-    text-align:center;
-    white-space:normal;
-    font-size:15px;
-    line-height:1.2;
-    padding:0 10px;
+    text-align:center; white-space:normal; font-size:15px; line-height:1.2; padding:0 10px;
   }
-  .name-wrap{
-    justify-content:center;
+  .name-wrap{ justify-content:center; }
+  .status-mini{ text-align:center; margin-top:4px; }
+  .seg{ width:100%; gap:6px; }
+  .seg button{ flex:1; width:auto; height:48px; font-size:20px; }
+
+  /* Карточки в питании и статистике */
+  .mobile-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
   }
-  .status-mini{
-    text-align:center;
-    margin-top:4px;
+  .mc-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px; border-bottom: 1px solid var(--line); padding-bottom: 8px;
+    flex-wrap: wrap; gap: 6px;
   }
-  .seg{
-    width:100%;
-    gap:6px;
-  }
-  .seg button{
-    flex:1;
-    width:auto;
-    height:48px;
-    font-size:20px;
-  }
+  .mc-header .name-wrap { font-weight: 700; font-size: 15px; }
+  .mc-body { display: flex; flex-direction: column; gap: 8px; }
+  .mc-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mc-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+  .mc-row span:first-child { color: var(--muted); font-weight: 500; }
+  .mc-action { display: flex; align-items: center; gap: 8px; }
 }
 </style>
 </head>
@@ -365,6 +368,7 @@ const KNOWN_HOLIDAYS = {
 
 const SESSION_KEY = 'school_meal_session';
 const REMEMBER_KEY = 'school_meal_login';
+const LOCAL_CACHE_KEY = 'school_meal_cache';
 
 function isPrimaryClass(cls){
   return ['1 класс','2 класс','3 класс','4 класс'].includes(cls);
@@ -397,62 +401,43 @@ function buildDefaultDB(){
   return {
     version: 4,
     academicYear: '2026-2027',
-    years: {
-      '2026-2027': { holidays: [...HOLIDAYS_2026_2027] }
-    },
+    years: { '2026-2027': { holidays: [...HOLIDAYS_2026_2027] } },
     cost: 500,
-    users, students, payments,
-    marks: {},
-    graduated: []
+    users, students, payments, marks: {}, graduated: []
   };
 }
 
 function migrateDB(data){
   if (!data || !data.students) return buildDefaultDB();
-
   if (!data.version || data.version < 3){
     for (const st of data.students){
       if (!st.statusHistory){
-        st.statusHistory = [{ from:'2026-09-01',
-          status: isPrimaryClass(st.cls) ? 'free' : 'paid' }];
+        st.statusHistory = [{ from:'2026-09-01', status: isPrimaryClass(st.cls) ? 'free' : 'paid' }];
       }
     }
     if (!data.payments) data.payments = [];
     data.version = 3;
   }
-
   if (data.version < 4){
     const year = '2026-2027';
     data.academicYear = year;
-    data.years = {
-      [year]: { holidays: data.holidays || [...HOLIDAYS_2026_2027] }
-    };
+    data.years = { [year]: { holidays: data.holidays || [...HOLIDAYS_2026_2027] } };
     delete data.month;
     delete data.holidays;
     data.graduated = data.graduated || [];
     data.version = 4;
   }
-
   if (!data.graduated) data.graduated = [];
   if (!data.years) data.years = {};
   for (const y of Object.keys(data.years)){
     if (!data.years[y].holidays) data.years[y].holidays = [];
   }
-
   return data;
 }
 
 let db = null;
 let session = null;
-let ui = {
-  tab: 'journal',
-  cls: CLASS_NAMES[0],
-  year: null,
-  viewMonth: null,
-  viewDay: null,
-  mode: 'day',
-  payFilter: 'all'
-};
+let ui = { tab: 'journal', cls: CLASS_NAMES[0], year: null, viewMonth: null, viewDay: null, mode: 'day', payFilter: 'all' };
 
 function setSyncStatus(state, text){
   const el = document.getElementById('syncStatus');
@@ -471,9 +456,7 @@ async function gasGet(){
 
 async function gasPost(payload){
   const res = await fetch(GAS_API_URL, {
-    method:'POST',
-    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload)
+    method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload)
   });
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const result = await res.json();
@@ -493,18 +476,22 @@ async function loadDB(){
     }
     const wasOld = !raw.version || raw.version < 4;
     const migrated = migrateDB(raw);
-    if (wasOld){
-      await gasPost({ action:'init', db: migrated });
-    }
+    if (wasOld) await gasPost({ action:'init', db: migrated });
     setSyncStatus('ok', '✓ готово');
     return migrated;
   } catch(e){
     console.error('[GAS] ошибка загрузки:', e);
     setSyncStatus('err', '✗ ошибка загрузки');
-    alert('Не удалось загрузить данные.\n' + e.message +
-          '\nПриложение работает на пустой копии. Изменения НЕ сохранятся.');
-    return buildDefaultDB();
+    return null;
   }
+}
+
+function getLocalDB() {
+  try {
+    const raw = localStorage.getItem(LOCAL_CACHE_KEY);
+    if (raw) return migrateDB(JSON.parse(raw));
+  } catch(e){}
+  return buildDefaultDB();
 }
 
 async function pushPatch(patch){
@@ -513,9 +500,7 @@ async function pushPatch(patch){
     await gasPost(patch);
     setSyncStatus('ok', '✓ сохранено');
     setTimeout(() => {
-      if (document.getElementById('syncStatus')?.classList.contains('sync-ok')){
-        setSyncStatus('idle', '');
-      }
+      if (document.getElementById('syncStatus')?.classList.contains('sync-ok')) setSyncStatus('idle', '');
     }, 2000);
   } catch(e){
     console.error('[GAS] ошибка сохранения:', e);
@@ -524,7 +509,6 @@ async function pushPatch(patch){
 }
 
 let markBuffer = {}, markTimer = null;
-
 function queueMark(sid, date, val){
   markBuffer[sid + '|' + date] = { sid, date, val };
   if (markTimer) clearTimeout(markTimer);
@@ -535,24 +519,14 @@ function flushMarks(){
   const entries = Object.values(markBuffer);
   markBuffer = {};
   if (!entries.length) return;
-  if (entries.length === 1){
-    pushPatch({ action:'setMark', sid: entries[0].sid, date: entries[0].date, val: entries[0].val });
-  } else {
-    pushPatch({ action:'setMarks', pairs: entries });
-  }
+  if (entries.length === 1) pushPatch({ action:'setMark', sid: entries[0].sid, date: entries[0].date, val: entries[0].val });
+  else pushPatch({ action:'setMarks', pairs: entries });
 }
-function isBusy(){
-  return markTimer || Object.keys(markBuffer).length > 0;
-}
+function isBusy(){ return markTimer || Object.keys(markBuffer).length > 0; }
 
 const pad = n => String(n).padStart(2,'0');
+function todayISO() { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
 
-function todayISO() {
-  const d = new Date();
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-}
-
-// Возвращает "сегодня" с правильным учебным годом (для тестов в 2024 году)
 function getEffectiveToday(){
   if (!ui.year) return todayISO();
   const d = new Date();
@@ -560,7 +534,6 @@ function getEffectiveToday(){
   const day = pad(d.getDate());
   const month = pad(m);
   const [startYear, endYear] = ui.year.split('-').map(Number);
-  // Сентябрь-Декабрь (9-12) -> первый год, Январь-Август (1-8) -> второй год
   const targetYear = m >= 9 ? startYear : endYear;
   return `${targetYear}-${month}-${day}`;
 }
@@ -602,43 +575,25 @@ const weekday    = k => ['вс','пн','вт','ср','чт','пт','сб'][new D
 
 function initUIForToday(){
   const years = Object.keys(db.years).sort();
-  if (!ui.year || !years.includes(ui.year)){
-    ui.year = db.academicYear;
-  }
+  if (!ui.year || !years.includes(ui.year)) ui.year = db.academicYear;
   const months = getMonthsForYear(ui.year);
   const today = getEffectiveToday();
   const todayMonth = monthOf(today);
 
-  if (months.includes(todayMonth)){
-    ui.viewMonth = todayMonth;
-  } else {
-    if (!ui.viewMonth || !months.includes(ui.viewMonth)) {
-      ui.viewMonth = months[0];
-    }
-  }
+  if (months.includes(todayMonth)) ui.viewMonth = todayMonth;
+  else { if (!ui.viewMonth || !months.includes(ui.viewMonth)) ui.viewMonth = months[0]; }
 
   const dates = getDatesInMonth(ui.viewMonth);
-  
-  // Если сегодня есть в списке дней — показываем сегодня
-  if (dates.includes(today)) {
-    ui.viewDay = today;
-  } else {
-    // Если сегодня выходной/каникулы, ищем ближайший ПРОШЕДШИЙ учебный день
+  if (dates.includes(today)) ui.viewDay = today;
+  else {
     const pastDates = dates.filter(d => d <= today);
-    if (pastDates.length > 0) {
-      ui.viewDay = pastDates[pastDates.length - 1];
-    } else {
-      // Если прошедших нет (например, мы в начале месяца), показываем первый
-      ui.viewDay = dates[0];
-    }
+    ui.viewDay = pastDates.length > 0 ? pastDates[pastDates.length - 1] : dates[0];
   }
 }
 
 function statusOn(st, date){
   let s = 'none';
-  for (const e of st.statusHistory || []){
-    if (date >= e.from) s = e.status;
-  }
+  for (const e of st.statusHistory || []){ if (date >= e.from) s = e.status; }
   return s;
 }
 function currentStatus(st){
@@ -652,19 +607,11 @@ function setStatusOn(st, status, from){
   st.statusHistory.push({ from, status });
   st.statusHistory.sort((a,b) => a.from.localeCompare(b.from));
 }
-function sumOfStudent(st){
-  return db.payments.filter(p => p.sid === st.id).reduce((a,p) => a + p.amount, 0);
-}
-function teacherOf(login){
-  const u = db.users.find(x => x.login === login);
-  return u ? u.name : (login || '—');
-}
+function sumOfStudent(st){ return db.payments.filter(p => p.sid === st.id).reduce((a,p) => a + p.amount, 0); }
+function teacherOf(login){ const u = db.users.find(x => x.login === login); return u ? u.name : (login || '—'); }
 
 const markOf  = (sid,d) => db.marks[sid+'|'+d] || '';
-const setMark = (sid,d,v) => {
-  const k = sid+'|'+d;
-  if (v) db.marks[k] = v; else delete db.marks[k];
-};
+const setMark = (sid,d,v) => { const k = sid+'|'+d; if (v) db.marks[k] = v; else delete db.marks[k]; };
 const CYCLE = ['+','-','Д/У',''];
 
 function statsOf(sid, dates){
@@ -677,9 +624,7 @@ function statsOf(sid, dates){
 }
 function chargedOf(st, dates){
   let c = 0;
-  for (const d of dates){
-    if (markOf(st.id, d) === '+' && statusOn(st, d) === 'paid') c += db.cost;
-  }
+  for (const d of dates){ if (markOf(st.id, d) === '+' && statusOn(st, d) === 'paid') c += db.cost; }
   return c;
 }
 function mealsOf(st, dates){
@@ -689,8 +634,7 @@ function mealsOf(st, dates){
 }
 function balanceOf(st, dates){ return sumOfStudent(st) - chargedOf(st, dates); }
 
-const esc = s => String(s).replace(/[&<>"']/g, c =>
-  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function currentClass(){
   if (session && session.role === 'teacher') return session.cls;
@@ -702,26 +646,14 @@ function promoteToNextYear(){
   if (session.role !== 'admin') return;
   const [y1, y2] = db.academicYear.split('-').map(Number);
   const newYear = `${y1+1}-${y2+1}`;
+  if (db.years[newYear] && db.years[newYear].initialized){ alert('Учебный год ' + newYear + ' уже существует'); return; }
+  if (!confirm(`Перевести всех учеников в следующий класс?\n11-классники станут выпускниками.\n\nУчебный год ${db.academicYear} → ${newYear}`)) return;
 
-  if (db.years[newYear] && db.years[newYear].initialized){
-    alert('Учебный год ' + newYear + ' уже существует');
-    return;
-  }
-
-  if (!confirm(`Перевести всех учеников в следующий класс?\n` +
-    `11-классники станут выпускниками.\n\n` +
-    `Учебный год ${db.academicYear} → ${newYear}`)) return;
-
-  const newStudents = [];
-  const graduated = [];
-
+  const newStudents = [], graduated = [];
   for (const st of db.students){
     const idx = CLASS_NAMES.indexOf(st.cls);
-    if (idx === 10){
-      graduated.push({ ...st, graduatedFrom: st.cls, graduatedAt: newYear });
-    } else {
-      newStudents.push({ ...st, cls: CLASS_NAMES[idx + 1] });
-    }
+    if (idx === 10) graduated.push({ ...st, graduatedFrom: st.cls, graduatedAt: newYear });
+    else newStudents.push({ ...st, cls: CLASS_NAMES[idx + 1] });
   }
 
   db.graduated = db.graduated || [];
@@ -729,24 +661,15 @@ function promoteToNextYear(){
   db.students = newStudents;
   db.academicYear = newYear;
 
-  if (!db.years[newYear]){
-    db.years[newYear] = {
-      holidays: [...(KNOWN_HOLIDAYS[newYear] || [])],
-      initialized: true
-    };
-  } else {
-    db.years[newYear].initialized = true;
-    if (!db.years[newYear].holidays || !db.years[newYear].holidays.length){
-      db.years[newYear].holidays = [...(KNOWN_HOLIDAYS[newYear] || [])];
-    }
-  }
+  if (!db.years[newYear]) db.years[newYear] = { holidays: [...(KNOWN_HOLIDAYS[newYear] || [])], initialized: true };
+  else { db.years[newYear].initialized = true; if (!db.years[newYear].holidays || !db.years[newYear].holidays.length) db.years[newYear].holidays = [...(KNOWN_HOLIDAYS[newYear] || [])]; }
 
   ui.year = newYear;
   initUIForToday();
-
+  localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
   render();
   pushPatch({ action:'init', db });
-  alert(`Готово!\nНовый учебный год: ${newYear}\nУчителя теперь ведут классы на ступень выше — в них уже новые ученики.`);
+  alert(`Готово!\nНовый учебный год: ${newYear}`);
 }
 
 function render(){
@@ -765,15 +688,10 @@ function render(){
   const yearSel = document.getElementById('yearPicker');
   if (years.length > 1){
     yearSel.hidden = false;
-    yearSel.innerHTML = years.map(y =>
-      `<option ${y===ui.year?'selected':''}>${y}</option>`).join('');
-  } else {
-    yearSel.hidden = true;
-  }
+    yearSel.innerHTML = years.map(y => `<option ${y===ui.year?'selected':''}>${y}</option>`).join('');
+  } else { yearSel.hidden = true; }
 
-  document.getElementById('whoName').textContent =
-    session.name + (session.role === 'admin' ? ' • админ' : '');
-
+  document.getElementById('whoName').textContent = session.name + (session.role === 'admin' ? ' • админ' : '');
   renderTabs();
   const main = document.getElementById('main');
   if (ui.tab === 'journal')  main.innerHTML = viewJournal();
@@ -798,15 +716,11 @@ function renderTabs(){
 }
 function classSelector(){
   if (session.role !== 'admin') return '';
-  return `<select data-change="class" style="max-width:140px">
-    ${CLASS_NAMES.map(c=>`<option ${c===currentClass()?'selected':''}>${c}</option>`).join('')}
-  </select>`;
+  return `<select data-change="class" style="max-width:140px">${CLASS_NAMES.map(c=>`<option ${c===currentClass()?'selected':''}>${c}</option>`).join('')}</select>`;
 }
 function monthSelector(){
   const months = getMonthsForYear(ui.year);
-  return `<select class="month-pick" data-change="month">
-    ${months.map(m=>`<option value="${m}" ${m===ui.viewMonth?'selected':''}>${monthTitle(m)}</option>`).join('')}
-  </select>`;
+  return `<select class="month-pick" data-change="month">${months.map(m=>`<option value="${m}" ${m===ui.viewMonth?'selected':''}>${monthTitle(m)}</option>`).join('')}</select>`;
 }
 function statusDot(st){
   const cur = currentStatus(st);
@@ -818,30 +732,22 @@ function viewJournal(){
   const dates = getDatesInMonth(ui.viewMonth);
   const studs = db.students.filter(s => s.cls === cls);
   if (!studs.length){
-    return `<div class="card">
-      <div class="toolbar">${classSelector()} ${monthSelector()}</div>
-      <p class="muted">В этом классе пока нет учеников.</p></div>`;
+    return `<div class="card"><div class="toolbar">${classSelector()} ${monthSelector()}</div><p class="muted">В этом классе пока нет учеников.</p></div>`;
   }
 
-  const head = `<div class="toolbar">
-    ${classSelector()} ${monthSelector()}
+  const head = `<div class="toolbar">${classSelector()} ${monthSelector()}
     <div style="display:flex;gap:6px;margin-left:auto">
       <button class="btn sm ${ui.mode==='day'?'primary':''}"  data-act="mode" data-mode="day">📅 По дню</button>
       <button class="btn sm ${ui.mode==='grid'?'primary':''}" data-act="mode" data-mode="grid">📋 Таблица</button>
     </div>
   </div>`;
 
-  const content = ui.mode === 'day'
-    ? journalDay(studs, dates)
-    : journalGrid(studs, dates);
-
+  const content = ui.mode === 'day' ? journalDay(studs, dates) : journalGrid(studs, dates);
   return `<div class="card">${head}${content}${legend()}</div>`;
 }
 
 function journalDay(studs, dates){
-  if (!dates.length){
-    return `<p class="muted">В этом месяце нет учебных дней (каникулы/праздники).</p>`;
-  }
+  if (!dates.length) return `<p class="muted">В этом месяце нет учебных дней.</p>`;
   let day = ui.viewDay;
   if (!day || !dates.includes(day)) day = dates[0];
 
@@ -849,15 +755,13 @@ function journalDay(studs, dates){
   const chips = `<div class="day-chips">${dates.map(d=>{
     const n = studs.filter(s=>markOf(s.id,d)==='+').length;
     const isToday = d === today;
-    return `<button class="chip ${d===day?'active':''} ${isToday?'today':''}" data-act="day" data-date="${d}">
-      ${dayNum(d)}<small>${weekday(d)}·${n}</small></button>`;
+    return `<button class="chip ${d===day?'active':''} ${isToday?'today':''}" data-act="day" data-date="${d}">${dayNum(d)}<small>${weekday(d)}·${n}</small></button>`;
   }).join('')}</div>`;
 
   const rows = studs.map(s=>{
     const v = markOf(s.id, day);
     const cur = currentStatus(s);
-    const btn = (val,label,cls) =>
-      `<button class="${v===val?cls:''}" data-act="set" data-sid="${s.id}" data-date="${day}" data-val="${val}">${label}</button>`;
+    const btn = (val,label,cls) => `<button class="${v===val?cls:''}" data-act="set" data-sid="${s.id}" data-date="${day}" data-val="${val}">${label}</button>`;
     return `<div class="stu-row">
       <div class="nm">
         <div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div>
@@ -872,11 +776,9 @@ function journalDay(studs, dates){
     </div>`;
   }).join('');
 
-  const dayTitle = `${dayNum(day)} ${monthTitle(ui.viewMonth)} · ${weekday(day)}`;
-
   return `${chips}
     <div class="toolbar" style="margin:0 0 10px">
-      <strong style="font-size:14px">${dayTitle}</strong>
+      <strong style="font-size:14px">${dayNum(day)} ${monthTitle(ui.viewMonth)} · ${weekday(day)}</strong>
       <button class="btn sm" style="margin-left:auto" data-act="allplus" data-date="${day}">✓ Все «+»</button>
       <button class="btn sm" data-act="clearall" data-date="${day}">Очистить</button>
     </div>
@@ -885,14 +787,7 @@ function journalDay(studs, dates){
 
 function journalGrid(studs, dates){
   if (!dates.length) return `<p class="muted">В этом месяце нет учебных дней.</p>`;
-  const head = `<tr>
-    <th class="name sticky-col">Ученик</th>
-    ${dates.map(d=>`<th title="${weekday(d)}">${dayNum(d)}</th>`).join('')}
-    <th style="color:var(--green)">+</th>
-    <th style="color:var(--red)">−</th>
-    <th style="color:var(--amber)">Д</th>
-    <th>Остаток</th>
-  </tr>`;
+  const head = `<tr><th class="name sticky-col">Ученик</th>${dates.map(d=>`<th title="${weekday(d)}">${dayNum(d)}</th>`).join('')}<th style="color:var(--green)">+</th><th style="color:var(--red)">−</th><th style="color:var(--amber)">Д</th><th>Остаток</th></tr>`;
   const body = studs.map(s=>{
     const st = statsOf(s.id, dates);
     const bal = balanceOf(s, dates);
@@ -902,22 +797,13 @@ function journalGrid(studs, dates){
       const lb = v === '+' ? '+' : v === '-' ? '−' : v === 'Д/У' ? 'Д' : '·';
       return `<td class="cell ${cl}" data-act="mark" data-sid="${s.id}" data-date="${d}">${lb}</td>`;
     }).join('');
-    return `<tr>
-      <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
-      ${cells}
-      <td class="num pos">${st.plus}</td>
-      <td class="num neg">${st.minus}</td>
-      <td class="num" style="color:var(--amber)">${st.du}</td>
-      <td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')}</td>
-    </tr>`;
+    return `<tr><td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>${cells}<td class="num pos">${st.plus}</td><td class="num neg">${st.minus}</td><td class="num" style="color:var(--amber)">${st.du}</td><td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')}</td></tr>`;
   }).join('');
-  return `<div class="table-wrap"><table>
-    <thead>${head}</thead><tbody>${body}</tbody>
-  </table></div>`;
+  return `<div class="table-wrap desktop-only"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
 }
 
 function legend(){
-  return `<div class="legend">
+  return `<div class="legend desktop-only">
     <span><i class="dot" style="background:#e8f7ee;border:1px solid #b9e6cb"></i> «+» был</span>
     <span><i class="dot" style="background:#fdeaea;border:1px solid #f2c0c0"></i> «−» не был</span>
     <span><i class="dot" style="background:#fef6e7;border:1px solid #f0d9a8"></i> «Д/У»</span>
@@ -944,17 +830,17 @@ function viewStats(){
       const total = ss.reduce((a,s)=>a+statsOf(s.id,dates).plus,0);
       return `<tr><td class="name sticky-col">${c}</td>${cells}<td class="num pos">${total}</td></tr>`;
     }).join('');
-    summary = `<div class="card">
+    summary = `<div class="card desktop-only">
       <h3>Сводка по школе</h3>
       <div class="table-wrap" style="margin-top:10px"><table>
-        <thead><tr><th class="name sticky-col">Класс</th>
-          ${dates.map(d=>`<th>${dayNum(d)}</th>`).join('')}<th>Всего</th></tr></thead>
+        <thead><tr><th class="name sticky-col">Класс</th>${dates.map(d=>`<th>${dayNum(d)}</th>`).join('')}<th>Всего</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
     </div>`;
   }
 
-  const rows = studs.map(s=>{
+  // Десктопная таблица
+  const trRows = studs.map(s=>{
     const st = statsOf(s.id, dates);
     const bal = balanceOf(s, dates);
     const cur = currentStatus(s);
@@ -962,13 +848,33 @@ function viewStats(){
     return `<tr>
       <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
       <td><span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span></td>
-      <td class="num pos">${st.plus}</td>
-      <td class="num neg">${st.minus}</td>
-      <td class="num" style="color:var(--amber)">${st.du}</td>
-      <td class="num">${pct}%</td>
+      <td class="num pos">${st.plus}</td><td class="num neg">${st.minus}</td>
+      <td class="num" style="color:var(--amber)">${st.du}</td><td class="num">${pct}%</td>
       <td class="num">${sumOfStudent(s).toLocaleString('ru-RU')}</td>
       <td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')}</td>
     </tr>`;
+  }).join('');
+
+  // Мобильные карточки
+  const mobileCards = studs.map(s=>{
+    const st = statsOf(s.id, dates);
+    const bal = balanceOf(s, dates);
+    const cur = currentStatus(s);
+    const pct = dates.length ? Math.round(st.plus/dates.length*100) : 0;
+    return `<div class="mobile-card">
+      <div class="mc-header">
+        <div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div>
+        <span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span>
+      </div>
+      <div class="mc-body mc-grid-2">
+        <div class="mc-row"><span>Был:</span> <span class="num pos">${st.plus}</span></div>
+        <div class="mc-row"><span>Не был:</span> <span class="num neg">${st.minus}</span></div>
+        <div class="mc-row"><span>Д/У:</span> <span class="num" style="color:var(--amber)">${st.du}</span></div>
+        <div class="mc-row"><span>Посещ.:</span> <span class="num">${pct}%</span></div>
+        <div class="mc-row"><span>Внесено:</span> <span class="num">${sumOfStudent(s).toLocaleString('ru-RU')} ₸</span></div>
+        <div class="mc-row"><span>Остаток:</span> <span class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')} ₸</span></div>
+      </div>
+    </div>`;
   }).join('');
 
   const totPlus = studs.reduce((a,s)=>a+statsOf(s.id,dates).plus,0);
@@ -984,13 +890,13 @@ function viewStats(){
         <div class="kpi"><div class="l">«−»</div><div class="v neg">${totMin}</div></div>
         <div class="kpi"><div class="l">Дней</div><div class="v">${dates.length}</div></div>
       </div>
-      <div class="table-wrap"><table>
-        <thead><tr>
-          <th class="name sticky-col">Ученик</th><th>Статус</th><th>Был</th><th>Не был</th>
-          <th>Д/У</th><th>%</th><th>Внесено</th><th>Остаток</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
+      
+      <div class="table-wrap desktop-only"><table>
+        <thead><tr><th class="name sticky-col">Ученик</th><th>Статус</th><th>Был</th><th>Не был</th><th>Д/У</th><th>%</th><th>Внесено</th><th>Остаток</th></tr></thead>
+        <tbody>${trRows}</tbody>
       </table></div>
+
+      <div class="mobile-only" style="margin-top:10px">${mobileCards}</div>
     </div>`;
 }
 
@@ -999,7 +905,8 @@ function viewFood(){
   const dates = getDatesInMonth(ui.viewMonth);
   const studs = db.students.filter(s => s.cls === cls);
 
-  const rows = studs.map(s=>{
+  // Десктопная таблица
+  const trRows = studs.map(s=>{
     const cur = currentStatus(s);
     const charged = chargedOf(s, dates);
     const meals = mealsOf(s, dates);
@@ -1007,19 +914,43 @@ function viewFood(){
     return `<tr>
       <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
       <td><span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span></td>
-      <td class="num clickable" style="color:var(--primary)"
-          data-act="pay" data-sid="${s.id}" title="Кликните, чтобы внести оплату">
-        ${sumOfStudent(s).toLocaleString('ru-RU')} <b>+</b>
+      <td>
+        <div class="num">${sumOfStudent(s).toLocaleString('ru-RU')} ₸</div>
+        <button class="btn sm pay-btn" style="margin-top:4px;font-size:11px;padding:2px 6px" data-act="pay" data-sid="${s.id}">➕ Внести</button>
       </td>
       <td class="num">${meals}</td>
       <td class="num">−${charged.toLocaleString('ru-RU')}</td>
-      <td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">
-        ${bal.toLocaleString('ru-RU')}
-        <div class="muted" style="font-size:11px;font-weight:500">
-          ${bal<0?'долг':bal<db.cost?'мало':'ок'}
-        </div>
-      </td>
+      <td class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')}</td>
     </tr>`;
+  }).join('');
+
+  // Мобильные карточки
+  const mobileCards = studs.map(s=>{
+    const cur = currentStatus(s);
+    const charged = chargedOf(s, dates);
+    const meals = mealsOf(s, dates);
+    const bal = sumOfStudent(s) - charged;
+    return `<div class="mobile-card">
+      <div class="mc-header">
+        <div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div>
+        <span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span>
+      </div>
+      <div class="mc-body">
+        <div class="mc-row">
+          <span>Внесено:</span>
+          <div class="mc-action">
+            <span class="num" style="color:var(--primary)">${sumOfStudent(s).toLocaleString('ru-RU')} ₸</span>
+            <button class="btn sm primary" data-act="pay" data-sid="${s.id}">➕ Внести</button>
+          </div>
+        </div>
+        <div class="mc-row"><span>Обедов:</span> <span class="num">${meals}</span></div>
+        <div class="mc-row"><span>Списано:</span> <span class="num">−${charged.toLocaleString('ru-RU')} ₸</span></div>
+        <div class="mc-row" style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)">
+          <span>Остаток:</span> 
+          <span class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')} ₸</span>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 
   const totalBal = studs.reduce((a,s)=>a + balanceOf(s, dates), 0);
@@ -1040,21 +971,20 @@ function viewFood(){
         <div class="kpi"><div class="l">Остаток</div><div class="v ${totalBal<0?'neg':'pos'}">${totalBal.toLocaleString('ru-RU')}</div></div>
         <div class="kpi"><div class="l">С долгом</div><div class="v ${debts?'neg':''}">${debts}</div></div>
       </div>
-      <p class="muted">Остаток = Внесено − «+» (пока платник) × ${db.cost} ₸. Кликните по сумме — внести оплату.</p>
-      <div class="table-wrap"><table>
-        <thead><tr>
-          <th class="name sticky-col">Ученик</th><th>Статус</th><th>Внесено</th>
-          <th>Обедов</th><th>Списано</th><th>Остаток</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
+      <p class="muted desktop-only">Остаток = Внесено − «+» (пока платник) × ${db.cost} ₸.</p>
+      
+      <div class="table-wrap desktop-only"><table>
+        <thead><tr><th class="name sticky-col">Ученик</th><th>Статус</th><th>Внесено</th><th>Обедов</th><th>Списано</th><th>Остаток</th></tr></thead>
+        <tbody>${trRows}</tbody>
       </table></div>
+
+      <div class="mobile-only" style="margin-top:10px">${mobileCards}</div>
     </div>`;
 }
 
 function viewPayments(){
   const isAdmin = session.role === 'admin';
   let payments = db.payments.slice();
-
   if (!isAdmin){
     payments = payments.filter(p => {
       const st = db.students.find(s => s.id === p.sid);
@@ -1083,20 +1013,12 @@ function viewPayments(){
       const u = db.users.find(x => x.login === login);
       const name = u ? u.name : (login === 'admin' ? 'Администратор' : login);
       const cls = u ? u.cls : '';
-      return `<tr>
-        <td class="name">${esc(name)}</td>
-        <td>${cls || '—'}</td>
-        <td class="num">${d.count}</td>
-        <td class="num pos">${d.total.toLocaleString('ru-RU')} ₸</td>
-      </tr>`;
+      return `<tr><td class="name">${esc(name)}</td><td>${cls || '—'}</td><td class="num">${d.count}</td><td class="num pos">${d.total.toLocaleString('ru-RU')} ₸</td></tr>`;
     }).join('');
-    summary = `<div class="card">
+    summary = `<div class="card desktop-only">
       <h3>Собрано по классным руководителям</h3>
       <div class="table-wrap" style="margin-top:10px"><table>
-        <thead><tr>
-          <th class="name">Кл. руководитель</th><th>Класс</th>
-          <th>Платежей</th><th>Сумма</th>
-        </tr></thead>
+        <thead><tr><th class="name">Кл. руководитель</th><th>Класс</th><th>Платежей</th><th>Сумма</th></tr></thead>
         <tbody>${rows || '<tr><td colspan="4" class="muted">Пока нет взносов</td></tr>'}</tbody>
       </table></div>
     </div>`;
@@ -1106,36 +1028,24 @@ function viewPayments(){
     const st = db.students.find(s => s.id === p.sid);
     if (!st) return '';
     return `<tr>
-      <td>${p.date || '—'}</td>
-      <td class="name">${esc(st.name)}</td>
-      <td>${st.cls}</td>
-      <td>${esc(teacherOf(p.by))}</td>
-      <td class="num pos">${p.amount.toLocaleString('ru-RU')} ₸</td>
+      <td>${p.date || '—'}</td><td class="name">${esc(st.name)}</td><td>${st.cls}</td>
+      <td>${esc(teacherOf(p.by))}</td><td class="num pos">${p.amount.toLocaleString('ru-RU')} ₸</td>
       <td class="muted">${esc(p.note || '')}</td>
       ${isAdmin ? `<td><button class="btn sm danger" data-act="del-payment" data-id="${p.id}">✕</button></td>` : ''}
     </tr>`;
   }).join('');
 
-  const filterUI = isAdmin ? `
-    <select data-change="payFilter" style="max-width:140px">
-      <option value="all" ${ui.payFilter==='all'?'selected':''}>Все классы</option>
-      ${CLASS_NAMES.map(c=>`<option ${ui.payFilter===c?'selected':''}>${c}</option>`).join('')}
-    </select>` : '';
+  const filterUI = isAdmin ? `<select data-change="payFilter" style="max-width:140px"><option value="all" ${ui.payFilter==='all'?'selected':''}>Все классы</option>${CLASS_NAMES.map(c=>`<option ${ui.payFilter===c?'selected':''}>${c}</option>`).join('')}</select>` : '';
 
   return `${summary}
     <div class="card">
       <div class="toolbar">
         <h2 style="margin:0">💰 Взносы${isAdmin ? '' : ' · ' + session.cls}</h2>
         ${filterUI}
-        <span class="muted" style="margin-left:auto">
-          Итого: <b class="pos">${totalFiltered.toLocaleString('ru-RU')} ₸</b> (${payments.length})
-        </span>
+        <span class="muted" style="margin-left:auto">Итого: <b class="pos">${totalFiltered.toLocaleString('ru-RU')} ₸</b> (${payments.length})</span>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr>
-          <th>Дата</th><th class="name">Ученик</th><th>Класс</th><th>Внёс</th>
-          <th>Сумма</th><th>Примечание</th>${isAdmin?'<th></th>':''}
-        </tr></thead>
+        <thead><tr><th>Дата</th><th class="name">Ученик</th><th>Класс</th><th>Внёс</th><th>Сумма</th><th>Примечание</th>${isAdmin?'<th></th>':''}</tr></thead>
         <tbody>${detailRows || `<tr><td colspan="${isAdmin?7:6}" class="muted">Пока нет взносов</td></tr>`}</tbody>
       </table></div>
     </div>`;
@@ -1151,17 +1061,8 @@ function viewAdmin(){
     const cur = currentStatus(s);
     return `<tr>
       <td><input value="${esc(s.name)}" data-change="sname" data-sid="${s.id}"></td>
-      <td class="num clickable" style="color:var(--primary)"
-          data-act="pay" data-sid="${s.id}">
-        ${sumOfStudent(s).toLocaleString('ru-RU')} <b>+</b>
-      </td>
-      <td>
-        <select data-change="status" data-sid="${s.id}" style="width:130px">
-          <option value="paid" ${cur.status==='paid'?'selected':''}>платник</option>
-          <option value="free" ${cur.status==='free'?'selected':''}>бесплатник</option>
-          <option value="none" ${cur.status==='none'?'selected':''}>не питается</option>
-        </select>
-      </td>
+      <td class="num clickable" style="color:var(--primary)" data-act="pay" data-sid="${s.id}">${sumOfStudent(s).toLocaleString('ru-RU')} <b>+</b></td>
+      <td><select data-change="status" data-sid="${s.id}" style="width:130px"><option value="paid" ${cur.status==='paid'?'selected':''}>платник</option><option value="free" ${cur.status==='free'?'selected':''}>бесплатник</option><option value="none" ${cur.status==='none'?'selected':''}>не питается</option></select></td>
       <td><input type="date" value="${cur.from}" data-change="statusFrom" data-sid="${s.id}" style="width:135px"></td>
       <td><button class="btn sm danger" data-act="del-student" data-sid="${s.id}">✕</button></td>
     </tr>`;
@@ -1170,18 +1071,8 @@ function viewAdmin(){
   const userRows = db.users.map((u,i)=>`<tr>
     <td><input value="${esc(u.login)}" data-change="user" data-i="${i}" data-f="login" style="width:110px"></td>
     <td><input value="${esc(u.pass)}"  data-change="user" data-i="${i}" data-f="pass"  style="width:100px"></td>
-    <td>
-      <select data-change="user" data-i="${i}" data-f="role" style="width:110px">
-        <option value="teacher" ${u.role==='teacher'?'selected':''}>учитель</option>
-        <option value="admin"   ${u.role==='admin'?'selected':''}>админ</option>
-      </select>
-    </td>
-    <td>
-      <select data-change="user" data-i="${i}" data-f="cls" style="width:130px">
-        <option value="">—</option>
-        ${CLASS_NAMES.map(c=>`<option ${u.cls===c?'selected':''}>${c}</option>`).join('')}
-      </select>
-    </td>
+    <td><select data-change="user" data-i="${i}" data-f="role" style="width:110px"><option value="teacher" ${u.role==='teacher'?'selected':''}>учитель</option><option value="admin" ${u.role==='admin'?'selected':''}>админ</option></select></td>
+    <td><select data-change="user" data-i="${i}" data-f="cls" style="width:130px"><option value="">—</option>${CLASS_NAMES.map(c=>`<option ${u.cls===c?'selected':''}>${c}</option>`).join('')}</select></td>
     <td><input value="${esc(u.name)}" data-change="user" data-i="${i}" data-f="name" style="width:160px"></td>
     <td><button class="btn sm danger" data-act="del-user" data-i="${i}">✕</button></td>
   </tr>`).join('');
@@ -1190,13 +1081,10 @@ function viewAdmin(){
   <div class="grid2">
     <div class="card">
       <h3>Параметры</h3>
-      <div class="field"><label>Активный учебный год</label>
-        <input type="text" value="${db.academicYear}" disabled style="background:#f7f9fc"></div>
-      <div class="field"><label>Стоимость одного питания, ₸</label>
-        <input type="number" step="50" min="0" value="${db.cost}" data-change="cost"></div>
-      <div class="field"><label>Праздники / каникулы · год ${year}</label>
-        <input value="${yearHolidays.join(', ')}" data-change="holidays"></div>
-      <p class="muted">Даты — в формате YYYY-MM-DD через запятую. Праздники относятся к выбранному в шапке году.</p>
+      <div class="field"><label>Активный учебный год</label><input type="text" value="${db.academicYear}" disabled style="background:#f7f9fc"></div>
+      <div class="field"><label>Стоимость одного питания, ₸</label><input type="number" step="50" min="0" value="${db.cost}" data-change="cost"></div>
+      <div class="field"><label>Праздники / каникулы · год ${year}</label><input value="${yearHolidays.join(', ')}" data-change="holidays"></div>
+      <p class="muted">Даты — в формате YYYY-MM-DD через запятую.</p>
       <button class="btn sm primary" data-act="promote">🎓 Перевести в следующий год</button>
     </div>
     <div class="card">
@@ -1204,35 +1092,19 @@ function viewAdmin(){
       <div class="row" style="flex-wrap:wrap;gap:8px">
         <button class="btn sm" data-act="export-json">⬇ Резервная копия (JSON)</button>
         <button class="btn sm" data-act="export-csv">⬇ CSV / Excel</button>
-        <label class="btn sm" style="cursor:pointer">⬆ Загрузить JSON
-          <input type="file" accept=".json" data-change="import" hidden></label>
+        <label class="btn sm" style="cursor:pointer">⬆ Загрузить JSON<input type="file" accept=".json" data-change="import" hidden></label>
         <button class="btn sm danger" data-act="reset">Сбросить всё</button>
       </div>
       <p class="muted" style="margin-top:10px">Выпускники: ${db.graduated.length}</p>
     </div>
   </div>
   <div class="card">
-    <div class="toolbar">
-      ${classSelector()}
-      <h3 style="margin:0">Ученики · ${cls}</h3>
-      <button class="btn sm primary" style="margin-left:auto" data-act="add-student">+ Добавить</button>
-    </div>
-    <div class="table-wrap"><table>
-      <thead><tr>
-        <th class="name">Ф.И.О.</th><th>Внесено</th><th>Статус</th><th>С даты</th><th></th>
-      </tr></thead>
-      <tbody>${studRows}</tbody>
-    </table></div>
+    <div class="toolbar">${classSelector()}<h3 style="margin:0">Ученики · ${cls}</h3><button class="btn sm primary" style="margin-left:auto" data-act="add-student">+ Добавить</button></div>
+    <div class="table-wrap"><table><thead><tr><th class="name">Ф.И.О.</th><th>Внесено</th><th>Статус</th><th>С даты</th><th></th></tr></thead><tbody>${studRows}</tbody></table></div>
   </div>
   <div class="card">
-    <div class="toolbar">
-      <h3 style="margin:0">Пользователи</h3>
-      <button class="btn sm primary" style="margin-left:auto" data-act="add-user">+ Добавить</button>
-    </div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Логин</th><th>Пароль</th><th>Роль</th><th>Класс</th><th>Подпись</th><th></th></tr></thead>
-      <tbody>${userRows}</tbody>
-    </table></div>
+    <div class="toolbar"><h3 style="margin:0">Пользователи</h3><button class="btn sm primary" style="margin-left:auto" data-act="add-user">+ Добавить</button></div>
+    <div class="table-wrap"><table><thead><tr><th>Логин</th><th>Пароль</th><th>Роль</th><th>Класс</th><th>Подпись</th><th></th></tr></thead><tbody>${userRows}</tbody></table></div>
   </div>`;
 }
 
@@ -1249,10 +1121,7 @@ function openPayModal(sid){
   document.getElementById('payModal').hidden = false;
   setTimeout(() => document.getElementById('payAmount').focus(), 30);
 }
-function closePayModal(){
-  document.getElementById('payModal').hidden = true;
-  payState.sid = null;
-}
+function closePayModal(){ document.getElementById('payModal').hidden = true; payState.sid = null; }
 function savePayment(){
   const amt  = Number(document.getElementById('payAmount').value);
   const date = document.getElementById('payDate').value;
@@ -1261,11 +1130,9 @@ function savePayment(){
   if (!date){ alert('Укажите дату'); return; }
   const st = db.students.find(s => s.id === payState.sid);
   if (!st) return;
-  const payment = {
-    id: 'p' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
-    sid: st.id, amount: amt, date, by: session.login, note
-  };
+  const payment = { id: 'p' + Date.now() + '-' + Math.random().toString(36).slice(2,6), sid: st.id, amount: amt, date, by: session.login, note };
   db.payments.push(payment);
+  localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
   closePayModal();
   render();
   pushPatch({ action:'addPayment', payment });
@@ -1277,20 +1144,12 @@ document.getElementById('loginForm').addEventListener('submit', e=>{
   const login = String(f.get('login')).trim();
   const pass  = String(f.get('pass'));
   const u = db.users.find(x => x.login === login && x.pass === pass);
-  if (!u){
-    document.getElementById('loginErr').textContent = 'Неверный логин или пароль';
-    return;
-  }
+  if (!u){ document.getElementById('loginErr').textContent = 'Неверный логин или пароль'; return; }
   document.getElementById('loginErr').textContent = '';
   session = { login:u.login, role:u.role, name:u.name, cls:u.cls };
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-
-  if (document.getElementById('rememberMe').checked){
-    localStorage.setItem(REMEMBER_KEY, login);
-  } else {
-    localStorage.removeItem(REMEMBER_KEY);
-  }
-
+  if (document.getElementById('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, login);
+  else localStorage.removeItem(REMEMBER_KEY);
   ui.cls = u.role === 'teacher' ? u.cls : CLASS_NAMES[0];
   initUIForToday();
   e.target.reset();
@@ -1303,7 +1162,6 @@ document.getElementById('payAmount').addEventListener('keydown', e=>{
 
 document.addEventListener('click', e=>{
   if (e.target.id === 'payModal'){ closePayModal(); return; }
-
   const t = e.target.closest('[data-act]');
   if (!t) return;
   const a = t.dataset.act;
@@ -1312,8 +1170,8 @@ document.addEventListener('click', e=>{
   if (a === 'refresh'){
     (async () => {
       const fresh = await loadDB();
-      db = fresh;
-      render();
+      if (fresh) { db = fresh; localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db)); render(); }
+      else alert('Не удалось обновить данные. Проверьте интернет.');
     })();
     return;
   }
@@ -1325,34 +1183,29 @@ document.addEventListener('click', e=>{
     const sid = t.dataset.sid, d = t.dataset.date;
     const cur = markOf(sid, d);
     const next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
-    setMark(sid, d, next); render();
+    setMark(sid, d, next); 
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
+    render();
     queueMark(sid, d, next);
     return;
   }
   if (a === 'set'){
     const sid = t.dataset.sid, d = t.dataset.date, v = t.dataset.val;
-    setMark(sid, d, v); render();
+    setMark(sid, d, v); 
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
+    render();
     queueMark(sid, d, v);
     return;
   }
-  if (a === 'allplus'){
+  if (a === 'allplus' || a === 'clearall'){
     const d = t.dataset.date;
+    const val = a === 'allplus' ? '+' : '';
     const pairs = [];
     db.students.filter(s => s.cls === currentClass()).forEach(s => {
-      setMark(s.id, d, '+');
-      pairs.push({ sid: s.id, date: d, val: '+' });
+      setMark(s.id, d, val);
+      pairs.push({ sid: s.id, date: d, val: val });
     });
-    render();
-    pushPatch({ action:'setMarks', pairs });
-    return;
-  }
-  if (a === 'clearall'){
-    const d = t.dataset.date;
-    const pairs = [];
-    db.students.filter(s => s.cls === currentClass()).forEach(s => {
-      setMark(s.id, d, '');
-      pairs.push({ sid: s.id, date: d, val: '' });
-    });
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'setMarks', pairs });
     return;
@@ -1365,11 +1218,11 @@ document.addEventListener('click', e=>{
     if (session.role !== 'admin') return;
     if (!confirm('Удалить этот платёж?')) return;
     db.payments = db.payments.filter(p => p.id !== t.dataset.id);
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'delPayment', id: t.dataset.id });
     return;
   }
-
   if (a === 'promote'){ promoteToNextYear(); return; }
 
   if (a === 'add-student'){
@@ -1379,10 +1232,10 @@ document.addEventListener('click', e=>{
     const student = {
       id: 's' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
       cls, name: name.trim(),
-      statusHistory: [{ from: getEffectiveToday(),
-                        status: isPrimaryClass(cls) ? 'free' : 'paid' }]
+      statusHistory: [{ from: getEffectiveToday(), status: isPrimaryClass(cls) ? 'free' : 'paid' }]
     };
     db.students.push(student);
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'addStudent', student });
     return;
@@ -1393,14 +1246,15 @@ document.addEventListener('click', e=>{
     db.students = db.students.filter(s => s.id !== sid);
     db.payments = db.payments.filter(p => p.sid !== sid);
     Object.keys(db.marks).forEach(k => { if (k.startsWith(sid + '|')) delete db.marks[k]; });
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'delStudent', sid });
     return;
   }
   if (a === 'add-user'){
-    const user = { login:'new'+db.users.length, pass:'1234', role:'teacher',
-                   name:'Новый учитель', cls:CLASS_NAMES[0] };
+    const user = { login:'new'+db.users.length, pass:'1234', role:'teacher', name:'Новый учитель', cls:CLASS_NAMES[0] };
     db.users.push(user);
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'addUser', user });
     return;
@@ -1409,19 +1263,19 @@ document.addEventListener('click', e=>{
     if (!confirm('Удалить пользователя?')) return;
     const index = Number(t.dataset.i);
     db.users.splice(index, 1);
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'delUser', index });
     return;
   }
-  if (a === 'export-json'){
-    download('backup-' + db.academicYear + '.json', JSON.stringify(db, null, 2), 'application/json'); return;
-  }
+  if (a === 'export-json'){ download('backup-' + db.academicYear + '.json', JSON.stringify(db, null, 2), 'application/json'); return; }
   if (a === 'export-csv'){ exportCSV(); return; }
   if (a === 'reset'){
     if (!confirm('Сбросить ВСЕ данные и пересоздать базу?')) return;
     db = buildDefaultDB();
     ui.year = db.academicYear;
     initUIForToday();
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'init', db });
     return;
@@ -1438,7 +1292,6 @@ document.addEventListener('change', e=>{
     const months = getMonthsForYear(ui.year);
     const today = getEffectiveToday();
     const todayMonth = monthOf(today);
-    
     if (months.includes(todayMonth) && ui.year === db.academicYear){
       ui.viewMonth = todayMonth;
       const dates = getDatesInMonth(todayMonth);
@@ -1464,16 +1317,18 @@ document.addEventListener('change', e=>{
   if (c === 'payFilter'){ ui.payFilter = t.value; render(); return; }
 
   if (c === 'cost'){
-    db.cost = Math.max(0, Number(t.value) || 0); render();
+    db.cost = Math.max(0, Number(t.value) || 0); 
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
+    render();
     pushPatch({ action:'setParam', key:'cost', value: db.cost });
     return;
   }
   if (c === 'holidays'){
     const year = ui.year || db.academicYear;
-    const arr = t.value.split(',').map(s => s.trim())
-      .filter(s => /^\d{4}-\d{2}-\d{2}$/.test(s));
+    const arr = t.value.split(',').map(s => s.trim()).filter(s => /^\d{4}-\d{2}-\d{2}$/.test(s));
     if (!db.years[year]) db.years[year] = { holidays: [] };
     db.years[year].holidays = arr;
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     pushPatch({ action:'setParam', key:'holidays', year, value: arr });
     return;
@@ -1483,6 +1338,7 @@ document.addEventListener('change', e=>{
     const s = db.students.find(x => x.id === t.dataset.sid);
     if (s){
       s.name = t.value.trim();
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
       pushPatch({ action:'updateStudent', sid: s.id, name: s.name });
     }
     return;
@@ -1492,6 +1348,7 @@ document.addEventListener('change', e=>{
     if (s){
       const today = getEffectiveToday();
       setStatusOn(s, t.value, today);
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
       render();
       pushPatch({ action:'setStatus', sid: s.id, status: t.value, from: today });
     }
@@ -1502,6 +1359,7 @@ document.addEventListener('change', e=>{
     if (s && t.value){
       const cur = currentStatus(s);
       setStatusOn(s, cur.status, t.value);
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
       render();
       pushPatch({ action:'setStatus', sid: s.id, status: cur.status, from: t.value });
     }
@@ -1512,6 +1370,7 @@ document.addEventListener('change', e=>{
     const u = db.users[index];
     if (u){
       u[t.dataset.f] = t.value;
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
       pushPatch({ action:'updateUser', index, field: t.dataset.f, value: t.value });
     }
     return;
@@ -1527,6 +1386,7 @@ document.addEventListener('change', e=>{
         db = data;
         ui.year = db.academicYear;
         initUIForToday();
+        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
         render();
         pushPatch({ action:'init', db });
         alert('Данные загружены и отправлены на сервер');
@@ -1549,20 +1409,16 @@ function exportCSV(){
   const dates = getDatesInMonth(ui.viewMonth);
   const studs = db.students.filter(s => s.cls === cls);
   const sep = ';';
-  const head = ['Ученик','Статус', ...dates.map(shortDate),
-                'Был','Не был','Д/У','Внесено','Списано','Остаток'];
+  const head = ['Ученик','Статус', ...dates.map(shortDate), 'Был','Не был','Д/У','Внесено','Списано','Остаток'];
   const rows = [head];
   studs.forEach(s=>{
     const st = statsOf(s.id, dates);
     const charged = chargedOf(s, dates);
     const bal = sumOfStudent(s) - charged;
     const cur = currentStatus(s);
-    rows.push([s.name, STATUS_LABEL[cur.status],
-      ...dates.map(d => markOf(s.id, d) || ''),
-      st.plus, st.minus, st.du, sumOfStudent(s), charged, bal]);
+    rows.push([s.name, STATUS_LABEL[cur.status], ...dates.map(d => markOf(s.id, d) || ''), st.plus, st.minus, st.du, sumOfStudent(s), charged, bal]);
   });
-  const csv = rows.map(r => r.map(v =>
-    String(v).includes(sep) ? '"' + v + '"' : v).join(sep)).join('\r\n');
+  const csv = rows.map(r => r.map(v => String(v).includes(sep) ? '"' + v + '"' : v).join(sep)).join('\r\n');
   download(`Питание_${cls}_${ui.viewMonth}.csv`, csv, 'text/csv');
 }
 
@@ -1576,29 +1432,31 @@ setInterval(async () => {
     const fresh = await gasGet();
     if (fresh && fresh.students){
       db = migrateDB(fresh);
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
       render();
     }
-  } catch(e){ /* нет сети */ }
+  } catch(e){ }
 }, 60000);
 
 (async function init(){
-  db = await loadDB();
-
+  db = getLocalDB();
   const saved = sessionStorage.getItem(SESSION_KEY);
   if (saved){ try{ session = JSON.parse(saved); }catch(e){} }
   if (session && session.role === 'teacher') ui.cls = session.cls;
-
   initUIForToday();
-
   const savedLogin = localStorage.getItem(REMEMBER_KEY);
   if (savedLogin){
     const inp = document.querySelector('input[name="login"]');
     if (inp){ inp.value = savedLogin; }
     document.getElementById('rememberMe').checked = true;
-    setTimeout(() => document.querySelector('input[name="pass"]')?.focus(), 50);
   }
-
   render();
+  const fresh = await loadDB();
+  if (fresh) {
+    db = fresh;
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
+    render();
+  }
 })();
 </script>
 </body>
