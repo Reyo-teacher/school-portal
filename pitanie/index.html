@@ -118,7 +118,7 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stu-row .status-mini{font-size:11px;color:var(--muted);font-weight:500}
 .seg{display:flex;gap:6px}
-.seg button{width:48px;height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
+.seg button{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
   cursor:pointer;font-weight:800;font-size:18px;color:var(--muted);transition:.1s;padding:0;
   display:flex;align-items:center;justify-content:center}
 .seg button:active{transform:scale(.95)}
@@ -164,21 +164,47 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
   border-radius:50%;animation:spin 0.9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* мобильный — акцент на день */
+/* Мобильная версия: имя на всю ширину, кнопки огромные снизу */
 @media(max-width:640px){
   main{padding:8px}
   .card{padding:10px;border-radius:12px}
-  td.name,th.name{min-width:130px;font-size:13px}
   .tabs{top:50px;padding:8px 8px 0}
   .tab{padding:8px 12px;font-size:13px}
   .who span.name{display:none}
   .brand{font-size:14px}
   .topbar{padding:8px 10px}
-  .seg button{width:52px;height:52px;font-size:20px}
-  .stu-row{padding:10px 8px}
-  .stu-row .nm{font-size:13px}
   .month-pick{min-width:130px;font-size:13px;padding:7px 8px}
-  .chip{padding:7px 10px;font-size:12px;min-width:46px}
+  
+  .stu-row{
+    flex-direction:column;
+    align-items:stretch;
+    padding:10px;
+    gap:10px;
+  }
+  .stu-row .nm{
+    text-align:center;
+    white-space:normal;
+    font-size:15px;
+    line-height:1.2;
+    padding:0 10px;
+  }
+  .name-wrap{
+    justify-content:center;
+  }
+  .status-mini{
+    text-align:center;
+    margin-top:4px;
+  }
+  .seg{
+    width:100%;
+    gap:6px;
+  }
+  .seg button{
+    flex:1;
+    width:auto;
+    height:48px;
+    font-size:20px;
+  }
 }
 </style>
 </head>
@@ -254,9 +280,6 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
 <script>
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby3_cQcpqBrkX5I8Hig3K-u_MO_XhiCN4gDGVi_8M9iuu5cSr8w8YcMXNlnR26rWvpG/exec';
 
-/* ============================================================
-   СПРАВОЧНИКИ
-   ============================================================ */
 const CLASS_NAMES = ["1 класс","2 класс","3 класс","4 класс","5 класс","6 класс",
                      "7 класс","8 класс","9 класс","10 класс","11 класс"];
 
@@ -309,7 +332,6 @@ const SUMS = {
 
 const STATUS_LABEL = { paid:'платник', free:'бесплатник', none:'не питается' };
 
-/* Праздники и каникулы по учебным годам */
 const HOLIDAYS_2026_2027 = [
   '2026-10-25','2026-10-26','2026-12-16',
   '2026-10-24','2026-10-27','2026-10-28','2026-10-29','2026-10-30','2026-10-31',
@@ -348,9 +370,6 @@ function isPrimaryClass(cls){
   return ['1 класс','2 класс','3 класс','4 класс'].includes(cls);
 }
 
-/* ============================================================
-   ДЕФОЛТНАЯ БАЗА
-   ============================================================ */
 function buildDefaultDB(){
   const students = [], payments = [];
   let n = 1, pn = 1;
@@ -391,7 +410,6 @@ function buildDefaultDB(){
 function migrateDB(data){
   if (!data || !data.students) return buildDefaultDB();
 
-  /* v2 → v3 */
   if (!data.version || data.version < 3){
     for (const st of data.students){
       if (!st.statusHistory){
@@ -403,7 +421,6 @@ function migrateDB(data){
     data.version = 3;
   }
 
-  /* v3 → v4 */
   if (data.version < 4){
     const year = '2026-2027';
     data.academicYear = year;
@@ -425,24 +442,18 @@ function migrateDB(data){
   return data;
 }
 
-/* ============================================================
-   СОСТОЯНИЕ
-   ============================================================ */
 let db = null;
 let session = null;
 let ui = {
   tab: 'journal',
   cls: CLASS_NAMES[0],
-  year: null,          // учебный год для просмотра
-  viewMonth: null,     // 'YYYY-MM'
-  viewDay: null,       // 'YYYY-MM-DD'
-  mode: 'day',         // 'day' | 'grid'
+  year: null,
+  viewMonth: null,
+  viewDay: null,
+  mode: 'day',
   payFilter: 'all'
 };
 
-/* ============================================================
-   СИНХРОНИЗАЦИЯ
-   ============================================================ */
 function setSyncStatus(state, text){
   const el = document.getElementById('syncStatus');
   if (!el) return;
@@ -483,7 +494,6 @@ async function loadDB(){
     const wasOld = !raw.version || raw.version < 4;
     const migrated = migrateDB(raw);
     if (wasOld){
-      // Сохраняем миграцию, чтобы все видели новую структуру
       await gasPost({ action:'init', db: migrated });
     }
     setSyncStatus('ok', '✓ готово');
@@ -535,14 +545,26 @@ function isBusy(){
   return markTimer || Object.keys(markBuffer).length > 0;
 }
 
-/* ============================================================
-   ДАТЫ И УЧЕБНЫЙ ГОД
-   ============================================================ */
 const pad = n => String(n).padStart(2,'0');
-const todayISO = () => {
+
+function todayISO() {
   const d = new Date();
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-};
+}
+
+// Возвращает "сегодня" с правильным учебным годом (для тестов в 2024 году)
+function getEffectiveToday(){
+  if (!ui.year) return todayISO();
+  const d = new Date();
+  const m = d.getMonth() + 1;
+  const day = pad(d.getDate());
+  const month = pad(m);
+  const [startYear, endYear] = ui.year.split('-').map(Number);
+  // Сентябрь-Декабрь (9-12) -> первый год, Январь-Август (1-8) -> второй год
+  const targetYear = m >= 9 ? startYear : endYear;
+  return `${targetYear}-${month}-${day}`;
+}
+
 const monthOf = iso => iso.slice(0,7);
 
 function getMonthsForYear(yearStr){
@@ -579,32 +601,39 @@ const dayNum     = k => Number(k.slice(8,10));
 const weekday    = k => ['вс','пн','вт','ср','чт','пт','сб'][new Date(k+'T00:00:00').getDay()];
 
 function initUIForToday(){
-  // Все доступные годы
   const years = Object.keys(db.years).sort();
   if (!ui.year || !years.includes(ui.year)){
     ui.year = db.academicYear;
   }
-
   const months = getMonthsForYear(ui.year);
-  const today = todayISO();
+  const today = getEffectiveToday();
   const todayMonth = monthOf(today);
 
   if (months.includes(todayMonth)){
     ui.viewMonth = todayMonth;
-    const dates = getDatesInMonth(todayMonth);
-    ui.viewDay = dates.includes(today) ? today : (dates[0] || null);
   } else {
-    // Сегодняшняя дата вне текущего года — показываем последний месяц
-    const lastMonth = months[months.length - 1];
-    ui.viewMonth = lastMonth;
-    const dates = getDatesInMonth(lastMonth);
-    ui.viewDay = dates[dates.length - 1] || null;
+    if (!ui.viewMonth || !months.includes(ui.viewMonth)) {
+      ui.viewMonth = months[0];
+    }
+  }
+
+  const dates = getDatesInMonth(ui.viewMonth);
+  
+  // Если сегодня есть в списке дней — показываем сегодня
+  if (dates.includes(today)) {
+    ui.viewDay = today;
+  } else {
+    // Если сегодня выходной/каникулы, ищем ближайший ПРОШЕДШИЙ учебный день
+    const pastDates = dates.filter(d => d <= today);
+    if (pastDates.length > 0) {
+      ui.viewDay = pastDates[pastDates.length - 1];
+    } else {
+      // Если прошедших нет (например, мы в начале месяца), показываем первый
+      ui.viewDay = dates[0];
+    }
   }
 }
 
-/* ============================================================
-   БИЗНЕС-ЛОГИКА
-   ============================================================ */
 function statusOn(st, date){
   let s = 'none';
   for (const e of st.statusHistory || []){
@@ -669,7 +698,6 @@ function currentClass(){
   return ui.cls;
 }
 
-/* Перевод в следующий учебный год */
 function promoteToNextYear(){
   if (session.role !== 'admin') return;
   const [y1, y2] = db.academicYear.split('-').map(Number);
@@ -721,9 +749,6 @@ function promoteToNextYear(){
   alert(`Готово!\nНовый учебный год: ${newYear}\nУчителя теперь ведут классы на ступень выше — в них уже новые ученики.`);
 }
 
-/* ============================================================
-   РЕНДЕР
-   ============================================================ */
 function render(){
   if (!db) return;
   document.getElementById('loadingScreen').hidden = true;
@@ -736,7 +761,6 @@ function render(){
   document.getElementById('loginScreen').hidden = true;
   document.getElementById('appScreen').hidden   = false;
 
-  // Селект года в topbar (если годов > 1)
   const years = Object.keys(db.years).sort();
   const yearSel = document.getElementById('yearPicker');
   if (years.length > 1){
@@ -818,11 +842,10 @@ function journalDay(studs, dates){
   if (!dates.length){
     return `<p class="muted">В этом месяце нет учебных дней (каникулы/праздники).</p>`;
   }
-  // Если ui.viewDay вне месяца — берём первый
   let day = ui.viewDay;
   if (!day || !dates.includes(day)) day = dates[0];
 
-  const today = todayISO();
+  const today = getEffectiveToday();
   const chips = `<div class="day-chips">${dates.map(d=>{
     const n = studs.filter(s=>markOf(s.id,d)==='+').length;
     const isToday = d === today;
@@ -1213,9 +1236,6 @@ function viewAdmin(){
   </div>`;
 }
 
-/* ============================================================
-   МОДАЛ ОПЛАТЫ
-   ============================================================ */
 let payState = { sid: null };
 
 function openPayModal(sid){
@@ -1224,7 +1244,7 @@ function openPayModal(sid){
   payState.sid = sid;
   document.getElementById('payStudentName').textContent = st.name + ' · ' + st.cls;
   document.getElementById('payAmount').value = '';
-  document.getElementById('payDate').value = todayISO();
+  document.getElementById('payDate').value = getEffectiveToday();
   document.getElementById('payNote').value = '';
   document.getElementById('payModal').hidden = false;
   setTimeout(() => document.getElementById('payAmount').focus(), 30);
@@ -1251,9 +1271,6 @@ function savePayment(){
   pushPatch({ action:'addPayment', payment });
 }
 
-/* ============================================================
-   ВХОД
-   ============================================================ */
 document.getElementById('loginForm').addEventListener('submit', e=>{
   e.preventDefault();
   const f = new FormData(e.target);
@@ -1268,7 +1285,6 @@ document.getElementById('loginForm').addEventListener('submit', e=>{
   session = { login:u.login, role:u.role, name:u.name, cls:u.cls };
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
 
-  // Запомнить логин
   if (document.getElementById('rememberMe').checked){
     localStorage.setItem(REMEMBER_KEY, login);
   } else {
@@ -1285,9 +1301,6 @@ document.getElementById('payAmount').addEventListener('keydown', e=>{
   if (e.key === 'Enter'){ e.preventDefault(); savePayment(); }
 });
 
-/* ============================================================
-   КЛИКИ
-   ============================================================ */
 document.addEventListener('click', e=>{
   if (e.target.id === 'payModal'){ closePayModal(); return; }
 
@@ -1366,7 +1379,7 @@ document.addEventListener('click', e=>{
     const student = {
       id: 's' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
       cls, name: name.trim(),
-      statusHistory: [{ from: todayISO(),
+      statusHistory: [{ from: getEffectiveToday(),
                         status: isPrimaryClass(cls) ? 'free' : 'paid' }]
     };
     db.students.push(student);
@@ -1415,9 +1428,6 @@ document.addEventListener('click', e=>{
   }
 });
 
-/* ============================================================
-   ИЗМЕНЕНИЯ ПОЛЕЙ
-   ============================================================ */
 document.addEventListener('change', e=>{
   const t = e.target.closest('[data-change]');
   if (!t) return;
@@ -1425,14 +1435,15 @@ document.addEventListener('change', e=>{
 
   if (c === 'year'){
     ui.year = t.value;
-    // при смене года — на сегодня если это текущий год, иначе первый месяц
     const months = getMonthsForYear(ui.year);
-    const today = todayISO();
+    const today = getEffectiveToday();
     const todayMonth = monthOf(today);
+    
     if (months.includes(todayMonth) && ui.year === db.academicYear){
       ui.viewMonth = todayMonth;
       const dates = getDatesInMonth(todayMonth);
-      ui.viewDay = dates.includes(today) ? today : (dates[0] || null);
+      const pastDates = dates.filter(d => d <= today);
+      ui.viewDay = dates.includes(today) ? today : (pastDates.length > 0 ? pastDates[pastDates.length-1] : dates[0]);
     } else {
       ui.viewMonth = months[0];
       const dates = getDatesInMonth(months[0]);
@@ -1445,9 +1456,9 @@ document.addEventListener('change', e=>{
   if (c === 'month'){
     ui.viewMonth = t.value;
     const dates = getDatesInMonth(t.value);
-    // при смене месяца — на сегодня если это текущий, иначе первый день
-    const today = todayISO();
-    ui.viewDay = dates.includes(today) ? today : (dates[0] || null);
+    const today = getEffectiveToday();
+    const pastDates = dates.filter(d => d <= today);
+    ui.viewDay = dates.includes(today) ? today : (pastDates.length > 0 ? pastDates[pastDates.length-1] : dates[0]);
     render(); return;
   }
   if (c === 'payFilter'){ ui.payFilter = t.value; render(); return; }
@@ -1479,7 +1490,7 @@ document.addEventListener('change', e=>{
   if (c === 'status'){
     const s = db.students.find(x => x.id === t.dataset.sid);
     if (s){
-      const today = todayISO();
+      const today = getEffectiveToday();
       setStatusOn(s, t.value, today);
       render();
       pushPatch({ action:'setStatus', sid: s.id, status: t.value, from: today });
@@ -1525,9 +1536,6 @@ document.addEventListener('change', e=>{
   }
 });
 
-/* ============================================================
-   ЭКСПОРТ
-   ============================================================ */
 function download(filename, text, type){
   const blob = new Blob(['\ufeff' + text], { type: type + ';charset=utf-8' });
   const a = document.createElement('a');
@@ -1558,9 +1566,6 @@ function exportCSV(){
   download(`Питание_${cls}_${ui.viewMonth}.csv`, csv, 'text/csv');
 }
 
-/* ============================================================
-   АВТООБНОВЛЕНИЕ
-   ============================================================ */
 setInterval(async () => {
   if (!session || !db) return;
   if (!document.getElementById('payModal').hidden) return;
@@ -1576,9 +1581,6 @@ setInterval(async () => {
   } catch(e){ /* нет сети */ }
 }, 60000);
 
-/* ============================================================
-   СТАРТ
-   ============================================================ */
 (async function init(){
   db = await loadDB();
 
@@ -1586,10 +1588,8 @@ setInterval(async () => {
   if (saved){ try{ session = JSON.parse(saved); }catch(e){} }
   if (session && session.role === 'teacher') ui.cls = session.cls;
 
-  // Дефолт: сегодня
   initUIForToday();
 
-  // Запомненный логин
   const savedLogin = localStorage.getItem(REMEMBER_KEY);
   if (savedLogin){
     const inp = document.querySelector('input[name="login"]');
