@@ -483,9 +483,8 @@ function getLocalDB() {
 }
 
 async function pushPatch(patch){
-  // Показываем "сохранение" только если запрос длится дольше 0.3 секунды
   let timer = setTimeout(() => {
-    setSyncStatus('saving', '⟳ в очереди…');
+    setSyncStatus('saving', '⟳ сохранение…');
   }, 300);
   
   try {
@@ -506,7 +505,7 @@ let markBuffer = {}, markTimer = null;
 function queueMark(sid, date, val){
   markBuffer[sid + '|' + date] = { sid, date, val };
   if (markTimer) clearTimeout(markTimer);
-  markTimer = setTimeout(flushMarks, 300); // Уменьшили задержку до 0.3 сек
+  markTimer = setTimeout(flushMarks, 300);
 }
 function flushMarks(){
   markTimer = null;
@@ -616,17 +615,35 @@ function statsOf(sid, dates){
   }
   return { plus:p, minus:m, du:d };
 }
+
+// Списания за конкретный месяц (для отображения в колонке "Списано" в Питании)
 function chargedOf(st, dates){
   let c = 0;
   for (const d of dates){ if (markOf(st.id, d) === '+' && statusOn(st, d) === 'paid') c += db.cost; }
   return c;
 }
+
+// ГЛОБАЛЬНОЕ списание за всё время (для честного подсчета Остатка)
+function totalChargedOf(st){
+  let c = 0;
+  const prefix = st.id + '|';
+  for (const key of Object.keys(db.marks)){
+    if (key.startsWith(prefix) && db.marks[key] === '+'){
+      const d = key.slice(prefix.length);
+      if (statusOn(st, d) === 'paid') c += db.cost;
+    }
+  }
+  return c;
+}
+
 function mealsOf(st, dates){
   let n = 0;
   for (const d of dates) if (markOf(st.id, d) === '+') n++;
   return n;
 }
-function balanceOf(st, dates){ return sumOfStudent(st) - chargedOf(st, dates); }
+
+// ЧЕСТНЫЙ ОСТАТОК: Все внесенные деньги - Все списания за всё время
+function balanceOf(st){ return sumOfStudent(st) - totalChargedOf(st); }
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -784,7 +801,7 @@ function journalGrid(studs, dates){
   const head = `<tr><th class="name sticky-col">Ученик</th>${dates.map(d=>`<th title="${weekday(d)}">${dayNum(d)}</th>`).join('')}<th style="color:var(--green)">+</th><th style="color:var(--red)">−</th><th style="color:var(--amber)">Д</th><th>Остаток</th></tr>`;
   const body = studs.map(s=>{
     const st = statsOf(s.id, dates);
-    const bal = balanceOf(s, dates);
+    const bal = balanceOf(s); // Честный остаток
     const cells = dates.map(d=>{
       const v = markOf(s.id, d);
       const cl = v === '+' ? 'm-plus' : v === '-' ? 'm-minus' : v === 'Д/У' ? 'm-du' : 'm-empty';
@@ -835,7 +852,7 @@ function viewStats(){
 
   const trRows = studs.map(s=>{
     const st = statsOf(s.id, dates);
-    const bal = balanceOf(s, dates);
+    const bal = balanceOf(s); // Честный
     const cur = currentStatus(s);
     const pct = dates.length ? Math.round(st.plus/dates.length*100) : 0;
     return `<tr>
@@ -850,7 +867,7 @@ function viewStats(){
 
   const mobileCards = studs.map(s=>{
     const st = statsOf(s.id, dates);
-    const bal = balanceOf(s, dates);
+    const bal = balanceOf(s); // Честный
     const cur = currentStatus(s);
     const pct = dates.length ? Math.round(st.plus/dates.length*100) : 0;
     return `<div class="mobile-card">
@@ -899,9 +916,9 @@ function viewFood(){
 
   const trRows = studs.map(s=>{
     const cur = currentStatus(s);
-    const charged = chargedOf(s, dates);
+    const charged = chargedOf(s, dates); // Траты за ТЕКУЩИЙ месяц
     const meals = mealsOf(s, dates);
-    const bal = sumOfStudent(s) - charged;
+    const bal = balanceOf(s); // Честный остаток
     return `<tr>
       <td class="name sticky-col"><div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div></td>
       <td><span class="badge st-${cur.status}">${STATUS_LABEL[cur.status]}</span></td>
@@ -919,7 +936,7 @@ function viewFood(){
     const cur = currentStatus(s);
     const charged = chargedOf(s, dates);
     const meals = mealsOf(s, dates);
-    const bal = sumOfStudent(s) - charged;
+    const bal = balanceOf(s);
     return `<div class="mobile-card">
       <div class="mc-header">
         <div class="name-wrap">${statusDot(s)}<span>${esc(s.name)}</span></div>
@@ -933,19 +950,19 @@ function viewFood(){
             <button class="btn sm primary" data-act="pay" data-sid="${s.id}">➕ Внести</button>
           </div>
         </div>
-        <div class="mc-row"><span>Обедов:</span> <span class="num">${meals}</span></div>
-        <div class="mc-row"><span>Списано:</span> <span class="num">−${charged.toLocaleString('ru-RU')} ₸</span></div>
+        <div class="mc-row"><span>Обедов в этом месяце:</span> <span class="num">${meals}</span></div>
+        <div class="mc-row"><span>Списано в этом месяце:</span> <span class="num">−${charged.toLocaleString('ru-RU')} ₸</span></div>
         <div class="mc-row" style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)">
-          <span>Остаток:</span> 
+          <span>Общий остаток:</span> 
           <span class="num ${bal<0?'neg':bal>0?'pos':'zero'}">${bal.toLocaleString('ru-RU')} ₸</span>
         </div>
       </div>
     </div>`;
   }).join('');
 
-  const totalBal = studs.reduce((a,s)=>a + balanceOf(s, dates), 0);
+  const totalBal = studs.reduce((a,s)=>a + balanceOf(s), 0); // Честный
   const totalSum = studs.reduce((a,s)=>a + sumOfStudent(s), 0);
-  const debts    = studs.filter(s => balanceOf(s, dates) < 0).length;
+  const debts    = studs.filter(s => balanceOf(s) < 0).length;
   const paidCount = studs.filter(s => currentStatus(s).status === 'paid').length;
   const freeCount = studs.filter(s => currentStatus(s).status === 'free').length;
   const noneCount = studs.filter(s => currentStatus(s).status === 'none').length;
@@ -958,13 +975,13 @@ function viewFood(){
         <div class="kpi"><div class="l">Бесплатников</div><div class="v" style="color:#16a34a">${freeCount}</div></div>
         <div class="kpi"><div class="l">Не питаются</div><div class="v" style="color:#6b7280">${noneCount}</div></div>
         <div class="kpi"><div class="l">Внесено</div><div class="v">${totalSum.toLocaleString('ru-RU')}</div></div>
-        <div class="kpi"><div class="l">Остаток</div><div class="v ${totalBal<0?'neg':'pos'}">${totalBal.toLocaleString('ru-RU')}</div></div>
+        <div class="kpi"><div class="l">Общий остаток</div><div class="v ${totalBal<0?'neg':'pos'}">${totalBal.toLocaleString('ru-RU')}</div></div>
         <div class="kpi"><div class="l">С долгом</div><div class="v ${debts?'neg':''}">${debts}</div></div>
       </div>
-      <p class="muted desktop-only">Остаток = Внесено − «+» (пока платник) × ${db.cost} ₸.</p>
+      <p class="muted desktop-only">Остаток = Все внесенные деньги − Все списания за всё время. Кликните по кнопке «Внести» для добавления денег.</p>
       
       <div class="table-wrap desktop-only"><table>
-        <thead><tr><th class="name sticky-col">Ученик</th><th>Статус</th><th>Внесено</th><th>Обедов</th><th>Списано</th><th>Остаток</th></tr></thead>
+        <thead><tr><th class="name sticky-col">Ученик</th><th>Статус</th><th>Внесено</th><th>Обедов (мес)</th><th>Списано (мес)</th><th>Остаток</th></tr></thead>
         <tbody>${trRows}</tbody>
       </table></div>
 
@@ -1399,14 +1416,14 @@ function exportCSV(){
   const dates = getDatesInMonth(ui.viewMonth);
   const studs = db.students.filter(s => s.cls === cls);
   const sep = ';';
-  const head = ['Ученик','Статус', ...dates.map(shortDate), 'Был','Не был','Д/У','Внесено','Списано','Остаток'];
+  const head = ['Ученик','Статус', ...dates.map(shortDate), 'Был','Не был','Д/У','Внесено всего','Списано за мес','Общий остаток'];
   const rows = [head];
   studs.forEach(s=>{
     const st = statsOf(s.id, dates);
-    const charged = chargedOf(s, dates);
-    const bal = sumOfStudent(s) - charged;
+    const chargedMonth = chargedOf(s, dates);
+    const bal = balanceOf(s);
     const cur = currentStatus(s);
-    rows.push([s.name, STATUS_LABEL[cur.status], ...dates.map(d => markOf(s.id, d) || ''), st.plus, st.minus, st.du, sumOfStudent(s), charged, bal]);
+    rows.push([s.name, STATUS_LABEL[cur.status], ...dates.map(d => markOf(s.id, d) || ''), st.plus, st.minus, st.du, sumOfStudent(s), chargedMonth, bal]);
   });
   const csv = rows.map(r => r.map(v => String(v).includes(sep) ? '"' + v + '"' : v).join(sep)).join('\r\n');
   download(`Питание_${cls}_${ui.viewMonth}.csv`, csv, 'text/csv');
