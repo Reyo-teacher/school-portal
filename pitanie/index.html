@@ -308,7 +308,6 @@ const NAMES = {
   "Синило Арсений","Смирнова Ангелина"]
 };
 
-// Суммы обнулены! Теперь все ученики начинают с 0 ₸
 const SUMS = {};
 
 const STATUS_LABEL = { paid:'платник', free:'бесплатник', none:'не питается' };
@@ -353,23 +352,15 @@ function isPrimaryClass(cls){
 }
 
 function buildDefaultDB(){
-  const students = [], payments = [];
-  let n = 1, pn = 1;
+  const students = [], payments = [], deletions = [];
+  let n = 1;
   for (const cls of CLASS_NAMES){
     for (const name of NAMES[cls]){
       const sid = 's' + (n++);
-      const sum = SUMS[name] || 0;
       students.push({
         id: sid, cls, name,
         statusHistory: [{ from:'2026-09-01', status: isPrimaryClass(cls) ? 'free' : 'paid' }]
       });
-      // Так как SUMS пустой, этот блок не выполнится, и платежей не будет
-      if (sum > 0){
-        payments.push({
-          id: 'p' + (pn++), sid, amount: sum, date:'2026-09-01',
-          by:'admin', note:'начальный взнос'
-        });
-      }
     }
   }
   const users = [{ login:'admin', pass:'admin', role:'admin', name:'Администратор', cls:'' }];
@@ -378,11 +369,11 @@ function buildDefaultDB(){
       name:'Учитель '+(i+1)+' класса', cls:c });
   });
   return {
-    version: 4,
+    version: 5,
     academicYear: '2026-2027',
     years: { '2026-2027': { holidays: [...HOLIDAYS_2026_2027] } },
     cost: 500,
-    users, students, payments, marks: {}, graduated: []
+    users, students, payments, marks: {}, graduated: [], deletions: []
   };
 }
 
@@ -405,6 +396,10 @@ function migrateDB(data){
     delete data.holidays;
     data.graduated = data.graduated || [];
     data.version = 4;
+  }
+  if (data.version < 5){
+    data.deletions = data.deletions || [];
+    data.version = 5;
   }
   if (!data.graduated) data.graduated = [];
   if (!data.years) data.years = {};
@@ -453,7 +448,7 @@ async function loadDB(){
       setSyncStatus('ok', '✓ готово');
       return fresh;
     }
-    const wasOld = !raw.version || raw.version < 4;
+    const wasOld = !raw.version || raw.version < 5;
     const migrated = migrateDB(raw);
     if (wasOld) await gasPost({ action:'init', db: migrated });
     setSyncStatus('ok', '✓ готово');
@@ -556,6 +551,7 @@ function monthTitle(monthStr){
 const shortDate  = k => k.slice(8,10) + '.' + k.slice(5,7);
 const dayNum     = k => Number(k.slice(8,10));
 const weekday    = k => ['вс','пн','вт','ср','чт','пт','сб'][new Date(k+'T00:00:00').getDay()];
+const timeOf     = iso => new Date(iso).toLocaleString('ru-RU', {hour:'2-digit', minute:'2-digit'});
 
 function initUIForToday(){
   const years = Object.keys(db.years).sort();
@@ -697,6 +693,7 @@ function render(){
   if (ui.tab === 'stats')    main.innerHTML = viewStats();
   if (ui.tab === 'food')     main.innerHTML = viewFood();
   if (ui.tab === 'payments') main.innerHTML = viewPayments();
+  if (ui.tab === 'history')  main.innerHTML = viewHistory();
   if (ui.tab === 'admin')    main.innerHTML = session.role === 'admin' ? viewAdmin() : viewJournal();
 }
 
@@ -705,6 +702,7 @@ const TABS = [
   { id:'stats',    label:'📊 Статистика' },
   { id:'food',     label:'🍽 Питание' },
   { id:'payments', label:'💰 Взносы' },
+  { id:'history',  label:'📜 История' },
   { id:'admin',    label:'⚙️ Настройки', admin:true }
 ];
 function renderTabs(){
@@ -779,7 +777,7 @@ function journalDay(studs, dates){
     <div class="toolbar" style="margin:0 0 10px">
       <strong style="font-size:14px">${dayNum(day)} ${monthTitle(ui.viewMonth)} · ${weekday(day)}</strong>
       <button class="btn sm" style="margin-left:auto" data-act="allplus" data-date="${day}">✓ Все «+»</button>
-      <button class="btn sm" data-act="clearall" data-date="${day}">Очистить</button>
+      <button class="btn sm danger" data-act="clearall" data-date="${day}">Очистить</button>
     </div>
     <div class="stu-list">${rows}</div>`;
 }
@@ -966,7 +964,7 @@ function viewFood(){
         <div class="kpi"><div class="l">Общий остаток</div><div class="v ${totalBal<0?'neg':'pos'}">${totalBal.toLocaleString('ru-RU')}</div></div>
         <div class="kpi"><div class="l">С долгом</div><div class="v ${debts?'neg':''}">${debts}</div></div>
       </div>
-      <p class="muted desktop-only">Остаток = Все внесенные деньги − Все списания за всё время. Кликните по кнопке «Внести» для добавления денег.</p>
+      <p class="muted desktop-only">Остаток = Все внесенные деньги − Все списания за всё время.</p>
       
       <div class="table-wrap desktop-only"><table>
         <thead><tr><th class="name sticky-col">Ученик</th><th>Статус</th><th>Внесено</th><th>Обедов (мес)</th><th>Списано (мес)</th><th>Остаток</th></tr></thead>
@@ -1042,6 +1040,46 @@ function viewPayments(){
       <div class="table-wrap"><table>
         <thead><tr><th>Дата</th><th class="name">Ученик</th><th>Класс</th><th>Внёс</th><th>Сумма</th><th>Примечание</th>${isAdmin?'<th></th>':''}</tr></thead>
         <tbody>${detailRows || `<tr><td colspan="${isAdmin?7:6}" class="muted">Пока нет взносов</td></tr>`}</tbody>
+      </table></div>
+    </div>`;
+}
+
+function viewHistory(){
+  const isAdmin = session.role === 'admin';
+  let deletions = (db.deletions || []).slice();
+  
+  // Фильтруем по классу для учителя
+  if (!isAdmin){
+    deletions = deletions.filter(d => {
+      const st = db.students.find(s => s.id === d.sid);
+      return st && st.cls === session.cls;
+    });
+  }
+  
+  deletions.sort((a,b) => (b.timestamp||'').localeCompare(a.timestamp||''));
+  
+  const rows = deletions.map(d=>{
+    const st = db.students.find(s => s.id === d.sid);
+    if (!st) return '';
+    return `<tr>
+      <td>${d.timestamp ? timeOf(d.timestamp) : '—'}</td>
+      <td class="name">${esc(st.name)}</td>
+      <td>${st.cls}</td>
+      <td>${d.date}</td>
+      <td>${esc(teacherOf(d.by))}</td>
+      <td style="font-weight:bold; color:var(--red)">${d.oldVal}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div class="card">
+      <div class="toolbar">
+        <h2 style="margin:0">📜 История удалений</h2>
+      </div>
+      <p class="muted">Здесь отображаются все случаи, когда учитель очищал (удалял) отметку. Это помогает найти случайно удаленные данные и восстановить их.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Дата и время</th><th class="name">Ученик</th><th>Класс</th><th>Дата пропуска</th><th>Кто удалил</th><th>Что удалено</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="6" class="muted">Пока нет удалений</td></tr>`}</tbody>
       </table></div>
     </div>`;
 }
@@ -1178,25 +1216,76 @@ document.addEventListener('click', e=>{
     const sid = t.dataset.sid, d = t.dataset.date;
     const cur = markOf(sid, d);
     const next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
+    
+    // Если следующее действие - это удаление, спрашиваем
+    if (next === '' && cur !== '') {
+      const st = db.students.find(s => s.id === sid);
+      const confirmMsg = `Вы уверены, что хотите удалить отметку «${cur}» за ${d} у ученика ${st.name}?`;
+      if (!confirm(confirmMsg)) return;
+
+      // Логируем удаление
+      const entry = {
+        id: 'del_' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+        timestamp: new Date().toISOString(),
+        sid: sid, date: d, oldVal: cur, by: session.login
+      };
+      if (!db.deletions) db.deletions = [];
+      db.deletions.push(entry);
+      pushPatch({ action: 'logDeletion', entry: entry });
+    }
+
     setMark(sid, d, next); 
     localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     queueMark(sid, d, next);
     return;
   }
+  
   if (a === 'set'){
     const sid = t.dataset.sid, d = t.dataset.date, v = t.dataset.val;
+    const cur = markOf(sid, d);
+
+    // Если учитель нажал крестик (v === ''), а там что-то было
+    if (v === '' && cur !== '') {
+      const st = db.students.find(s => s.id === sid);
+      const confirmMsg = `Вы уверены, что хотите удалить отметку «${cur}» за ${d} у ученика ${st.name}?`;
+      if (!confirm(confirmMsg)) return;
+
+      // Логируем удаление
+      const entry = {
+        id: 'del_' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+        timestamp: new Date().toISOString(),
+        sid: sid, date: d, oldVal: cur, by: session.login
+      };
+      if (!db.deletions) db.deletions = [];
+      db.deletions.push(entry);
+      pushPatch({ action: 'logDeletion', entry: entry });
+    }
+
     setMark(sid, d, v); 
     localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
     queueMark(sid, d, v);
     return;
   }
+
   if (a === 'allplus' || a === 'clearall'){
     const d = t.dataset.date;
     const val = a === 'allplus' ? '+' : '';
+    
+    if (a === 'clearall') {
+      if (!confirm(`Вы уверены, что хотите очистить ВСЕ отметки за ${d}?`)) return;
+    }
+
     const pairs = [];
     db.students.filter(s => s.cls === currentClass()).forEach(s => {
+      const cur = markOf(s.id, d);
+      if (a === 'clearall' && cur !== '') {
+         const entry = { id: 'del_' + Date.now() + '-' + Math.random().toString(36).slice(2,6), timestamp: new Date().toISOString(), sid: s.id, date: d, oldVal: cur, by: session.login };
+         if (!db.deletions) db.deletions = [];
+         db.deletions.push(entry);
+         pushPatch({ action: 'logDeletion', entry: entry });
+      }
       setMark(s.id, d, val);
       pairs.push({ sid: s.id, date: d, val: val });
     });
