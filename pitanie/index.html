@@ -345,7 +345,7 @@ const KNOWN_HOLIDAYS = {
 const SESSION_KEY = 'school_meal_session';
 const REMEMBER_KEY = 'school_meal_login';
 const LOCAL_CACHE_KEY = 'school_meal_cache';
-const DIRTY_FLAG_KEY = 'school_meal_dirty'; // Флаг, что есть несохраненные данные
+const DIRTY_FLAG_KEY = 'school_meal_dirty';
 
 function isPrimaryClass(cls){
   return ['1 класс','2 класс','3 класс','4 класс'].includes(cls);
@@ -413,7 +413,6 @@ let db = null;
 let session = null;
 let ui = { tab: 'journal', cls: CLASS_NAMES[0], year: null, viewMonth: null, viewDay: null, mode: 'day', payFilter: 'all' };
 
-// Функция для пометки, что есть несинхронизированные данные
 function markDirty() {
   localStorage.setItem(DIRTY_FLAG_KEY, 'true');
 }
@@ -449,22 +448,22 @@ async function gasPost(payload){
   return result;
 }
 
-// Загрузка с сервера (только если нет несохраненных данных)
 async function loadDB(){
   try {
     setSyncStatus('saving', '⟳ загрузка…');
     const raw = await gasGet();
-    if (!raw || Object.keys(raw).length === 0){
-      const fresh = buildDefaultDB();
-      await gasPost({ action:'init', db: fresh });
+    if (raw && raw.empty){                       // таблица ещё пустая: первый запуск
+      const seed = getLocalDB();                 // берём то, что в памяти браузера
+      await gasPost({ action:'init', db: seed, force: true });
       setSyncStatus('ok', '✓ готово');
-      return fresh;
+      return seed;
     }
-    const wasOld = !raw.version || raw.version < 5;
-    const migrated = migrateDB(raw);
-    if (wasOld) await gasPost({ action:'init', db: migrated });
+    if (!raw || !Array.isArray(raw.students) || !raw.users){
+      setSyncStatus('err', '✗ сервер вернул неполные данные');
+      return null;                               // ничего не затираем
+    }
     setSyncStatus('ok', '✓ готово');
-    return migrated;
+    return migrateDB(raw);
   } catch(e){
     console.error('[GAS] ошибка загрузки:', e);
     setSyncStatus('err', '✗ ошибка загрузки');
@@ -481,7 +480,6 @@ function getLocalDB() {
 }
 
 async function pushPatch(patch){
-  // СРАЗУ ставим флаг, что мы что-то поменяли
   markDirty();
 
   let timer = setTimeout(() => {
@@ -492,7 +490,6 @@ async function pushPatch(patch){
     await gasPost(patch);
     clearTimeout(timer);
     
-    // Если очередь пуста, значит всё сохранили
     if (!isBusy()) {
       setSyncStatus('ok', '✓ сохранено');
       clearDirty();
@@ -504,16 +501,14 @@ async function pushPatch(patch){
     clearTimeout(timer);
     console.error('[GAS] ошибка сохранения:', e);
     setSyncStatus('err', '✗ не сохранилось');
-    // НЕ убираем флаг, данные остаются в памяти
   }
 }
 
 let markBuffer = {}, markTimer = null;
 function queueMark(sid, date, val){
   markBuffer[sid + '|' + date] = { sid, date, val };
-  markDirty(); // Сразу помечаем
+  markDirty();
   if (markTimer) clearTimeout(markTimer);
-  // Отправляем мгновенно, без задержки (0 мс), чтобы спасти данные при обновлении
   markTimer = setTimeout(flushMarks, 0); 
 }
 function flushMarks(){
@@ -687,7 +682,7 @@ function promoteToNextYear(){
   localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
   markDirty();
   render();
-  pushPatch({ action:'init', db });
+  pushPatch({ action:'init', db, force: true });
   alert(`Готово!\nНовый учебный год: ${newYear}`);
 }
 
@@ -1385,7 +1380,7 @@ document.addEventListener('click', e=>{
     initUIForToday();
     localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
     render();
-    pushPatch({ action:'init', db });
+    pushPatch({ action:'init', db, force: true });
     return;
   }
 });
@@ -1496,7 +1491,7 @@ document.addEventListener('change', e=>{
         initUIForToday();
         localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
         render();
-        pushPatch({ action:'init', db });
+        pushPatch({ action:'init', db, force: true });
         alert('Данные загружены и отправлены на сервер');
       }catch(err){ alert('Ошибка: ' + err.message); }
     };
@@ -1547,7 +1542,6 @@ setInterval(async () => {
   } catch(e){ }
 }, 60000);
 
-// 🛡️ ЗАЩИТА ОТ ЗАКРЫТИЯ/ОБНОВЛЕНИЯ ПРИ НЕСОХРАНЕННЫХ ДАННЫХ
 window.addEventListener('beforeunload', function (e) {
   if (isDirty() || isBusy()) {
     e.preventDefault();
@@ -1557,10 +1551,8 @@ window.addEventListener('beforeunload', function (e) {
 });
 
 (async function init(){
-  // 1. Загружаем локальную копию
   db = getLocalDB();
   
-  // 2. Если есть несохраненные данные, НЕ загружаем с сервера!
   const hasLocalChanges = isDirty();
   
   const saved = sessionStorage.getItem(SESSION_KEY);
@@ -1577,7 +1569,6 @@ window.addEventListener('beforeunload', function (e) {
   
   render();
   
-  // 3. Если всё чисто, подтягиваем свежие данные с сервера
   if (!hasLocalChanges) {
     const fresh = await loadDB();
     if (fresh) {
@@ -1587,7 +1578,6 @@ window.addEventListener('beforeunload', function (e) {
     }
   } else {
     setSyncStatus('saving', '⟳ восстановление…');
-    // Пытаемся отправить то, что накопилось
     flushMarks(); 
   }
 })();
