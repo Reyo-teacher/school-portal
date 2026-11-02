@@ -64,9 +64,9 @@ input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(3
 .who .btn.ghost:hover{background:#e4eaf5}
 .sync{font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;transition: opacity 0.3s;}
 .sync-idle{opacity:0; pointer-events:none;}
-.sync-saving{background:#fef3c7;color:#92400e}
-.sync-ok{background:#dcfce7;color:#166534}
-.sync-err{background:#fee2e2;color:#991b1b}
+.sync-saving{background:#fef3c7;color:#92400e; display:block!important; opacity:1!important;}
+.sync-ok{background:#dcfce7;color:#166534; display:block!important; opacity:1!important;}
+.sync-err{background:#fee2e2;color:#991b1b; display:block!important; opacity:1!important;}
 .year-pick{max-width:140px;padding:6px 8px;font-size:13px}
 
 .tabs{display:flex;gap:6px;padding:10px 12px 0;overflow-x:auto;background:#fff;
@@ -313,9 +313,8 @@ const SUMS = {};
 const STATUS_LABEL = { paid:'платник', free:'бесплатник', none:'не питается' };
 
 const HOLIDAYS_2026_2027 = [
-  '2026-10-25','2026-10-26','2026-12-16',
-  '2026-10-24','2026-10-27','2026-10-28','2026-10-29','2026-10-30','2026-10-31',
-  '2026-11-01','2026-11-02',
+  '2026-10-25','2026-10-26','2026-10-27','2026-10-28','2026-10-29','2026-10-30','2026-10-31',
+  '2026-11-01','2026-12-16',
   '2026-12-28','2026-12-29','2026-12-30','2026-12-31',
   '2027-01-01','2027-01-02','2027-01-03','2027-01-04','2027-01-05','2027-01-06',
   '2027-01-07','2027-01-08','2027-01-09','2027-01-10',
@@ -346,6 +345,7 @@ const KNOWN_HOLIDAYS = {
 const SESSION_KEY = 'school_meal_session';
 const REMEMBER_KEY = 'school_meal_login';
 const LOCAL_CACHE_KEY = 'school_meal_cache';
+const DIRTY_FLAG_KEY = 'school_meal_dirty'; // Флаг, что есть несохраненные данные
 
 function isPrimaryClass(cls){
   return ['1 класс','2 класс','3 класс','4 класс'].includes(cls);
@@ -413,6 +413,17 @@ let db = null;
 let session = null;
 let ui = { tab: 'journal', cls: CLASS_NAMES[0], year: null, viewMonth: null, viewDay: null, mode: 'day', payFilter: 'all' };
 
+// Функция для пометки, что есть несинхронизированные данные
+function markDirty() {
+  localStorage.setItem(DIRTY_FLAG_KEY, 'true');
+}
+function clearDirty() {
+  localStorage.removeItem(DIRTY_FLAG_KEY);
+}
+function isDirty() {
+  return localStorage.getItem(DIRTY_FLAG_KEY) === 'true';
+}
+
 function setSyncStatus(state, text){
   const el = document.getElementById('syncStatus');
   if (!el) return;
@@ -438,6 +449,7 @@ async function gasPost(payload){
   return result;
 }
 
+// Загрузка с сервера (только если нет несохраненных данных)
 async function loadDB(){
   try {
     setSyncStatus('saving', '⟳ загрузка…');
@@ -469,6 +481,9 @@ function getLocalDB() {
 }
 
 async function pushPatch(patch){
+  // СРАЗУ ставим флаг, что мы что-то поменяли
+  markDirty();
+
   let timer = setTimeout(() => {
     setSyncStatus('saving', '⟳ сохранение…');
   }, 300);
@@ -476,22 +491,30 @@ async function pushPatch(patch){
   try {
     await gasPost(patch);
     clearTimeout(timer);
-    setSyncStatus('ok', '✓ сохранено');
-    setTimeout(() => {
-      if (document.getElementById('syncStatus')?.classList.contains('sync-ok')) setSyncStatus('idle', '');
-    }, 2000);
+    
+    // Если очередь пуста, значит всё сохранили
+    if (!isBusy()) {
+      setSyncStatus('ok', '✓ сохранено');
+      clearDirty();
+      setTimeout(() => {
+        if (document.getElementById('syncStatus')?.classList.contains('sync-ok')) setSyncStatus('idle', '');
+      }, 2000);
+    }
   } catch(e){
     clearTimeout(timer);
     console.error('[GAS] ошибка сохранения:', e);
     setSyncStatus('err', '✗ не сохранилось');
+    // НЕ убираем флаг, данные остаются в памяти
   }
 }
 
 let markBuffer = {}, markTimer = null;
 function queueMark(sid, date, val){
   markBuffer[sid + '|' + date] = { sid, date, val };
+  markDirty(); // Сразу помечаем
   if (markTimer) clearTimeout(markTimer);
-  markTimer = setTimeout(flushMarks, 300);
+  // Отправляем мгновенно, без задержки (0 мс), чтобы спасти данные при обновлении
+  markTimer = setTimeout(flushMarks, 0); 
 }
 function flushMarks(){
   markTimer = null;
@@ -662,6 +685,7 @@ function promoteToNextYear(){
   ui.year = newYear;
   initUIForToday();
   localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
+  markDirty();
   render();
   pushPatch({ action:'init', db });
   alert(`Готово!\nНовый учебный год: ${newYear}`);
@@ -1048,7 +1072,6 @@ function viewHistory(){
   const isAdmin = session.role === 'admin';
   let deletions = (db.deletions || []).slice();
   
-  // Фильтруем по классу для учителя
   if (!isAdmin){
     deletions = deletions.filter(d => {
       const st = db.students.find(s => s.id === d.sid);
@@ -1076,7 +1099,7 @@ function viewHistory(){
       <div class="toolbar">
         <h2 style="margin:0">📜 История удалений</h2>
       </div>
-      <p class="muted">Здесь отображаются все случаи, когда учитель очищал (удалял) отметку. Это помогает найти случайно удаленные данные и восстановить их.</p>
+      <p class="muted">Здесь отображаются все случаи, когда учитель очищал (удалял) отметку.</p>
       <div class="table-wrap"><table>
         <thead><tr><th>Дата и время</th><th class="name">Ученик</th><th>Класс</th><th>Дата пропуска</th><th>Кто удалил</th><th>Что удалено</th></tr></thead>
         <tbody>${rows || `<tr><td colspan="6" class="muted">Пока нет удалений</td></tr>`}</tbody>
@@ -1199,8 +1222,12 @@ document.addEventListener('click', e=>{
   if (!t) return;
   const a = t.dataset.act;
 
-  if (a === 'logout'){ session = null; sessionStorage.removeItem(SESSION_KEY); render(); return; }
+  if (a === 'logout'){ 
+    if (isDirty() && !confirm('У вас есть несохраненные данные! Точно выйти?')) return;
+    session = null; sessionStorage.removeItem(SESSION_KEY); render(); return; 
+  }
   if (a === 'refresh'){
+    if (isDirty() && !confirm('Идет сохранение данных. Обновить страницу?')) return;
     (async () => {
       const fresh = await loadDB();
       if (fresh) { db = fresh; localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db)); render(); }
@@ -1217,13 +1244,11 @@ document.addEventListener('click', e=>{
     const cur = markOf(sid, d);
     const next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
     
-    // Если следующее действие - это удаление, спрашиваем
     if (next === '' && cur !== '') {
       const st = db.students.find(s => s.id === sid);
       const confirmMsg = `Вы уверены, что хотите удалить отметку «${cur}» за ${d} у ученика ${st.name}?`;
       if (!confirm(confirmMsg)) return;
 
-      // Логируем удаление
       const entry = {
         id: 'del_' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
         timestamp: new Date().toISOString(),
@@ -1245,13 +1270,11 @@ document.addEventListener('click', e=>{
     const sid = t.dataset.sid, d = t.dataset.date, v = t.dataset.val;
     const cur = markOf(sid, d);
 
-    // Если учитель нажал крестик (v === ''), а там что-то было
     if (v === '' && cur !== '') {
       const st = db.students.find(s => s.id === sid);
       const confirmMsg = `Вы уверены, что хотите удалить отметку «${cur}» за ${d} у ученика ${st.name}?`;
       if (!confirm(confirmMsg)) return;
 
-      // Логируем удаление
       const entry = {
         id: 'del_' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
         timestamp: new Date().toISOString(),
@@ -1355,6 +1378,7 @@ document.addEventListener('click', e=>{
   if (a === 'export-json'){ download('backup-' + db.academicYear + '.json', JSON.stringify(db, null, 2), 'application/json'); return; }
   if (a === 'export-csv'){ exportCSV(); return; }
   if (a === 'reset'){
+    if (isDirty() && !confirm('Сейчас идет сохранение. Сбросить всё равно?')) return;
     if (!confirm('Сбросить ВСЕ данные и пересоздать базу?')) return;
     db = buildDefaultDB();
     ui.year = db.academicYear;
@@ -1508,6 +1532,7 @@ function exportCSV(){
 
 setInterval(async () => {
   if (!session || !db) return;
+  if (isDirty()) return; // Не обновляем, если есть несохраненные данные
   if (!document.getElementById('payModal').hidden) return;
   if (isBusy()) return;
   const ae = document.activeElement;
@@ -1522,24 +1547,48 @@ setInterval(async () => {
   } catch(e){ }
 }, 60000);
 
+// 🛡️ ЗАЩИТА ОТ ЗАКРЫТИЯ/ОБНОВЛЕНИЯ ПРИ НЕСОХРАНЕННЫХ ДАННЫХ
+window.addEventListener('beforeunload', function (e) {
+  if (isDirty() || isBusy()) {
+    e.preventDefault();
+    e.returnValue = 'Данные еще сохраняются на сервер. Вы уверены, что хотите уйти?';
+    return e.returnValue;
+  }
+});
+
 (async function init(){
+  // 1. Загружаем локальную копию
   db = getLocalDB();
+  
+  // 2. Если есть несохраненные данные, НЕ загружаем с сервера!
+  const hasLocalChanges = isDirty();
+  
   const saved = sessionStorage.getItem(SESSION_KEY);
   if (saved){ try{ session = JSON.parse(saved); }catch(e){} }
   if (session && session.role === 'teacher') ui.cls = session.cls;
   initUIForToday();
+  
   const savedLogin = localStorage.getItem(REMEMBER_KEY);
   if (savedLogin){
     const inp = document.querySelector('input[name="login"]');
     if (inp){ inp.value = savedLogin; }
     document.getElementById('rememberMe').checked = true;
   }
+  
   render();
-  const fresh = await loadDB();
-  if (fresh) {
-    db = fresh;
-    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
-    render();
+  
+  // 3. Если всё чисто, подтягиваем свежие данные с сервера
+  if (!hasLocalChanges) {
+    const fresh = await loadDB();
+    if (fresh) {
+      db = fresh;
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(db));
+      render();
+    }
+  } else {
+    setSyncStatus('saving', '⟳ восстановление…');
+    // Пытаемся отправить то, что накопилось
+    flushMarks(); 
   }
 })();
 </script>
