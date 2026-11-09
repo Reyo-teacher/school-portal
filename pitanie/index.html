@@ -137,6 +137,19 @@ td.cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
 .legend span{display:inline-flex;align-items:center;gap:5px}
 .dot{width:12px;height:12px;border-radius:4px;display:inline-block}
 
+/* ИТОГИ ЗА ДЕНЬ (для столовой) */
+.day-total{margin-top:16px;padding-top:14px;border-top:2px solid var(--line)}
+.day-total .dt-title{font-weight:700;font-size:14px;margin-bottom:10px}
+.day-total .dt-boxes{display:flex;gap:10px}
+.day-total .dt-box{flex:1;color:#fff;border-radius:14px;padding:14px 6px;text-align:center}
+.day-total .dt-box b{display:block;font-size:30px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.day-total .dt-box span{display:block;font-size:12px;font-weight:600;margin-top:4px;opacity:.95}
+.day-total .dt-sum{margin-top:10px;font-weight:800;text-align:center;font-size:15px}
+.day-total .dt-warn{margin-top:8px;text-align:center;font-size:13px;font-weight:700;color:var(--amber)}
+.day-total .dt-legend{display:flex;flex-direction:column;gap:6px;margin-top:12px;font-size:13px;color:var(--muted)}
+.day-total .dt-legend div{display:flex;align-items:center;gap:8px}
+.day-total .dt-legend i{width:14px;height:14px;border-radius:4px;display:inline-block;flex-shrink:0}
+
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px}
@@ -762,6 +775,41 @@ function viewJournal(){
   return `<div class="card">${head}${content}${legend()}</div>`;
 }
 
+/* Итоги за день (для столовой): платники / бесплатники / не питаются */
+function dayTotals(studs, d){
+  let paid = 0, free = 0, none = 0, unmarked = 0;
+  for (const s of studs){
+    const st = statusOn(s, d);
+    if (st === 'none'){ none++; continue; }
+    const v = markOf(s.id, d);
+    if (v === '+'){ if (st === 'paid') paid++; else free++; }
+    else if (v === '') unmarked++;
+  }
+  return { paid, free, none, unmarked, total: paid + free };
+}
+
+function dayTotalsBlock(studs, d){
+  const c = dayTotals(studs, d);
+  const warn = c.unmarked
+    ? `<div class="dt-warn">⚠ Не отмечено учеников: ${c.unmarked}</div>`
+    : '';
+  return `<div class="day-total">
+    <div class="dt-title">Итого за ${dayNum(d)} ${monthTitle(d.slice(0,7))}</div>
+    <div class="dt-boxes">
+      <div class="dt-box" style="background:#16a34a"><b>${c.free}</b><span>бесплатники</span></div>
+      <div class="dt-box" style="background:#3b82f6"><b>${c.paid}</b><span>платники</span></div>
+      <div class="dt-box" style="background:#9ca3af"><b>${c.none}</b><span>не питаются</span></div>
+    </div>
+    <div class="dt-sum">Всего в столовую: ${c.total}</div>
+    ${warn}
+    <div class="dt-legend">
+      <div><i style="background:#16a34a"></i>зелёный: бесплатники (отмечены «+»)</div>
+      <div><i style="background:#3b82f6"></i>синий: платники (отмечены «+»)</div>
+      <div><i style="background:#9ca3af"></i>серый: не питаются</div>
+    </div>
+  </div>`;
+}
+
 function journalDay(studs, dates){
   if (!dates.length) return `<p class="muted">В этом месяце нет учебных дней.</p>`;
   let day = ui.viewDay;
@@ -798,7 +846,8 @@ function journalDay(studs, dates){
       <button class="btn sm" style="margin-left:auto" data-act="allplus" data-date="${day}">✓ Все «+»</button>
       <button class="btn sm danger" data-act="clearall" data-date="${day}">Очистить</button>
     </div>
-    <div class="stu-list">${rows}</div>`;
+    <div class="stu-list">${rows}</div>
+    ${dayTotalsBlock(studs, day)}`;
 }
 
 function journalGrid(studs, dates){
