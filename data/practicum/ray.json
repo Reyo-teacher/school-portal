@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Координатный луч",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.3.1.1",
+      "text": "знать различные единицы длины и понимать, что такое единичный отрезок на координатном луче"
+    },
+    {
+      "id": "5.5.2.2",
+      "text": "изображать натуральные числа на координатном луче"
+    }
+  ],
+  "source": {
+    "filename": "КТП_математика_5_класс.docx",
+    "curriculum_lesson": 5,
+    "source_row": 7,
+    "curriculum_data": "data/grade-5-curriculum.json"
+  },
+  "task_ids": [
+    "ray-task-0",
+    "ray-task-1",
+    "ray-task-2",
+    "ray-task-3",
+    "ray-task-4",
+    "ray-task-5",
+    "ray-task-6",
+    "ray-task-7",
+    "ray-task-8",
+    "ray-task-9",
+    "ray-exit",
+    "ray-builder"
+  ],
+  "scoring": "feedback_only",
+  "content_checks": {
+    "status": "passed",
+    "method": "Node tests: random and boundary variants, independently checked contextual arithmetic, units, construction, grading and evidence deduplication"
+  },
+  "browser_checks": {
+    "status": "not_checked",
+    "reason": "Chromium could not start in this environment: socket creation denied. Layout, keyboard and print interaction require a browser smoke check."
+  },
+  "notes": [
+    "All contextual quantities are fictional educational data.",
+    "Existing shared game XP remains separate from skill feedback and is not converted to a school mark.",
+    "The teacher page is public. This is formative learning practice, not a secure examination."
+  ]
+}

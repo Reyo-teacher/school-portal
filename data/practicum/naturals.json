@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Натуральные числа и нуль",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.1.1.1",
+      "text": "усвоить понятие множества натуральных чисел"
+    },
+    {
+      "id": "5.1.1.2",
+      "text": "усвоить понятия четных и нечетных чисел"
+    }
+  ],
+  "source": {
+    "filename": "КТП_математика_5_класс.docx",
+    "curriculum_lesson": 4,
+    "source_row": 6,
+    "curriculum_data": "data/grade-5-curriculum.json"
+  },
+  "task_ids": [
+    "naturals-task-0",
+    "naturals-task-1",
+    "naturals-task-2",
+    "naturals-task-3",
+    "naturals-task-4",
+    "naturals-task-5",
+    "naturals-task-6",
+    "naturals-task-7",
+    "naturals-task-8",
+    "naturals-task-9",
+    "naturals-task-10",
+    "naturals-exit",
+    "naturals-pairs-demo"
+  ],
+  "scoring": "feedback_only",
+  "content_checks": {
+    "status": "passed",
+    "method": "Node tests: random and boundary variants, independently checked contextual arithmetic, units, construction, grading and evidence deduplication"
+  },
+  "browser_checks": {
+    "status": "not_checked",
+    "reason": "Chromium could not start in this environment: socket creation denied. Layout, keyboard and print interaction require a browser smoke check."
+  },
+  "notes": [
+    "All contextual quantities are fictional educational data.",
+    "Existing shared game XP remains separate from skill feedback and is not converted to a school mark.",
+    "The teacher page is public. This is formative learning practice, not a secure examination."
+  ]
+}

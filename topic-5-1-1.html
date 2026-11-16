@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="lesson-practice.css">
 </head>
 <body>
 <div class="wrapper">
@@ -24,6 +25,7 @@
 <!-- grade5-navigation:end -->
     <h2>1.1. Натуральные числа и нуль</h2>
 
+    <div class="learning-goals"><h3>После урока я смогу</h3><ul><li>Объяснить, какие числа называют натуральными и чем нуль отличается от них.</li><li>Определить чётность числа и объяснить её с помощью пар.</li></ul><p>Повторим чтение чисел, цифры и разряды. Начни с основных заданий; углубление можно открыть отдельно.</p></div>
     <h3>📘 Лекция</h3>
     <div class="info-grid">
       <div class="info-card">
@@ -32,13 +34,20 @@
       </div>
       <div class="info-card">
         <div class="info-card-title">⭕ Число нуль (0)</div>
-        <p>Нуль <strong>не является натуральным</strong>: при счёте мы не говорим «у меня 0 предметов».<br>💡 Нуль означает «ничего» и помогает записывать разряды.</p>
+        <p>В этом курсе натуральный ряд начинается с <strong>1</strong>, поэтому <strong>0 в него не входит</strong>.<br>Нуль обозначает отсутствие предметов: 0 свободных мест — свободных мест нет. В записи 105 нуль сохраняет место десятков.</p>
       </div>
     </div>
 
+    <h3>Цифра и число — разные понятия</h3>
+    <p><strong>Цифра</strong> — знак для записи числа. В записи <strong>707</strong> три цифры, но использованы только два разных знака: 7 и 0. Левая семёрка означает 700, правая — 7.</p>
+    <h3>Чётные и нечётные числа</h3>
+    <p>Если предметы можно разложить на пары без остатка, их количество — <strong>чётное число</strong>. Если один предмет остаётся без пары — <strong>нечётное</strong>.</p>
+    <div class="pair-demo"><label for="pair-count">Предметов: <strong id="pair-value">7</strong></label><input id="pair-count" type="range" min="0" max="30" value="7"><div id="pair-picture" aria-hidden="true"></div><p id="pair-explain" aria-live="polite"></p></div>
+    <div class="rule">Чётные числа оканчиваются цифрами 0, 2, 4, 6, 8. Нечётные — 1, 3, 5, 7, 9. Нуль — чётное число: при делении на 2 остатка нет.</div>
+    <div class="worked-example"><strong>Разбираем вместе.</strong> На робототехнику пришли 27 учеников. Из 26 можно составить 13 пар, один останется без пары. Значит, 27 — нечётное. Придёт ещё один — получится 28 учеников и 14 пар.</div>
     <h3>📊 Таблица классов и разрядов</h3>
     <p>Для записи чисел хватает 10 цифр: <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code>. Значение цифры зависит от её места в числе. <b>Впиши своё число</b>, и таблица заполнится сама:</p>
-    <div class="demo"><label for="demo">Число:</label><input id="demo" inputmode="numeric" maxlength="9" value="5230145"></div>
+    <div class="demo"><label for="demo">Число:</label><input id="demo" inputmode="numeric" maxlength="9" value="12050"></div>
     <div class="table-responsive">
       <table class="place-table">
         <thead>
@@ -50,12 +59,19 @@
     </div>
     <p class="demo-words" id="demo-words"></p>
 
-    <h3>🎯 Тренажёр: помоги сове Мудрику</h3>
+    <div class="worked-example"><strong>Проверяем учебный чек.</strong> 12 050 тг читается «двенадцать тысяч пятьдесят тенге». Если потерять нуль и записать 1 250, изменятся разрядные значения и сама сумма. Проверяй не только цифры, но и их места.</div>
+    <h3>🎯 Тренажёр: реши и объясни</h3>
     <div id="trainer"></div>
+    <section class="exit-box"><h3>Самостоятельно: проверь понимание</h3><p>Сначала ответь без подсказок. Из чисел <strong>0, 17, 24</strong> выбери натуральные и объясни их чётность. После проверки покажи учителю объяснение.</p>
+    <form class="exit-form"><label>Какие числа здесь натуральные?<select data-exit-answer="17,24" data-criterion="различаю натуральные числа и нуль"><option value="">Выбери…</option><option value="all">0, 17, 24</option><option value="17,24">17 и 24</option><option value="24">Только 24</option></select></label><label>Что можно сказать о числе 17?<select data-exit-answer="odd" data-criterion="объясняю нечётность через пары"><option value="">Выбери…</option><option value="even">8 пар без остатка</option><option value="odd">8 пар и один предмет без пары</option></select></label><label>Сколько пар получается из 24 предметов?<input type="text" inputmode="numeric" data-exit-answer="12" data-criterion="объясняю чётность через пары"></label><button type="submit" class="check-btn">Проверить самостоятельные ответы</button><div role="status" aria-live="polite"></div></form></section>
+    <details class="source-note"><summary>Цели и учебник</summary><p>5.1.1.1 усвоить понятие множества натуральных чисел; 5.1.1.2 усвоить понятия четных и нечетных чисел. Источник: КТП учителя на 2026–2027 год. Учебник: Алдамұратова и др., «Математика. 5 класс», часть 1, § 1.1, с. 4–8, Атамұра, 2017.</p></details>
+    <p class="teacher-link"><a href="teacher-grade5-lessons.html#naturals">Материалы и критерии для учителя</a></p>
+    <noscript><p>Интерактивные задания требуют JavaScript. Объяснения и самостоятельное задание доступны для работы в тетради.</p></noscript>
   </div>
 </div>
 
-<script src="portal.js"></script>
+<script src="lesson-practice.js"></script>
+<script src="lesson-widgets.js" defer></script>
 <script>
 /* ============ Вспомогательные функции ============ */
 const $ = s => document.querySelector(s);
@@ -96,7 +112,7 @@ function tiles(str, group) {
 /* ============ Генераторы заданий ============
    Каждый возвращает { icon, html, ans, hint, ph, tiles }.
    Чтобы добавить своё задание — допишите функцию в G и уровень в LV. */
-const G = [
+const EXTRA = [
   // 1. Число прописью -> цифрами
   () => { const [k, e] = pick(KIDS);
     const n = rnd(1, 9) * 1e6 + pick([0, rnd(1, 9) * 1e5, rnd(10, 99) * 1e3, rnd(100, 999) * 1e3]) + pick([0, rnd(1, 999)]);
@@ -110,7 +126,7 @@ const G = [
   // 3. Следующее / предыдущее число
   () => { const k = rnd(3, 7);
     return Math.random() < .5
-      ? { icon: '🏟️', html: `Счётчик на стадионе показывает <strong>${fmt(10 ** k - 1)}</strong> зрителей. Какое число он покажет, когда войдёт ещё один зритель?`, ans: String(10 ** k), hint: 'К последнему числу прибавь 1 и посмотри, сколько получилось нулей.', tiles: tiles(String(10 ** k - 1), true) }
+      ? { icon: '🏟️', html: `Счётчик просмотров школьного видео показывает <strong>${fmt(10 ** k - 1)}</strong> просмотров. Какое число он покажет после ещё одного просмотра?`, ans: String(10 ** k), hint: 'К последнему числу прибавь 1 и посмотри, сколько получилось нулей.', tiles: tiles(String(10 ** k - 1), true) }
       : { icon: '🚀', html: `Табло обратного отсчёта показывает <strong>${fmt(10 ** k)}</strong>. Какое число появится на нём через секунду?`, ans: String(10 ** k - 1), hint: 'При отсчёте назад число становится на 1 меньше.', tiles: tiles(String(10 ** k), true) }; },
   // 4. Наибольшее / наименьшее k-значное
   () => { const k = rnd(1, 7), mx = Math.random() < .5;
@@ -141,7 +157,23 @@ const G = [
     const x = rnd(12, 999);
     return { icon: '🏆', html: `К числу <strong>${x}</strong> справа приписали нуль. На сколько увеличилось число?`, ans: String(9 * x), hint: 'Число стало в 10 раз больше, значит, оно выросло на 9 таких чисел.', ph: 'Введи разность…' }; }
 ];
-const LV = ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c'];
+const choice = (id,label,answer,options,hint) => ({id,label,type:'choice',answer,options:options.map(([value,label])=>({value,label})),hint});
+const number = (id,label,answer,hint) => ({id,label,type:'number',answer,hint});
+const parityOptions = [['even','Чётное'],['odd','Нечётное']];
+const G = [
+  () => { const n=rnd(1,30);return {skill:'naturals',icon:'🔢',html:`В школьном кружке записаны количества: <strong>0, ${n}, ${n+1}</strong>. Какое из них не входит в натуральный ряд, изучаемый в этом курсе?`,fields:[number('value','Число',0),choice('why','Объяснение','start',[['empty','Нуль нельзя использовать для записи количества'],['start','Натуральный ряд в этом курсе начинается с 1'],['small','Все маленькие числа ненатуральные']])],hint:'Нуль может обозначать отсутствие предметов. Вспомни, с какого числа начинается натуральный ряд.',explanation:'Нуль обозначает отсутствие предметов, но в принятом здесь натуральном ряду первым стоит 1.'};},
+  () => {const n=rnd(10,17)*2+1;return {skill:'parity',icon:'🤖',html:`На робототехнику пришли <strong>${n}</strong> учеников. Все работают по двое. Сколько полных пар получится и что останется?`,fields:[number('pairs','Полных пар',Math.floor(n/2),'Разложи учеников по двое. Последний может остаться без пары.'),number('left','Учеников без пары',1),choice('parity','Количество учеников', 'odd', parityOptions,'Нечётное количество оставляет один предмет без пары.')],hint:'Вычти одного ученика и раздели оставшееся количество на 2.',explanation:`Получится ${Math.floor(n/2)} пар и один ученик без пары. Поэтому ${n} — нечётное число.`};},
+  () => {const n=rnd(10,49)*2;return {skill:'parity',icon:'♻️',html:`Школьный экоклуб собрал <strong>${n}</strong> пустых бутылок для сдачи на переработку. Можно ли распределить их между двумя командами поровну, без остатка?`,fields:[choice('answer','Решение','yes',[['yes','Можно, число чётное'],['no','Нельзя, число нечётное']]),number('last','Последняя цифра числа',n%10)],hint:'Проверь последнюю цифру: 0, 2, 4, 6, 8 означают чётность.',explanation:`${n} — чётное число; каждой команде достанется ${n/2} бутылок.`};},
+  () => {const n=rnd(1,9)*1000+rnd(1,9)*10;return {skill:'place',icon:'📝',html:`В учебном чеке сумма записана словами: <strong>${words(n)} тенге</strong>. Запиши её цифрами.`,ans:String(n),hint:'Сначала запиши тысячи. В пустые разряды сотен и единиц поставь нули.',explanation:`${fmt(n)} тг. Нули сохраняют места пустых разрядов.`};},
+  () => {const n=rnd(1,9)*100+rnd(1,9);return {skill:'digits',icon:'🔍',html:`Рассмотри число <strong>${n}</strong>. Укажи цифру сотен и её разрядное значение.`,fields:[number('digit','Цифра сотен',Math.floor(n/100),'Назови знак в разряде сотен, а не количество сотен в виде суммы.'),number('value','Разрядное значение этой цифры',Math.floor(n/100)*100,'Одна сотня — 100. Умножь число сотен на 100.')],hint:'Цифра и её разрядное значение — не одно и то же.',explanation:`Цифра ${Math.floor(n/100)} на месте сотен означает ${Math.floor(n/100)*100}.`};},
+  () => {const d=rnd(1,9),n=d*101;return {skill:'digits',icon:'🧩',html:`В записи числа <strong>${n}</strong> посчитай цифры и разные использованные знаки.`,fields:[number('count','Всего цифр в записи',3),number('distinct','Разных цифр',2,'Одна и та же цифра может встретиться несколько раз; считай разные знаки отдельно.')],hint:'Рассмотри каждое место в записи, затем выпиши разные знаки без повторений.',explanation:`Три позиции, но только два разных знака: ${d} и 0.`};},
+  () => {const a=rnd(10,39),b=rnd(1,9),good=a*1000+b*10,bad=a*100+b*10;return {skill:'place',icon:'🧾',html:`В учебном чеке указано <strong>${fmt(good)} тг</strong>, а в записи ученика — <strong>${fmt(bad)} тг</strong>. Выбери верную сумму и объяснение ошибки.`,fields:[number('sum','Верная сумма, тг',good),choice('why','Причина','place',[['same','Нули можно убрать, сумма не изменится'],['place','При потере нуля изменились разрядные значения'],['font','Изменился только вид записи']])],hint:'Прочитай обе суммы по разрядам. Нуль внутри записи нельзя удалять.',explanation:`Верная сумма ${fmt(good)} тг. Удаление нуля изменило разрядные значения цифр.`};},
+  () => {const n=10**rnd(3,5)-1;return {skill:'naturals',icon:'▶️',html:`Счётчик просмотров школьного видео показывает <strong>${fmt(n)}</strong>. Запиши число после ещё одного просмотра.`,ans:String(n+1),hint:'Прибавь 1. Если единицы, десятки и сотни равны 9, произойдёт переход в следующий разряд.',explanation:`${fmt(n)} + 1 = ${fmt(n+1)}.`};},
+  () => ({...EXTRA[6](),skill:'place'}),
+  () => ({...EXTRA[7](),skill:'digits'}),
+  () => ({...EXTRA[8](),skill:'place'})
+];
+const LV = ['a','a','a','a','a','a','b','b','c','c','c'];
 
 /* ============ Живая таблица разрядов ============ */
 function renderTable() {
@@ -154,7 +186,7 @@ function renderTable() {
 $('#demo').addEventListener('input', renderTable);
 
 renderTable();
-Trainer.start({ G, LV, code: '5 класс · Тема 1.1', title: 'Натуральные числа и нуль', mins: { a: 8, b: 10, c: 7 } });
+LessonPractice.start({ G, LV, id:'naturals', title:'Натуральные числа и нуль', skills:{naturals:'Натуральные числа и нуль',parity:'Чётность и разложение на пары',digits:'Цифра, число и разрядное значение',place:'Чтение чисел и роль нуля в записи'} });
 </script>
 </body>
 </html>
