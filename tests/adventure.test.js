@@ -156,3 +156,25 @@ test('controller completes both routes, saves once, retries, replays and resumes
     }
   }finally{if(before===undefined)delete global.localStorage;else global.localStorage=before;}
 });
+
+test('voice follows the current task, hints and feedback without changing learning progress',()=>{
+  const previousVoice=global.LessonVoice,previousStorage=global.localStorage;
+  const voiceApi=require('../lesson-voice.js'),spoken=[],store=new Map();let readCurrent,stops=0;
+  global.LessonVoice={stepText:voiceApi.stepText,mount:(_,getText)=>{readCurrent=getText;return {read:t=>spoken.push(t),stop:()=>stops++};}};
+  global.localStorage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
+  try{
+    const ui=controller('naturals');assert.equal(spoken.length,0);
+    assert.match(readCurrent(),/Начать игру/);ui.click('data-action','start');assert.match(spoken.at(-1),/Сколько яблок/);
+    assert.equal(store.size,0);const again=readCurrent();assert.match(again,/Сколько яблок/);assert.equal(store.size,0);
+    ui.click('data-answer','6');assert.match(spoken.at(-1),/6 — натуральное/);
+    assert.equal(JSON.parse(store.get('portal_adventure_naturals_v1')).done[0].supported,false);
+    ui.click('data-action','next');assert.match(spoken.at(-1),/Какое число запишем/);
+    ui.click('data-action','hint');assert.match(spoken.at(-1),/Нуль показывает/);
+    ui.click('data-answer','1');assert.match(spoken.at(-1),/нет ни одного яблока/);
+    ui.click('data-answer','0');assert.equal(JSON.parse(store.get('portal_adventure_naturals_v1')).done[1].supported,true);
+    assert.ok(stops>=6);
+  }finally{
+    if(previousVoice===undefined)delete global.LessonVoice;else global.LessonVoice=previousVoice;
+    if(previousStorage===undefined)delete global.localStorage;else global.localStorage=previousStorage;
+  }
+});

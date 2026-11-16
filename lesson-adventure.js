@@ -70,10 +70,17 @@
     let saved=restore(kind,stored),steps=makeSteps(kind,saved.round),index=saved.done.length,started=false,solved=false,supported=false,hint=false,paired=[],pending=null,position=0,oneSet=false;
     const title=kind==='naturals'?'Миссия «Найди пару»':'Миссия «Путь Мудрика»';
     const intro=kind==='naturals'?'Считай яблоки, собирай команды и открой секрет чётных чисел.':'Шагай вместе с совой и научись отмечать числа на луче.';
-    el.innerHTML='<div class="adventure-body"></div><div class="adventure-feedback" role="status" aria-live="polite" aria-atomic="true"></div>';
+    el.innerHTML='<div class="adventure-audio"></div><div class="adventure-body"></div><div class="adventure-feedback" role="status" aria-live="polite" aria-atomic="true"></div>';
     const body=el.querySelector('.adventure-body'),feedback=el.querySelector('.adventure-feedback');
+    function narration(){
+      if(!started)return title+'. '+intro+' Нажми «Начать игру», и я прочитаю первое задание.';
+      if(index>=steps.length)return 'Маршрут завершён! '+(kind==='naturals'?'Ты считал предметы и собирал пары. Объясни, чем шесть отличается от семи.':'Ты отмечал точки на луче. Покажи в тетради, как построить точку А с координатой три.')+' Можно сыграть ещё раз с другими числами.';
+      const step=steps[index];
+      return root.LessonVoice?.stepText(step,{solved,hint,oneSet,pairsReady:step.type==='pairs'&&paired.length===step.count-step.count%2})||'';
+    }
+    const voice=root.LessonVoice?.mount(el.querySelector('.adventure-audio'),narration);
     function save(){try{root.localStorage.setItem(key,JSON.stringify(saved));}catch(_){}}
-    function say(text,ok=false){feedback.textContent=text;feedback.className='adventure-feedback'+(ok?' is-success':'');}
+    function say(text,ok=false,read=false){feedback.textContent=text;feedback.className='adventure-feedback'+(ok?' is-success':'');if(read)voice?.read(text);}
     function resetStep(){solved=false;supported=false;hint=false;paired=[];pending=null;position=0;oneSet=false;say('');}
     function focus(selector){body.querySelector(selector)?.focus({preventScroll:true});}
     function route(){return `<div class="adventure-route" aria-label="Пройдено ${saved.done.length} из ${steps.length} шагов">${steps.map((s,i)=>`<span class="route-stop ${i<saved.done.length?'is-done':i===index?'is-current':''}" ${i===index?'aria-current="step"':''}><span aria-hidden="true">${i<saved.done.length?'★':i+1}</span><span class="adventure-sr">${esc(s.title)}${i<saved.done.length?' — пройден':''}</span></span>`).join('')}</div>`;}
@@ -115,24 +122,27 @@
     }
     function complete(){
       if(solved)return;
-      solved=true;saved.done.push({id:steps[index].id,supported});save();render();say(steps[index].success,true);focus('[data-action="next"]');
+      solved=true;saved.done.push({id:steps[index].id,supported});save();render();say(steps[index].success,true,true);focus('[data-action="next"]');
     }
-    function wrong(message){supported=true;say(message);}
+    function wrong(message){supported=true;say(message,false,true);}
     el.addEventListener('click',event=>{
       const button=event.target.closest('button');if(!button||!el.contains(button)||button.disabled)return;
+      if(button.hasAttribute('data-voice-action'))return;
+      voice?.stop();
       const action=button.dataset.action;
-      if(action==='start'){started=true;render();focus('h3');return;}
-      if(action==='replay'){saved={version:1,kind,round:(saved.round+1)%3,done:[]};steps=makeSteps(kind,saved.round);index=0;resetStep();save();render();focus('h3');return;}
+      if(action==='start'){started=true;render();focus('h3');voice?.read(narration());return;}
+      if(action==='replay'){saved={version:1,kind,round:(saved.round+1)%3,done:[]};steps=makeSteps(kind,saved.round);index=0;resetStep();save();render();focus('h3');voice?.read(narration());return;}
       if(action==='extras'){const more=document.getElementById('extra-practice');if(more){more.open=true;more.querySelector('summary').focus();more.scrollIntoView({block:'start'});}return;}
       if(!started||index>=steps.length)return;
       const step=steps[index];
-      if(action==='next'&&solved){index++;resetStep();render();focus('h3');return;}
+      if(action==='next'&&solved){index++;resetStep();render();focus('h3');voice?.read(narration());return;}
       if(solved)return;
-      if(action==='hint'){supported=true;hint=!hint;render();focus('[data-action="hint"]');say(hint?step.hint:'Подсказка закрыта.');return;}
+      if(action==='hint'){supported=true;hint=!hint;render();focus('[data-action="hint"]');say(hint?step.hint:'Подсказка закрыта.',false,hint);return;}
       if(button.hasAttribute('data-person')&&step.type==='pairs'){
         const result=pairClick(step.count,paired,pending,Number(button.dataset.person));paired=result.paired;pending=result.pending;render();
         const ready=paired.length===step.count-step.count%2;
         say(ready?(step.count%2?'Один участник остался без пары. Выбери, какое это число.':'Все собрались в пары. Выбери, какое это число.'):pending===null?'Пара готова! Выбери следующих участников.':'Теперь выбери второго участника пары.');
+        if(ready)voice?.read(narration());
         focus(ready?'[data-answer]':`[data-person]:not(:disabled)${pending===null?'':`:not([data-person="${pending}"])`}`);return;
       }
       if(button.hasAttribute('data-move')&&step.type==='walk'){
@@ -140,7 +150,7 @@
       }
       if(button.hasAttribute('data-point')&&(step.type==='point'||step.type==='build')){
         const point=Number(button.dataset.point);
-        if(step.type==='build'&&!oneSet){if(point===1){oneSet=true;render();say('Единичный отрезок выбран. Теперь отметь точку A.');focus('[data-point="2"]');}else wrong('От O до точки 1 нужна ровно одна клетка. Попробуй ещё.');return;}
+        if(step.type==='build'&&!oneSet){if(point===1){oneSet=true;render();say('Единичный отрезок выбран. Теперь отметь точку A.');voice?.read(narration());focus('[data-point="2"]');}else wrong('От O до точки 1 нужна ровно одна клетка. Попробуй ещё.');return;}
         if(isCorrect(step,point))complete();else wrong(step.id==='start'?'Начни с отметки O(0). Попробуй ещё.':step.unit===2?'Считай отрезки от 0. Каждый занимает две клетки.':`От O до A(${step.target}) нужно ${step.target} одинаковых шага. Попробуй ещё.`);return;
       }
       if(button.hasAttribute('data-answer')&&(step.type==='choice'||step.type==='pairs')){

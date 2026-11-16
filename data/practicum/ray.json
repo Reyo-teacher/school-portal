@@ -65,5 +65,20 @@
     "timed": false,
     "optional_reference": true,
     "optional_extended_practice": true
+  },
+  "audio": {
+    "mode": "browser_speech_synthesis",
+    "language": "ru-RU",
+    "user_gesture_start": true,
+    "auto_after_start_default": true,
+    "repeat": true,
+    "stop": true,
+    "slower_rate": true,
+    "preferences_key": "portal_owl_voice_v1"
+  },
+  "audio_checks": {
+    "status": "simulated_api_tests_passed",
+    "actual_playback": "not_checked",
+    "scope": "speech content, Russian voice selection, cancellation, stale events, preferences, fallback and game integration"
   }
 }
