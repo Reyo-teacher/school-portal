@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 DATA = json.loads((ROOT/'data/grade-5-curriculum.json').read_text(encoding='utf-8'))
 LESSONS = DATA['lessons']
+URLS = [l.get('contentPage', l['url']) for l in LESSONS]
 
 
 class Links(HTMLParser):
@@ -18,6 +19,7 @@ class Links(HTMLParser):
         self.links = []
         self.ids = []
         self.h2 = []
+        self.lesson_links = []
         self.in_h2 = False
         self.feed(content)
 
@@ -25,6 +27,8 @@ class Links(HTMLParser):
         attr = dict(attrs)
         if 'href' in attr:
             self.links.append((attr['href'], attr.get('rel')))
+            if 'lesson-link' in attr.get('class', '').split():
+                self.lesson_links.append(attr['href'])
         if 'src' in attr:
             self.links.append((attr['src'], None))
         if 'id' in attr:
@@ -65,15 +69,21 @@ class CurriculumTests(unittest.TestCase):
         self.assertTrue(LESSONS[85]['analysis'])  # Source places СОР 6 and its analysis in one hour.
 
     def test_static_pages_navigation_and_assets(self):
-        self.assertEqual(len(set(l['url'] for l in LESSONS)),170)
+        self.assertEqual(len(set(URLS)),170)
         for index, lesson in enumerate(LESSONS):
             with self.subTest(lesson=lesson['number']):
-                path = ROOT/lesson['url']
+                path = ROOT/URLS[index]
                 self.assertTrue(path.is_file())
                 page = Links(path.read_text(encoding='utf-8'))
-                self.assertEqual(''.join(page.h2), lesson['title'])
-                self.assertEqual([url for url,rel in page.links if rel=='prev'], [LESSONS[index-1]['url']] if index else [])
-                self.assertEqual([url for url,rel in page.links if rel=='next'], [LESSONS[index+1]['url']] if index<169 else [])
+                if not lesson.get('contentPage'):
+                    self.assertEqual(''.join(page.h2), lesson['title'])
+                else:
+                    self.assertIn('trainer', page.ids)
+                    alias = (ROOT/lesson['url']).read_text(encoding='utf-8')
+                    self.assertIn(f'<meta http-equiv="refresh" content="0; url={URLS[index]}">', alias)
+                    self.assertIn((URLS[index], 'canonical'), Links(alias).links)
+                self.assertEqual([url for url,rel in page.links if rel=='prev'], [URLS[index-1]] if index else [])
+                self.assertEqual([url for url,rel in page.links if rel=='next'], [URLS[index+1]] if index<169 else [])
                 for url,_ in page.links:
                     parsed = urlsplit(url)
                     if parsed.scheme or not parsed.path:
@@ -83,7 +93,10 @@ class CurriculumTests(unittest.TestCase):
     def test_catalog_links_and_legacy_materials(self):
         page = Links((ROOT/'grade-5.html').read_text(encoding='utf-8'))
         links = [url for url,_ in page.links]
-        self.assertEqual([u for u in links if re.fullmatch(r'lesson-5-\d{3}\.html',u)], [l['url'] for l in LESSONS])
+        self.assertEqual(page.lesson_links, URLS)
+        self.assertEqual(page.lesson_links[3:5], ['topic-5-1-1.html', 'topic-5-1-2.html'])
+        self.assertNotIn('lesson-5-004.html', page.lesson_links)
+        self.assertNotIn('lesson-5-005.html', page.lesson_links)
         self.assertEqual(len(page.ids),len(set(page.ids)))
         for section in DATA['sections']:
             self.assertIn('#'+section['id'],links)

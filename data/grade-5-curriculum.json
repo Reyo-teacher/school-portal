@@ -189,7 +189,8 @@
       ],
       "url": "lesson-5-004.html",
       "topicLesson": 1,
-      "topicHours": 1
+      "topicHours": 1,
+      "contentPage": "topic-5-1-1.html"
     },
     {
       "number": 5,
@@ -220,7 +221,8 @@
       ],
       "url": "lesson-5-005.html",
       "topicLesson": 1,
-      "topicHours": 2
+      "topicHours": 2,
+      "contentPage": "topic-5-1-2.html"
     },
     {
       "number": 6,
