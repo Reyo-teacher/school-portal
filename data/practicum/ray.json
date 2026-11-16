@@ -24,6 +24,12 @@
     "curriculum_data": "data/grade-5-curriculum.json"
   },
   "task_ids": [
+    "ray-game-start",
+    "ray-game-walk",
+    "ray-game-read",
+    "ray-game-build",
+    "ray-game-length",
+    "ray-game-try-yourself",
     "ray-task-0",
     "ray-task-1",
     "ray-task-2",
@@ -40,15 +46,24 @@
   "scoring": "feedback_only",
   "content_checks": {
     "status": "passed",
-    "method": "Node tests: random and boundary variants, independently checked contextual arithmetic, units, construction, grading and evidence deduplication"
+    "method": "Node tests: all three game variants, pairing, coordinates, game controller transitions with a DOM stub, wrong-answer retries, completion, replay and progress restoration; extended practice random and boundary variants; Python curriculum and links."
   },
   "browser_checks": {
     "status": "not_checked",
-    "reason": "Chromium could not start in this environment: socket creation denied. Layout, keyboard and print interaction require a browser smoke check."
+    "reason": "Chromium could not launch in this environment. The controller tests use a DOM stub and do not verify visual layout or actual browser interactions."
   },
   "notes": [
     "All contextual quantities are fictional educational data.",
     "Existing shared game XP remains separate from skill feedback and is not converted to a school mark.",
-    "The teacher page is public. This is formative learning practice, not a secure examination."
-  ]
+    "The teacher page is public. This is formative learning practice, not a secure examination.",
+    "Game stars count completed steps, are not school marks and do not assert mastery. Completed game steps are stored separately from the extended practice report."
+  ],
+  "entry_route": {
+    "steps": 6,
+    "presentation": "one task at a time",
+    "variants": 3,
+    "timed": false,
+    "optional_reference": true,
+    "optional_extended_practice": true
+  }
 }

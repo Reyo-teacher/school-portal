@@ -9,8 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="lesson-practice.css">
+<link rel="stylesheet" href="lesson-adventure.css">
 </head>
-<body>
+<body class="lesson-game-page">
 <div class="wrapper">
   <header><h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1></header>
 
@@ -25,6 +26,8 @@
 <!-- grade5-navigation:end -->
     <h2>1.1. Натуральные числа и нуль</h2>
 
+    <section data-lesson-adventure data-lesson="naturals" aria-label="Игровой маршрут по теме"><p>Шесть коротких шагов: считаем, пробуем и разбираемся. Для игры включи JavaScript. Объяснения ниже можно читать без него.</p></section>
+    <details class="lesson-drawer" id="lesson-reference"><summary>📖 Объяснения и примеры</summary><div class="lesson-drawer-content">
     <div class="learning-goals"><h3>После урока я смогу</h3><ul><li>Объяснить, какие числа называют натуральными и чем нуль отличается от них.</li><li>Определить чётность числа и объяснить её с помощью пар.</li></ul><p>Повторим чтение чисел, цифры и разряды. Начни с основных заданий; углубление можно открыть отдельно.</p></div>
     <h3>📘 Лекция</h3>
     <div class="info-grid">
@@ -60,10 +63,13 @@
     <p class="demo-words" id="demo-words"></p>
 
     <div class="worked-example"><strong>Проверяем учебный чек.</strong> 12 050 тг читается «двенадцать тысяч пятьдесят тенге». Если потерять нуль и записать 1 250, изменятся разрядные значения и сама сумма. Проверяй не только цифры, но и их места.</div>
-    <h3>🎯 Тренажёр: реши и объясни</h3>
+    </div></details>
+    <details class="lesson-drawer" id="extra-practice"><summary>🧩 Ещё задания · по желанию</summary><div class="lesson-drawer-content">
+    <h3>Практика после игры</h3>
     <div id="trainer"></div>
     <section class="exit-box"><h3>Самостоятельно: проверь понимание</h3><p>Сначала ответь без подсказок. Из чисел <strong>0, 17, 24</strong> выбери натуральные и объясни их чётность. После проверки покажи учителю объяснение.</p>
     <form class="exit-form"><label>Какие числа здесь натуральные?<select data-exit-answer="17,24" data-criterion="различаю натуральные числа и нуль"><option value="">Выбери…</option><option value="all">0, 17, 24</option><option value="17,24">17 и 24</option><option value="24">Только 24</option></select></label><label>Что можно сказать о числе 17?<select data-exit-answer="odd" data-criterion="объясняю нечётность через пары"><option value="">Выбери…</option><option value="even">8 пар без остатка</option><option value="odd">8 пар и один предмет без пары</option></select></label><label>Сколько пар получается из 24 предметов?<input type="text" inputmode="numeric" data-exit-answer="12" data-criterion="объясняю чётность через пары"></label><button type="submit" class="check-btn">Проверить самостоятельные ответы</button><div role="status" aria-live="polite"></div></form></section>
+    </div></details>
     <details class="source-note"><summary>Цели и учебник</summary><p>5.1.1.1 усвоить понятие множества натуральных чисел; 5.1.1.2 усвоить понятия четных и нечетных чисел. Источник: КТП учителя на 2026–2027 год. Учебник: Алдамұратова и др., «Математика. 5 класс», часть 1, § 1.1, с. 4–8, Атамұра, 2017.</p></details>
     <p class="teacher-link"><a href="teacher-grade5-lessons.html#naturals">Материалы и критерии для учителя</a></p>
     <noscript><p>Интерактивные задания требуют JavaScript. Объяснения и самостоятельное задание доступны для работы в тетради.</p></noscript>
@@ -72,6 +78,7 @@
 
 <script src="lesson-practice.js"></script>
 <script src="lesson-widgets.js" defer></script>
+<script src="lesson-adventure.js" defer></script>
 <script>
 /* ============ Вспомогательные функции ============ */
 const $ = s => document.querySelector(s);

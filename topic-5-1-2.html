@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="lesson-practice.css">
+<link rel="stylesheet" href="lesson-adventure.css">
 <style>
 /* Только для этой темы (остальное в style.css) */
 .ray-wrap{background:#f8fbff;border:3px solid var(--line);border-radius:16px;padding:6px}
@@ -18,7 +19,7 @@
 .demo-txt{min-height:3.4em;text-align:center;font-weight:800;color:var(--blue-d)}
 </style>
 </head>
-<body>
+<body class="lesson-game-page">
 <div class="wrapper">
   <header><h1 class="teacher-name">Логунов Григорий Владимирович — Математика</h1></header>
 
@@ -31,8 +32,10 @@
 </nav>
 <p>Урок 5 из 170 · 1 четверть</p>
 <!-- grade5-navigation:end -->
-    <h2>1.2. Координатный луч. Изображение натуральных чисел и числа нуль на координатном луче</h2>
+    <h2>1.2. Координатный луч</h2>
 
+    <section data-lesson-adventure data-lesson="ray" aria-label="Игровой маршрут по теме"><p>Шесть коротких шагов: считаем, пробуем и разбираемся. Для игры включи JavaScript. Объяснения ниже можно читать без него.</p></section>
+    <details class="lesson-drawer" id="lesson-reference"><summary>📖 Объяснения и примеры</summary><div class="lesson-drawer-content">
     <div class="learning-goals"><h3>После урока я смогу</h3><ul><li>Выбрать начало, направление и единичный отрезок координатного луча.</li><li>Самостоятельно отметить натуральное число на луче.</li><li>Различать координату точки и расстояние в сантиметрах или метрах.</li></ul><p>Сравнение чисел и двойные неравенства подробно изучим на следующем уроке.</p></div>
     <h3>📘 Лекция</h3>
     <div class="info-grid">
@@ -75,10 +78,13 @@
 
     <h3>Построй луч самостоятельно</h3><div data-ray-builder></div>
     <p>В тетради: начерти луч, выбери единичный отрезок 2 см и отметь A(3). Проверь линейкой: OA = 6 см. Поясни, почему координата точки равна 3, а не 6.</p>
-    <h3>🎯 Тренажёр: реши и объясни</h3>
+    </div></details>
+    <details class="lesson-drawer" id="extra-practice"><summary>🧩 Ещё задания · по желанию</summary><div class="lesson-drawer-content">
+    <h3>Практика после игры</h3>
     <div id="trainer"></div>
     <section class="exit-box"><h3>Самостоятельно: построй и объясни</h3><p>В тетради построй луч вправо с единичным отрезком <strong>2 см</strong>. Отметь O, точку 1 и <strong>B(4)</strong>. Подпиши координаты. Построение покажи учителю.</p>
     <form class="exit-form" data-paper="yes"><label>Сколько единичных отрезков от O до B?<input type="text" inputmode="numeric" data-exit-answer="4" data-criterion="различаю координату и расстояние"></label><label>Длина OB в сантиметрах<input type="text" inputmode="numeric" data-exit-answer="8" data-criterion="нахожу расстояние с учётом единичного отрезка"></label><label>Что должно выполняться при построении?<select data-exit-answer="equal" data-criterion="сохраняю одинаковую длину единичных отрезков"><option value="">Выбери…</option><option value="equal">Все единичные отрезки одинаковой длины</option><option value="different">Отрезки можно делать разной длины</option></select></label><button type="submit" class="check-btn">Проверить самостоятельные ответы</button><div role="status" aria-live="polite"></div></form><p class="exit-note">Проверь чертёж: есть начало и направление; O–1 = 2 см; B расположена в четырёх единичных отрезках от O. Автопроверка ответов не заменяет проверку чертежа учителем.</p></section>
+    </div></details>
     <details class="source-note"><summary>Цели и учебник</summary><p>5.3.1.1 знать различные единицы длины и понимать, что такое единичный отрезок на координатном луче; 5.5.2.2 изображать натуральные числа на координатном луче. Источник: КТП учителя на 2026–2027 год. Учебник: Алдамұратова и др., «Математика. 5 класс», часть 1, § 1.2, с. 9–13, Атамұра, 2017.</p></details>
     <p class="teacher-link"><a href="teacher-grade5-lessons.html#ray">Материалы и критерии для учителя</a></p><noscript><p>Для конструктора и тренажёра нужен JavaScript. Выполни построение и самостоятельное задание в тетради.</p></noscript>
   </div>
@@ -86,6 +92,7 @@
 
 <script src="lesson-practice.js"></script>
 <script src="lesson-widgets.js" defer></script>
+<script src="lesson-adventure.js" defer></script>
 <script>
 /* ============ Вспомогательные функции ============ */
 const $ = s => document.querySelector(s);
