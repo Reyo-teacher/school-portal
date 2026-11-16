@@ -1,0 +1,49 @@
+/* Curriculum pages share the portal palette and do not change existing trainers. */
+.curriculum{max-width:1080px}
+[hidden]{display:none!important}
+.course-heading{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.course-heading h2{font-size:clamp(25px,4vw,34px);border:0;padding:0}
+.eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.05em;font-weight:800;color:#53647e;margin:10px 0}
+.course-summary{margin:8px 0 16px}.course-owl{font-size:64px;flex:none}
+.course-stats{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 18px}
+.course-stats span{border-radius:12px;background:#eff6ff;padding:8px 14px;font-size:14px;color:#334155}
+.course-stats b{color:#1e40af;font-size:20px;margin-right:4px}
+.catalog-intro{max-width:720px}
+.catalog-tools{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:24px}
+.catalog-tools label{font-size:13px;font-weight:800;color:#475569;min-width:0}
+.catalog-tools input,.catalog-tools select{width:100%;display:block;margin-top:5px;padding:12px;border:2px solid #bfdbfe;border-radius:12px;background:#fff;color:#1e293b;font:inherit;font-size:15px;min-height:48px}
+.catalog-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.catalog-tabs button{padding:10px 16px;border-radius:12px;border:2px solid #bfdbfe;background:#fff;color:#1e40af;font-weight:800;cursor:pointer}
+.catalog-tabs button[aria-pressed=true]{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.catalog-caption{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:24px 0 16px}
+.catalog-caption h3{margin:0;max-width:720px}.catalog-caption p{margin:0;color:#64748b;font-size:14px}
+.section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.section-card{display:flex;align-items:center;gap:14px;border:2px solid var(--section-border);border-radius:18px;background:var(--section-bg);color:#1e293b;padding:18px;text-decoration:none;transition:transform .15s,box-shadow .15s;min-height:112px;scroll-margin-top:18px}
+.section-card:hover{transform:translateY(-2px);box-shadow:0 4px 0 var(--section-border)}
+.section-card strong{display:block;font-size:17px;line-height:1.3}.section-card small{display:block;margin-top:8px;color:#475569;font-weight:700;font-size:13px}
+.section-card>span:last-child{margin-left:auto;color:#475569}.section-number{font-weight:800;font-size:22px;color:var(--section-ink);flex:none}
+.tone-0{--section-bg:#eff6ff;--section-border:#bfdbfe;--section-ink:#1d4ed8}
+.tone-1{--section-bg:#f0fdf4;--section-border:#bbf7d0;--section-ink:#15803d}
+.tone-2{--section-bg:#fff7ed;--section-border:#fed7aa;--section-ink:#c2410c}
+.tone-3{--section-bg:#faf5ff;--section-border:#e9d5ff;--section-ink:#7e22ce}
+.tone-4{--section-bg:#fff1f2;--section-border:#fecdd3;--section-ink:#be123c}
+.tone-5{--section-bg:#f0fdfa;--section-border:#99f6e4;--section-ink:#0f766e}
+.lesson-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.lesson-link{display:flex;align-items:center;gap:16px;padding:16px;border:2px solid #dbeafe;border-radius:16px;text-decoration:none;color:#1e293b;background:#fff}
+.lesson-link:hover{background:#eff6ff;border-color:#93c5fd}.lesson-number{display:grid;place-items:center;background:#e0f2fe;border-radius:12px;min-width:48px;height:48px;font-weight:800;color:#1e40af}
+.lesson-copy{min-width:0}.lesson-copy strong{display:block;font-size:17px;line-height:1.4}.lesson-meta{display:block;color:#64748b;font-size:13px;margin-bottom:4px}.lesson-arrow{margin-left:auto;color:#1d4ed8}
+.lesson-tags{display:flex;gap:6px;flex-wrap:wrap}.lesson-tag{display:inline-block;font-size:12px;font-weight:800;color:#92400e;background:#fef3c7;border-radius:7px;padding:2px 8px;margin-top:8px}
+.empty-state{padding:30px;text-align:center;background:#f8fafc;border-radius:16px}
+.source-card h3{margin-top:0}.source-card p{font-size:14px}.source-card{margin-top:20px}
+.lesson-breadcrumbs{display:flex;flex-wrap:wrap;gap:7px;font-size:14px;margin-bottom:24px}.lesson-breadcrumbs a{color:#1e40af;text-underline-offset:3px}
+.lesson-hero h2{border:0;padding:0;line-height:1.35;font-size:clamp(23px,3.5vw,31px);overflow-wrap:anywhere}
+.lesson-hero .eyebrow{font-size:12px;text-transform:none;letter-spacing:0}
+.lesson-progress{height:6px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-top:24px}.lesson-progress span{display:block;height:100%;background:#60a5fa}
+.lesson-columns{display:grid;grid-template-columns:3fr 2fr;gap:18px}.lesson-columns .card{min-width:0}
+.lesson-columns h3{margin-top:0}.goals ul{padding-left:22px;margin-bottom:0}.goals li{margin:12px 0;overflow-wrap:anywhere}
+.textbook-refs{list-style:none;padding:0}.textbook-refs li{background:#eff6ff;border-radius:12px;padding:12px;margin:8px 0}.muted{color:#64748b;font-size:14px}
+.material-link{display:flex;justify-content:space-between;gap:16px;padding:16px;border:2px solid #bfdbfe;border-radius:12px;color:#1e40af;text-decoration:none;font-weight:800}.material-link:hover{background:#eff6ff}
+.material-note{font-size:14px;color:#64748b;padding:0 8px;margin:0 0 20px}.source-details{padding:16px 22px;box-shadow:none;border-width:2px}.source-details summary{cursor:pointer;color:#475569;font-weight:800}.source-details p{font-size:14px;white-space:pre-line}
+.lesson-pagination{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}.lesson-pagination a{padding:16px;background:#fff;border:2px solid #bfdbfe;border-radius:16px;text-decoration:none;color:#1e40af;min-width:0}.lesson-pagination small{display:block;color:#64748b;margin-bottom:6px}.lesson-pagination strong{font-size:14px;display:block;line-height:1.4;overflow-wrap:anywhere}.lesson-pagination a:hover{background:#eff6ff}.catalog-return{text-align:center;margin-top:24px}
+@media(max-width:640px){.section-grid,.catalog-tools,.lesson-columns{grid-template-columns:1fr}.course-owl{font-size:42px}.section-card{min-height:96px;padding:15px}.lesson-link{gap:10px;padding:12px}.lesson-number{min-width:38px;height:38px;font-size:14px}.lesson-copy strong{font-size:15px}.lesson-arrow{display:none}.lesson-pagination{gap:10px}.lesson-pagination a{padding:12px}.course-stats{gap:7px}.course-stats span{padding:6px 9px}.course-stats b{font-size:18px}.lesson-columns{gap:0}}
+@media(prefers-reduced-motion:reduce){.section-card{transition:none}}
