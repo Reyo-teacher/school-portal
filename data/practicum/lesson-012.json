@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Формулы. Вычисление по формулам. Решение текстовых задач. Последовательности из натуральных чисел",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.5.1.1",
+      "text": "5.5.1.1 решать текстовые задачи с помощью арифметических действий над натуральными числами"
+    },
+    {
+      "id": "5.5.1.8",
+      "text": "5.5.1.8 составлять буквенные выражения и использовать их для решения задач"
+    },
+    {
+      "id": "5.5.1.9",
+      "text": "5.5.1.9 использовать формулы для решения текстовых задач"
+    }
+  ],
+  "task_ids": [
+    "lesson-12-v1-step1",
+    "lesson-12-v1-step2",
+    "lesson-12-v1-step3",
+    "lesson-12-v1-step4",
+    "lesson-12-v1-step5",
+    "lesson-12-v1-step6",
+    "lesson-12-v2-step1",
+    "lesson-12-v2-step2",
+    "lesson-12-v2-step3",
+    "lesson-12-v2-step4",
+    "lesson-12-v2-step5",
+    "lesson-12-v2-step6",
+    "lesson-12-v3-step1",
+    "lesson-12-v3-step2",
+    "lesson-12-v3-step3",
+    "lesson-12-v3-step4",
+    "lesson-12-v3-step5",
+    "lesson-12-v3-step6"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 14,
+    "lesson": 12
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

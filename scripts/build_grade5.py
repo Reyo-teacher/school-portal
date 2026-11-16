@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = json.loads((ROOT / 'data/grade-5-curriculum.json').read_text(encoding='utf-8'))
 LESSONS = DATA['lessons']
 SECTIONS = {s['id']: s for s in DATA['sections']}
+GAME_REGISTRY = ROOT / 'data/grade-5-games.json'
+GAME_LESSONS = set(json.loads(GAME_REGISTRY.read_text())['lessons']) if GAME_REGISTRY.exists() else set()
 
 
 def e(value):
@@ -78,6 +80,8 @@ def document(title, body, scripts=''):
 
 def label(lesson):
     labels = []
+    if lesson['number'] in GAME_LESSONS:
+        labels.append('Игра с озвучкой')
     if lesson['assessment']:
         labels.append(lesson['assessment'])
     if lesson['analysis']:
@@ -135,6 +139,10 @@ def catalog():
 
 def lesson_page(lesson):
     n = lesson['number']
+    if n in GAME_LESSONS and not lesson.get('contentPage'):
+        from build_course import render_course_page
+        (ROOT/lesson['url']).write_text(render_course_page(lesson), encoding='utf-8')
+        return
     if lesson.get('contentPage'):
         connect_content_page(lesson)
         destination = e(lesson_url(lesson))
