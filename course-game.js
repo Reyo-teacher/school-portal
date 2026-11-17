@@ -74,6 +74,8 @@ function mount(el,data){
  el.addEventListener('change',event=>{if(event.target.hasAttribute('data-bar')){const i=event.target.dataset.bar;render();body.querySelector(`[data-bar="${i}"]`)?.focus({preventScroll:true});}});
  el.addEventListener('submit',event=>{if(!event.target.matches('.course-form'))return;event.preventDefault();voice?.stop();check(input);});
  render();
+ const printPanel=document.getElementById('course-print-panel');
+ if(printPanel&&root.CoursePrint&&root.LessonPractice)root.CoursePrint.mount(printPanel,()=>({data,round:saved.round,renderModel:model}));
 }
 const api={numeric,grade,model,mount};root.CourseGame=api;if(typeof module==='object'&&module.exports)module.exports=api;
 if(typeof document!=='undefined'){const init=()=>{const el=document.querySelector('[data-course-game]'),data=document.getElementById('course-data');if(el&&data)mount(el,JSON.parse(data.textContent));};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();}

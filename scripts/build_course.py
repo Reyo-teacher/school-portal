@@ -2,15 +2,18 @@
 import argparse,json,re,hashlib
 from pathlib import Path
 from html import escape as e
-from course import naturals
+from course import naturals, divisibility
 ROOT=Path(__file__).resolve().parents[1]
 DATA=json.loads((ROOT/'data/grade-5-curriculum.json').read_text())
 REGISTRY=ROOT/'data/grade-5-games.json'
 FAMILIES={1:'review',2:'review',3:'review',6:'compare',7:'arithmetic',8:'simplify',9:'substitute',10:'equations',11:'check_equations',12:'formulas',13:'sequences',14:'invent_sequences'}
 
+FAMILIES.update({15:"divisors",16:"find_divisors",17:"primes",18:"product_divisibility",19:"sum_divisibility",20:"rules_2_5_10",21:"rules_3_9",22:"powers",23:"write_powers",24:"factorization",25:"factorization",26:"gcd_lcm",27:"gcd_lcm_calc",28:"gcd_lcm_words"})
+
 def content(lesson,variant):
     family=FAMILIES[lesson['number']]
-    return naturals.make(family,(lesson['number']-1 if family=='review' else lesson['topicLesson']-1)+variant,lesson['number'])
+    module=divisibility if 15<=lesson['number']<=28 else naturals
+    return module.make(family,(lesson['number']-1 if family=='review' else lesson['topicLesson']-1)+variant,lesson['number'])
 
 def url(l):return l.get('contentPage',l['url'])
 def make_data(lesson):
@@ -39,10 +42,11 @@ def render_course_page(lesson,data=None):
     goals=[x.strip(' ;') for x in re.split(r'(?=5\.\d\.\d\.\d+\s)',lesson['objective']) if x.strip(' ;')]
     safe=json.dumps(d,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
     return f'''<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Урок {n}. {e(lesson['title'])} — Портал Логунова Г.В.</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="lesson-practice.css"><link rel="stylesheet" href="lesson-adventure.css"><link rel="stylesheet" href="course-game.css"></head><body class="lesson-game-page course-page"><div class="wrapper"><header><h1 class="teacher-name">Логунов Григорий Владимирович · Математика, 5 класс</h1></header><main class="card"><nav aria-label="Навигация по урокам"><a class="back-btn" href="grade-5.html#{lesson['section']}">← К разделу</a></nav><p>Урок {n} из 170 · {lesson['quarter']} четверть · {e(section['title'])}</p><h2>{e(lesson['title'])}</h2>{f'<p class="course-mode">{message}</p>' if message else ''}<section data-course-game data-lesson-adventure aria-label="Игровой маршрут"><p>Для игры включи JavaScript. Объяснения ниже доступны без него.</p></section>
+<details class="lesson-drawer" id="paper-practice"><summary>🖨 Карточка для работы на бумаге</summary><div class="lesson-drawer-content" id="course-print-panel"></div></details>
 <details class="lesson-drawer" id="lesson-reference"><summary>📖 Объяснения и пример</summary><div class="lesson-drawer-content course-reference">{''.join('<p>'+e(x)+'</p>' for x in d['notes'])}<div class="worked-example"><strong>{e(d['example'][0])}</strong><p>{e(d['example'][1])}</p></div></div></details>
 <details class="lesson-drawer"><summary>✏️ Попробуй в тетради</summary><div class="lesson-drawer-content"><p>{e(d['paper'])}</p><p>Объясни ход решения учителю или однокласснику. Для чертежей используй нужные инструменты.</p></div></details>
 <details class="lesson-drawer"><summary>Для учителя: цели и учебник</summary><div class="lesson-drawer-content course-teacher"><ul>{''.join('<li>'+e(x)+'</li>' for x in goals)}</ul><p>Источник: КТП учителя на {DATA['year']} год, строка {lesson['sourceRow']} подробной таблицы.</p><ul>{refs}</ul><p>Учебник Алдамұратовой и соавторов, Атамұра, 2017. Задания игры авторские; жизненные данные учебные. Номера упражнений учителя не заменяются.</p><p>Наблюдайте не только ответ, но и объяснение. Последний шаг — для самостоятельной попытки. Звёзды означают завершённые шаги, а не отметку.</p></div></details>
-<noscript><ol class="course-fallback">{''.join('<li>'+e(t['prompt'])+'</li>' for t in d['variants'][0])}</ol></noscript><nav class="lesson-pagination" aria-label="Предыдущий и следующий урок">{previous}{following}</nav><p class="course-sources"><a href="grade-5.html#{lesson['section']}">Все уроки раздела</a></p></main></div><script id="course-data" type="application/json">{safe}</script><script src="lesson-voice.js" defer></script><script src="course-game.js" defer></script></body></html>'''
+<noscript><ol class="course-fallback">{''.join('<li>'+e(t['prompt'])+'</li>' for t in d['variants'][0])}</ol></noscript><nav class="lesson-pagination" aria-label="Предыдущий и следующий урок">{previous}{following}</nav><p class="course-sources"><a href="grade-5.html#{lesson['section']}">Все уроки раздела</a></p></main></div><script id="course-data" type="application/json">{safe}</script><script src="lesson-practice.js" defer></script><script src="lesson-voice.js" defer></script><script src="course-print.js" defer></script><script src="course-game.js" defer></script></body></html>'''
 
 def manifest(lesson,d):
     goals=[x.strip(' ;') for x in re.split(r'(?=5\.\d\.\d\.\d+\s)',lesson['objective']) if x.strip(' ;')]

@@ -37,11 +37,13 @@ test('minimum and maximum generated values remain answerable',()=>{
     for(const make of config.G){const t=make();assert.equal(practice.grade(t,rightValues(t)).ok,true);}
   }
 });
-test('grading accepts grouping spaces and leading zeros but rejects invalid formats without an attempt',()=>{
+test('grading accepts grouping spaces, checks canonical notation and rejects invalid formats',()=>{
   const t={ans:'12050',hint:'Разряды'};
-  for(const answer of ['12 050','12\u00a0050','12\u202f050','0012050'])assert.equal(practice.grade(t,{answer}).ok,true);
+  for(const answer of ['12 050','12\u00a0050','12\u202f050'])assert.equal(practice.grade(t,{answer}).ok,true);
   for(const answer of ['','  ','12.05','-1','1e4','12050 тг','Infinity'])assert.equal(practice.grade(t,{answer}).empty,true);
   assert.equal(practice.grade(t,{answer:'1250'}).ok,false);
+  assert.equal(practice.grade(t,{answer:'0012050'}).ok,false);
+  assert.equal(practice.grade({ans:'0'},{answer:'0'}).ok,true);
 });
 test('zero, parity, currency and place-value tasks agree with their scenarios',()=>{
   const {config}=loadLesson('topic-5-1-1.html');
