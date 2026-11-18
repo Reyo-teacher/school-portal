@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Наибольший общий делитель. Взаимно простые числа. Наименьшее общее кратное",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.1.1.7",
+      "text": "5.1.1.7 знать определения понятий общий делитель, общее кратное, наибольший общий делитель (НОД), наименьшее общее кратное (НОК)"
+    }
+  ],
+  "task_ids": [
+    "lesson-26-v1-step1",
+    "lesson-26-v1-step2",
+    "lesson-26-v1-step3",
+    "lesson-26-v1-step4",
+    "lesson-26-v1-step5",
+    "lesson-26-v1-step6",
+    "lesson-26-v2-step1",
+    "lesson-26-v2-step2",
+    "lesson-26-v2-step3",
+    "lesson-26-v2-step4",
+    "lesson-26-v2-step5",
+    "lesson-26-v2-step6",
+    "lesson-26-v3-step1",
+    "lesson-26-v3-step2",
+    "lesson-26-v3-step3",
+    "lesson-26-v3-step4",
+    "lesson-26-v3-step5",
+    "lesson-26-v3-step6"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 28,
+    "lesson": 26
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}
