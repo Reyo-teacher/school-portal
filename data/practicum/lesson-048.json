@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Сложение и вычитание обыкновенных дробей",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.1.2.18",
+      "text": "5.1.2.18 выполнять сложение и вычитание дробей с разными знаменателями"
+    }
+  ],
+  "task_ids": [
+    "lesson-48-v1-step1",
+    "lesson-48-v1-step2",
+    "lesson-48-v1-step3",
+    "lesson-48-v1-step4",
+    "lesson-48-v1-step5",
+    "lesson-48-v1-step6",
+    "lesson-48-v2-step1",
+    "lesson-48-v2-step2",
+    "lesson-48-v2-step3",
+    "lesson-48-v2-step4",
+    "lesson-48-v2-step5",
+    "lesson-48-v2-step6",
+    "lesson-48-v3-step1",
+    "lesson-48-v3-step2",
+    "lesson-48-v3-step3",
+    "lesson-48-v3-step4",
+    "lesson-48-v3-step5",
+    "lesson-48-v3-step6"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 51,
+    "lesson": 48
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

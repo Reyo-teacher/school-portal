@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Действия над обыкновенными дробями",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "review-78",
+      "text": "Действия над обыкновенными дробями"
+    }
+  ],
+  "task_ids": [
+    "lesson-78-v1-step1",
+    "lesson-78-v1-step2",
+    "lesson-78-v1-step3",
+    "lesson-78-v1-step4",
+    "lesson-78-v1-step5",
+    "lesson-78-v1-step6",
+    "lesson-78-v2-step1",
+    "lesson-78-v2-step2",
+    "lesson-78-v2-step3",
+    "lesson-78-v2-step4",
+    "lesson-78-v2-step5",
+    "lesson-78-v2-step6",
+    "lesson-78-v3-step1",
+    "lesson-78-v3-step2",
+    "lesson-78-v3-step3",
+    "lesson-78-v3-step4",
+    "lesson-78-v3-step5",
+    "lesson-78-v3-step6"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 81,
+    "lesson": 78
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

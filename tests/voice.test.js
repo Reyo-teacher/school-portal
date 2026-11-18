@@ -87,3 +87,11 @@ test('audio preferences are bounded and the voice script loads before the game o
     assert.match(html,/<script src="lesson-voice.js" defer><\/script>/);
   }
 });
+
+test('course narration expands fractions, powers, comparisons and set symbols',()=>{
+ const voice=require('../lesson-voice.js');
+ assert.match(voice.speechText('1/2 + 2/3'),/одна вторая плюс две третьих/);
+ assert.match(voice.speechText('2 1/4'),/2 целых и одна четвёртая/);
+ assert.match(voice.speechText('3 × 4 ÷ 2 − 1 < 6'),/умножить на.*разделить на.*минус.*меньше/);
+ assert.match(voice.speechText('НОД, 2^3, A ∩ B'),/наибольший общий делитель.*в степени.*пересечение/);
+});
