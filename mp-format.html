@@ -4,65 +4,119 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Профильная математика — Портал Логунова Г.В.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <style>
-/* Базовые стили — те же, что в ent.html */
-:root{--bg-dark:#070f1e;--card-bg:rgba(15,23,42,.9);--accent:#38bdf8;--text-main:#f8fafc;--text-muted:#94a3b8;--border-color:rgba(56,189,248,.25)}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background-color:var(--bg-dark);
-  background-image:linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px);
-  background-size:32px 32px;color:var(--text-main);margin:0;padding:15px;line-height:1.5}
+/* Вариант «Путь к ЕНТ» */
+:root{--ink:#16324f;--muted:#4f6b85;--line:#d3e5ef;--blue:#0284c7;--teal:#0d9488;--head:"Rubik","Nunito",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{font-family:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);margin:0;padding:15px;line-height:1.55;
+  background:
+   radial-gradient(ellipse 90px 26px at 12% 9%,#fff 70%,transparent 72%),
+   radial-gradient(ellipse 140px 34px at 84% 15%,#fff 70%,transparent 72%),
+   radial-gradient(ellipse 100px 26px at 42% 28%,rgba(255,255,255,.85) 70%,transparent 72%),
+   linear-gradient(180deg,#8fd3ff 0%,#d9f1ff 38%,#e3f6cf 100%);
+  background-attachment:fixed;background-repeat:no-repeat}
 .wrapper{max-width:900px;margin:0 auto}
-header{background:var(--card-bg);backdrop-filter:blur(10px);padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);
-  margin-bottom:20px;border-left:6px solid var(--accent);border:1px solid var(--border-color)}
-.teacher-name{font-size:18px;font-weight:700;color:var(--accent);margin:0}
-.card{background:var(--card-bg);backdrop-filter:blur(10px);padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);
-  margin-bottom:20px;border:1px solid var(--border-color)}
-h2{font-size:17px;color:var(--accent);margin-top:0;border-bottom:2px solid var(--border-color);padding-bottom:8px}
-.back-btn{display:inline-block;background:rgba(56,189,248,.15);color:var(--accent);padding:8px 16px;border-radius:6px;font-size:14px;
-  font-weight:600;cursor:pointer;margin-bottom:15px;border:1px solid var(--border-color);text-decoration:none;-webkit-tap-highlight-color:transparent}
-.back-btn:hover{background:var(--accent);color:#0f172a}
-</style>
-<style>
+header{background:#fff;padding:14px 22px;border-radius:24px;margin-bottom:18px;box-shadow:0 6px 0 rgba(22,50,79,.15);display:flex;align-items:center;gap:12px}
+header .owl{font-size:34px;line-height:1}
+.teacher-name{font-family:var(--head);font-size:19px;font-weight:700;color:var(--ink);margin:0}
+.card{background:#fff;padding:22px;border-radius:28px;box-shadow:0 12px 30px rgba(22,50,79,.16);margin-bottom:18px}
+h2{font-family:var(--head);font-size:22px;font-weight:700;color:var(--ink);margin:6px 0 14px}
+h3{font-family:var(--head);font-size:17px;font-weight:700;color:var(--ink);margin:18px 0 8px}
+.back-btn{display:inline-block;background:#e3f2fa;color:var(--blue);padding:8px 16px;border-radius:14px;font-size:14px;font-weight:800;
+  border:2px solid #b9dcee;text-decoration:none;margin-bottom:12px;transition:.15s;-webkit-tap-highlight-color:transparent}
+.back-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
 /* Стили страницы «Профильная математика» */
-#pm{--pm-accent:#38bdf8;--pm-line:rgba(56,189,248,.28);--pm-btn:rgba(56,189,248,.12);--pm-muted:#8aa3b8;--pm-ok:#4ade80;--pm-bad:#f87171}
-#pm h2{margin:16px 0 12px}
-#pm h3{margin:16px 0 8px}
-.pm-progress{color:var(--pm-muted);font-size:15px;margin:6px 0 0}
-.pm-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:10px;overflow:hidden}
-.pm-bar i{display:block;height:100%;background:var(--pm-accent)}
-.pm-month{margin:20px 0 8px;color:var(--pm-muted);font-size:15px;font-weight:800}
-.pm-topics{display:grid;gap:8px}
-.pm-topic{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;text-align:left;width:100%;
-  padding:12px 14px;color:inherit;font:inherit;background:var(--pm-btn);border:1px solid var(--pm-line);border-radius:12px;cursor:pointer}
-.pm-topic:hover{background:rgba(56,189,248,.22)}
-.pm-num{color:var(--pm-accent);font-weight:800}
-.pm-tag{font-size:13px;color:var(--pm-muted)}
-.pm-topic.pm-done .pm-num::after{content:" ✓";color:var(--pm-ok)}
-.pm-topic.pm-mock{border-color:var(--pm-accent)}
-.pm-btn{display:inline-block;font:inherit;font-weight:700;color:var(--pm-accent);background:var(--pm-btn);border:1px solid var(--pm-line);
-  border-radius:10px;padding:9px 16px;cursor:pointer;text-decoration:none}
-.pm-btn:hover{background:rgba(56,189,248,.22)}
-.pm-tabs{display:flex;gap:8px;margin:14px 0 6px}
-.pm-tabs button{font:inherit;font-weight:700;color:var(--pm-accent);background:var(--pm-btn);border:1px solid var(--pm-line);border-radius:10px;padding:9px 18px;cursor:pointer}
-.pm-tabs button[aria-selected="true"]{background:var(--pm-accent);color:#05213a}
+#pm{--mc:#0284c7}
+.pm-intro{display:flex;align-items:center;gap:12px;margin:4px 0 6px}
+.pm-owl{font-size:44px;line-height:1}
+.pm-bubble{background:#eaf6fb;border:2px solid #cfe6f2;border-radius:18px;padding:10px 16px;font-weight:700;color:var(--ink)}
+.pm-progress{color:var(--muted);font-size:15px;font-weight:700;margin:12px 0 0}
+.pm-bar{height:12px;background:#e3eef5;border-radius:999px;margin-top:8px;overflow:hidden}
+.pm-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#16a34a,#0d9488)}
+.pm-month-block{margin-top:22px}
+.pm-month{display:inline-block;background:var(--mc);color:#fff;font-weight:800;border-radius:999px;padding:3px 16px;margin-bottom:10px}
+.pm-topics{display:grid;gap:10px}
+.pm-topic{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:14px;text-align:left;width:100%;
+  padding:12px 16px;color:var(--ink);font:inherit;font-weight:700;background:#fff;border:2px solid var(--line);border-radius:18px;cursor:pointer;
+  box-shadow:0 4px 0 var(--line);transition:.15s;-webkit-tap-highlight-color:transparent}
+.pm-topic:hover{transform:translateY(-3px);border-color:var(--mc);box-shadow:0 7px 0 var(--mc)}
+.pm-topic:active{transform:translateY(2px);box-shadow:0 1px 0 var(--mc)}
+.pm-num{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--mc);color:#fff;font-weight:800}
+.pm-tag{font-size:13px;color:var(--muted);font-weight:700;white-space:nowrap}
+.pm-topic.pm-done{background:#f0fbf3;border-color:#bfe8cc;box-shadow:0 4px 0 #bfe8cc}
+.pm-topic.pm-done .pm-num{background:#16a34a;font-size:0}
+.pm-topic.pm-done .pm-num::before{content:"✓";font-size:20px}
+.pm-topic.pm-mock{background:var(--mc);border-color:var(--mc);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.pm-topic.pm-mock .pm-num{background:rgba(255,255,255,.25)}
+.pm-topic.pm-mock .pm-tag{color:#fff}
+.pm-btn{display:inline-block;font:inherit;font-weight:800;color:#fff;background:var(--mc);border:0;border-radius:14px;padding:10px 20px;
+  cursor:pointer;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,.2);transition:.15s}
+.pm-btn:hover{transform:translateY(-2px)}
+.pm-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.pm-btn.pm-soft{background:#fff;color:var(--mc);border:2px solid var(--mc);box-shadow:none}
+.pm-tabs{display:flex;gap:10px;margin:14px 0 8px}
+.pm-tabs button{font:inherit;font-weight:800;color:var(--mc);background:#fff;border:2px solid var(--mc);border-radius:14px;padding:9px 22px;cursor:pointer}
+.pm-tabs button[aria-selected="true"]{background:var(--mc);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .pm-lecture p,.pm-lecture li{max-width:74ch}
-.pm-rule{border-left:3px solid var(--pm-accent);background:rgba(56,189,248,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
-.pm-empty{color:var(--pm-muted);border:1px dashed var(--pm-line);border-radius:10px;padding:18px}
-.pm-task{border:1px solid var(--pm-line);border-radius:12px;padding:14px 16px;margin:12px 0}
-.pm-task.pm-right{border-color:var(--pm-ok)}
-.pm-task.pm-wrong{border-color:var(--pm-bad)}
-.pm-q{margin:0 0 10px;font-weight:700}
-.pm-opt{display:flex;align-items:center;gap:10px;padding:6px 4px;cursor:pointer}
-.pm-explain{color:var(--pm-muted);margin:10px 0 0;font-size:15px}
-.pm-result{font-weight:800;margin:14px 0}
+.pm-rule{border-left:5px solid var(--mc);background:#f1f7fb;padding:12px 16px;border-radius:0 14px 14px 0;margin:14px 0}
+.pm-empty{color:var(--muted);border:2px dashed var(--line);border-radius:16px;padding:18px;font-weight:700}
+.pm-task{border:2px solid var(--line);border-radius:16px;padding:14px 18px;margin:12px 0;background:#fbfdff}
+.pm-task.pm-right{border-color:#16a34a;background:#f0fbf3}
+.pm-task.pm-wrong{border-color:#ef4444;background:#fff4f4}
+.pm-q{margin:0 0 10px;font-weight:800}
+.pm-opt{display:flex;align-items:center;gap:10px;padding:6px 4px;cursor:pointer;font-weight:700}
+.pm-opt input{accent-color:var(--mc);width:18px;height:18px}
+.pm-explain{color:var(--muted);margin:10px 0 0;font-size:15px;font-weight:700}
+.pm-result{font-weight:800;font-size:18px;margin:14px 0}
 .pm-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-#pm button:focus-visible,#pm a:focus-visible,#pm input:focus-visible{outline:2px solid var(--pm-accent);outline-offset:2px}
-@media (max-width:560px){.pm-topic{grid-template-columns:32px 1fr}.pm-tag{grid-column:2}}
+@media (max-width:560px){.pm-topic{grid-template-columns:38px 1fr}.pm-tag{grid-column:2}header .owl{font-size:28px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---- игровая карта ---- */
+.pm-intro{display:flex;align-items:center;gap:12px;margin:2px 0 12px}
+.pm-owl{font-size:44px;line-height:1}
+.pm-bubble{background:#eaf6fb;border:2px solid #cfe6f2;border-radius:18px;padding:10px 16px;font-weight:700}
+.pm-stats{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:6px}
+.pm-chip{background:#fff7dc;border:2px solid #f6dc8b;border-radius:999px;padding:5px 16px;font-weight:800;font-size:15px}
+.pm-chip.pm-lv{background:#e8f4ff;border-color:#b9dcee}
+.pm-chip.pm-dn{background:#e9f9ee;border-color:#bfe8cc}
+.pm-map{position:relative;margin:18px 0 6px}
+.pm-road{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.pm-road path{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.pm-road .bed{stroke:#e2cb97;stroke-width:26px}
+.pm-road .mid{stroke:#fff8e1;stroke-width:3px;stroke-dasharray:2 11}
+.pm-banner{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:2;background:var(--mc);color:#fff;font-family:var(--head);font-weight:700;
+  font-size:16px;padding:6px 20px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.22);white-space:nowrap}
+.pm-banner small{font-family:"Nunito",sans-serif;font-weight:800;opacity:.9;margin-left:8px;font-size:13px}
+.pm-node{position:absolute;z-index:3;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:4px solid #fff;
+  background:var(--mc);color:#fff;font-family:var(--head);font-weight:700;font-size:21px;line-height:1;cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .15s;-webkit-tap-highlight-color:transparent;padding:0}
+.pm-node:hover{transform:translate(-50%,-50%) scale(1.1)}
+.pm-node.pm-done{background:#16a34a;font-size:0}
+.pm-node.pm-done::before{content:"✓";font-size:28px}
+.pm-node.pm-next{box-shadow:0 5px 0 rgba(0,0,0,.25),0 0 0 7px rgba(251,191,36,.65)}
+.pm-node.pm-mock{width:78px;height:78px;font-size:34px;background:linear-gradient(150deg,#fbbf24,#f59e0b);border-color:#fff}
+.pm-node.pm-mock.pm-done{background:linear-gradient(150deg,#4ade80,#16a34a);font-size:0}
+.pm-label{position:absolute;z-index:3;transform:translateY(-50%);width:max-content;background:#fff;border-radius:14px;padding:6px 11px;
+  font-size:14px;font-weight:800;line-height:1.3;box-shadow:0 3px 0 rgba(22,50,79,.16);cursor:pointer;border:2px solid transparent}
+.pm-label:hover{border-color:var(--mc)}
+.pm-label.pm-done{background:#effaf2}
+.pm-label.pm-mock{background:#fff3c4}
+.pm-label em{display:block;font-style:normal;font-size:12px;color:var(--muted)}
+.pm-pin{position:absolute;z-index:4;transform:translate(-50%,-100%);font-size:38px;line-height:1;pointer-events:none;animation:pm-hop 1.3s ease-in-out infinite}
+@keyframes pm-hop{0%,100%{transform:translate(-50%,-100%)}50%{transform:translate(-50%,calc(-100% - 8px))}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.pm-pin{animation:none}}
+@media (max-width:560px){header .owl{font-size:28px}}
 </style>
 </head>
 <body>
 <div class="wrapper">
-  <header><h1 class="teacher-name">Подготовка к ЕНТ — Логунов Г.В.</h1></header>
+  <header><span class="owl">🦉</span><h1 class="teacher-name">Подготовка к ЕНТ — Логунов Г.В.</h1></header>
   <div class="card" id="pm"></div>
 </div>
 
@@ -146,6 +200,8 @@ const TOPICS = [
 
 /* ---------- прогресс (хранится в браузере ученика) ---------- */
 const KEY = "ent-math-done";
+const MCOL = {"Сентябрь":"#ea580c","Октябрь":"#16a34a","Ноябрь":"#0284c7","Декабрь":"#9333ea","Январь":"#db2777",
+  "Февраль":"#0d9488","Март":"#4f46e5","Апрель":"#d97706","Май":"#0891b2"};
 function loadDone() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
 function saveDone(list) { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {} }
 
@@ -160,28 +216,85 @@ function typeset() {
   }
 }
 
+const LEVELS = [[0,"Новичок"],[60,"Ученик"],[150,"Знаток"],[250,"Мастер"],[350,"Чемпион ЕНТ"]];
+function gameStats(done) {
+  let xp = 0;
+  done.forEach(n => { const t = TOPICS.find(x => x.n === n); if (t) xp += t.mock ? 30 : 10; });
+  let lv = 0;
+  LEVELS.forEach((l, i) => { if (xp >= l[0]) lv = i; });
+  return {xp, lv: lv + 1, title: LEVELS[lv][1]};
+}
+
+function owlPhrase(d, total) {
+  if (d === 0) return "Привет! Я покажу дорогу. Начнём с первого занятия?";
+  if (d === total) return "Ты прошёл весь путь! Теперь ты готов к ЕНТ!";
+  if (d / total >= 0.5) return "Больше половины пути позади. Вперёд!";
+  return "Отлично идёшь! Следующая остановка ждёт тебя.";
+}
+
 function renderList() {
   const done = loadDone();
-  let html = `
-    <a class="back-btn" href="${BACK_URL}">← К выбору разделов</a>
-    <h2>Профильная математика</h2>
-    <p class="pm-progress">Пройдено занятий: ${done.length} из ${TOPICS.length}</p>
-    <div class="pm-bar"><i style="width:${Math.round(done.length / TOPICS.length * 100)}%"></i></div>`;
-  let month = "";
+  const st = gameStats(done);
+  view.style.setProperty("--mc", "#0284c7");
+
+  // раскладка: точки дороги и баннеры месяцев
+  const pts = [], banners = [];
+  let y = -20, month = "", idx = 0;
   for (const t of TOPICS) {
     if (t.m !== month) {
-      if (month) html += "</div>";
+      y += banners.length ? 84 : 60;
       month = t.m;
-      html += `<div class="pm-month">${month}</div><div class="pm-topics">`;
+      banners.push({m: month, y, count: TOPICS.filter(x => x.m === month).length});
+      y += 62;
+    } else {
+      y += 104;
     }
-    const cls = "pm-topic" + (done.includes(t.n) ? " pm-done" : "") + (t.mock ? " pm-mock" : "");
-    html += `<button class="${cls}" data-n="${t.n}">
-      <span class="pm-num">${t.n}</span><span>${t.t}</span>
-      <span class="pm-tag">${t.mock ? "Пробный ЕНТ" : "Лекция и практика"}</span></button>`;
+    pts.push({t, x: Math.round((50 + 26 * Math.sin(idx * 0.9)) * 10) / 10, y});
+    idx++;
   }
+  const H = y + 70;
+
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i - 1], q = pts[i], my = (p.y + q.y) / 2;
+    d += ` C ${p.x} ${my}, ${q.x} ${my}, ${q.x} ${q.y}`;
+  }
+
+  const next = TOPICS.find(t => !done.includes(t.n));
+  let html = `
+    <a class="back-btn" href="${BACK_URL}">← К выбору разделов</a>
+    <h2>Путь к ЕНТ: профильная математика</h2>
+    <div class="pm-intro"><span class="pm-owl">🦉</span><div class="pm-bubble">${owlPhrase(done.length, TOPICS.length)}</div></div>
+    <div class="pm-stats">
+      <span class="pm-chip">⭐ ${st.xp} очков</span>
+      <span class="pm-chip pm-lv">🏅 Уровень ${st.lv}: ${st.title}</span>
+      <span class="pm-chip pm-dn">✅ ${done.length} из ${TOPICS.length}</span>
+    </div>
+    <div class="pm-map" style="height:${H}px">
+      <svg class="pm-road" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">
+        <path class="bed" d="${d}"/><path class="mid" d="${d}"/>
+      </svg>`;
+
+  for (const b of banners) {
+    html += `<div class="pm-banner" style="top:${b.y}px;--mc:${MCOL[b.m]}">${b.m}<small>${b.count} зан.</small></div>`;
+  }
+  for (const p of pts) {
+    const t = p.t, isDone = done.includes(t.n), isNext = next && next.n === t.n;
+    const flags = (isDone ? " pm-done" : "") + (t.mock ? " pm-mock" : "");
+    const right = p.x < 50;
+    const side = right
+      ? `left:calc(${p.x}% + ${t.mock ? 54 : 46}px);max-width:calc(${100 - p.x}% - ${t.mock ? 62 : 54}px)`
+      : `right:calc(${100 - p.x}% + ${t.mock ? 54 : 46}px);max-width:calc(${p.x}% - ${t.mock ? 62 : 54}px);text-align:right`;
+    html += `<button class="pm-node${flags}${isNext ? " pm-next" : ""}" data-n="${t.n}" style="left:${p.x}%;top:${p.y}px;--mc:${MCOL[t.m]}"
+        aria-label="Занятие ${t.n}: ${t.t}"><span>${t.mock ? "🏆" : t.n}</span></button>
+      <div class="pm-label${flags}" data-n="${t.n}" style="top:${p.y}px;${side};--mc:${MCOL[t.m]}">${t.mock ? "<em>Пробный ЕНТ</em>" : ""}${t.t}</div>`;
+  }
+  const pin = next ? pts.find(p => p.t.n === next.n) : pts[pts.length - 1];
+  html += `<div class="pm-pin" style="left:${pin.x}%;top:${pin.y - (pin.t.mock ? 44 : 34)}px">${next ? "🦉" : "🎉"}</div>`;
   html += "</div>";
+
   view.innerHTML = html;
-  view.querySelectorAll(".pm-topic").forEach(b =>
+  view.querySelectorAll("[data-n]").forEach(b =>
     b.addEventListener("click", () => { location.hash = "#/t/" + b.dataset.n; }));
 }
 
@@ -232,6 +345,7 @@ function bindCheck(t) {
 function renderTopic(n, part) {
   const t = TOPICS.find(x => x.n === n);
   if (!t) { location.hash = "#/"; return; }
+  view.style.setProperty("--mc", MCOL[t.m]);
   const done = loadDone().includes(n);
   const isPractice = part === "practice";
 
@@ -253,7 +367,7 @@ function renderTopic(n, part) {
     ${tabs}
     ${body}
     <div class="pm-actions">
-      <button class="pm-btn" id="pm-mark">${done ? "Снять отметку «пройдено»" : "Отметить как пройденное"}</button>
+      <button class="pm-btn pm-soft" id="pm-mark">${done ? "Снять отметку «пройдено»" : "Отметить как пройденное (+" + (t.mock ? 30 : 10) + " ⭐)"}</button>
     </div>`;
 
   view.querySelectorAll(".pm-tabs button").forEach(b =>
