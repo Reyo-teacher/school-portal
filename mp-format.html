@@ -1,122 +1,283 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профильная математика — Формат</title>
-    <style>
-        :root {
-            --bg-dark: #070f1e;
-            --card-bg: rgba(15, 23, 42, 0.9);
-            --accent: #38bdf8;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(56, 189, 248, 0.25);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-dark);
-            background-image:
-                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-            background-size: 32px 32px;
-            color: var(--text-main);
-            margin: 0;
-            padding: 15px;
-            line-height: 1.5;
-        }
-
-        .wrapper { max-width: 900px; margin: 0 auto; }
-
-        header {
-            background: var(--card-bg);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-            border-left: 6px solid var(--accent);
-        }
-        .teacher-name { font-size: 18px; font-weight: 700; color: var(--accent); margin: 0; }
-
-        .card {
-            background: var(--card-bg);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        h2 { font-size: 17px; color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
-
-        .grid-tiles {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .tile-link {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1.5px solid var(--border-color);
-            padding: 22px 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--text-main);
-            text-decoration: none;
-            transition: all 0.2s;
-            display: block;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .tile-link:hover, .tile-link:active {
-            background: var(--accent);
-            color: #0f172a;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-        }
-
-        .back-btn {
-            display: inline-block;
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent);
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            text-decoration: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .back-btn:hover { background: var(--accent); color: #0f172a; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Профильная математика — Портал Логунова Г.В.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+/* Базовые стили — те же, что в ent.html */
+:root{--bg-dark:#070f1e;--card-bg:rgba(15,23,42,.9);--accent:#38bdf8;--text-main:#f8fafc;--text-muted:#94a3b8;--border-color:rgba(56,189,248,.25)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background-color:var(--bg-dark);
+  background-image:linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px);
+  background-size:32px 32px;color:var(--text-main);margin:0;padding:15px;line-height:1.5}
+.wrapper{max-width:900px;margin:0 auto}
+header{background:var(--card-bg);backdrop-filter:blur(10px);padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);
+  margin-bottom:20px;border-left:6px solid var(--accent);border:1px solid var(--border-color)}
+.teacher-name{font-size:18px;font-weight:700;color:var(--accent);margin:0}
+.card{background:var(--card-bg);backdrop-filter:blur(10px);padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);
+  margin-bottom:20px;border:1px solid var(--border-color)}
+h2{font-size:17px;color:var(--accent);margin-top:0;border-bottom:2px solid var(--border-color);padding-bottom:8px}
+.back-btn{display:inline-block;background:rgba(56,189,248,.15);color:var(--accent);padding:8px 16px;border-radius:6px;font-size:14px;
+  font-weight:600;cursor:pointer;margin-bottom:15px;border:1px solid var(--border-color);text-decoration:none;-webkit-tap-highlight-color:transparent}
+.back-btn:hover{background:var(--accent);color:#0f172a}
+</style>
+<style>
+/* Стили страницы «Профильная математика» */
+#pm{--pm-accent:#38bdf8;--pm-line:rgba(56,189,248,.28);--pm-btn:rgba(56,189,248,.12);--pm-muted:#8aa3b8;--pm-ok:#4ade80;--pm-bad:#f87171}
+#pm h2{margin:16px 0 12px}
+#pm h3{margin:16px 0 8px}
+.pm-progress{color:var(--pm-muted);font-size:15px;margin:6px 0 0}
+.pm-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:10px;overflow:hidden}
+.pm-bar i{display:block;height:100%;background:var(--pm-accent)}
+.pm-month{margin:20px 0 8px;color:var(--pm-muted);font-size:15px;font-weight:800}
+.pm-topics{display:grid;gap:8px}
+.pm-topic{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;text-align:left;width:100%;
+  padding:12px 14px;color:inherit;font:inherit;background:var(--pm-btn);border:1px solid var(--pm-line);border-radius:12px;cursor:pointer}
+.pm-topic:hover{background:rgba(56,189,248,.22)}
+.pm-num{color:var(--pm-accent);font-weight:800}
+.pm-tag{font-size:13px;color:var(--pm-muted)}
+.pm-topic.pm-done .pm-num::after{content:" ✓";color:var(--pm-ok)}
+.pm-topic.pm-mock{border-color:var(--pm-accent)}
+.pm-btn{display:inline-block;font:inherit;font-weight:700;color:var(--pm-accent);background:var(--pm-btn);border:1px solid var(--pm-line);
+  border-radius:10px;padding:9px 16px;cursor:pointer;text-decoration:none}
+.pm-btn:hover{background:rgba(56,189,248,.22)}
+.pm-tabs{display:flex;gap:8px;margin:14px 0 6px}
+.pm-tabs button{font:inherit;font-weight:700;color:var(--pm-accent);background:var(--pm-btn);border:1px solid var(--pm-line);border-radius:10px;padding:9px 18px;cursor:pointer}
+.pm-tabs button[aria-selected="true"]{background:var(--pm-accent);color:#05213a}
+.pm-lecture p,.pm-lecture li{max-width:74ch}
+.pm-rule{border-left:3px solid var(--pm-accent);background:rgba(56,189,248,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+.pm-empty{color:var(--pm-muted);border:1px dashed var(--pm-line);border-radius:10px;padding:18px}
+.pm-task{border:1px solid var(--pm-line);border-radius:12px;padding:14px 16px;margin:12px 0}
+.pm-task.pm-right{border-color:var(--pm-ok)}
+.pm-task.pm-wrong{border-color:var(--pm-bad)}
+.pm-q{margin:0 0 10px;font-weight:700}
+.pm-opt{display:flex;align-items:center;gap:10px;padding:6px 4px;cursor:pointer}
+.pm-explain{color:var(--pm-muted);margin:10px 0 0;font-size:15px}
+.pm-result{font-weight:800;margin:14px 0}
+.pm-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+#pm button:focus-visible,#pm a:focus-visible,#pm input:focus-visible{outline:2px solid var(--pm-accent);outline-offset:2px}
+@media (max-width:560px){.pm-topic{grid-template-columns:32px 1fr}.pm-tag{grid-column:2}}
+</style>
 </head>
 <body>
-
 <div class="wrapper">
-    <header>
-        <h1 class="teacher-name">Профильная математика — ЕНТ</h1>
-    </header>
-
-    <div class="card">
-        <a href="ent.html" class="back-btn">← К выбору предметов ЕНТ</a>
-        <h2>Выберите формат обучения</h2>
-        <div class="grid-tiles">
-            <a href="math-course.html?mode=lecture" class="tile-link">📖 Лекции и Теория</a>
-            <a href="math-course.html?mode=practice" class="tile-link">📝 Практические тесты</a>
-        </div>
-    </div>
+  <header><h1 class="teacher-name">Подготовка к ЕНТ — Логунов Г.В.</h1></header>
+  <div class="card" id="pm"></div>
 </div>
 
+<script>
+/* BACK_URL — страница выбора раздела ЕНТ */
+const BACK_URL = "ent.html";
+
+/* ============================================================
+   ПЛАН ЗАНЯТИЙ (34 недели)
+   Для каждого занятия можно заполнить:
+     lecture      — HTML лекции (формулы в $...$ и $$...$$)
+     tasks        — задачи практики: {q, options:[], answer:индекс, explain}
+     practiceUrl  — ссылка на готовый тренажёр (если есть)
+   mock:true — пробный ЕНТ: одна страница без деления на лекцию и практику
+   Занятие №4 заполнено как образец.
+   ============================================================ */
+const TOPICS = [
+  {n:1,  m:"Сентябрь", t:"Входная диагностика; структура ЕНТ по профильной математике"},
+  {n:2,  m:"Сентябрь", t:"Числа и выражения: радикалы, степени"},
+  {n:3,  m:"Сентябрь", t:"Дробные и целые выражения; формулы сокращённого умножения"},
+  {n:4,  m:"Сентябрь", t:"Линейные и квадратные уравнения",
+    lecture: String.raw`
+      <h3>Линейное уравнение</h3>
+      <p>Уравнение вида $ax=b$.</p>
+      <ul>
+        <li>Если $a\ne 0$, то $x=\dfrac{b}{a}$ — один корень.</li>
+        <li>Если $a=0$ и $b\ne 0$ — корней нет.</li>
+        <li>Если $a=0$ и $b=0$ — корень любое число.</li>
+      </ul>
+      <h3>Квадратное уравнение</h3>
+      <p>Уравнение $ax^2+bx+c=0$, $a\ne 0$. Дискриминант $D=b^2-4ac$.</p>
+      <div class="pm-rule">
+        $D>0$: два корня $x_{1,2}=\dfrac{-b\pm\sqrt{D}}{2a}$<br>
+        $D=0$: один корень $x=-\dfrac{b}{2a}$<br>
+        $D<0$: действительных корней нет
+      </div>
+      <h3>Теорема Виета</h3>
+      <p>Для приведённого уравнения $x^2+px+q=0$: $x_1+x_2=-p$, $x_1\cdot x_2=q$.</p>`,
+    tasks: [
+      {q: String.raw`Решите уравнение $x^2-5x+6=0$.`,
+       options: [String.raw`$2;\ 3$`, String.raw`$-2;\ -3$`, String.raw`$1;\ 6$`, String.raw`$-1;\ 6$`],
+       answer: 0, explain: String.raw`По теореме Виета сумма корней равна 5, произведение равно 6: это 2 и 3.`},
+      {q: String.raw`Найдите сумму корней уравнения $x^2-7x+10=0$.`,
+       options: ["7", "-7", "10", "-10"],
+       answer: 0, explain: String.raw`Сумма корней приведённого уравнения равна $-p=7$.`},
+      {q: String.raw`При каком значении $a$ уравнение $ax=6$ не имеет корней?`,
+       options: [String.raw`$a=0$`, String.raw`$a=6$`, String.raw`$a=1$`, "Корень есть при любом a"],
+       answer: 0, explain: String.raw`При $a=0$ получаем $0=6$ — неверное равенство, корней нет.`}
+    ]},
+  {n:5,  m:"Октябрь",  t:"Дробно-рациональные уравнения"},
+  {n:6,  m:"Октябрь",  t:"Иррациональные уравнения"},
+  {n:7,  m:"Октябрь",  t:"Показательные уравнения"},
+  {n:8,  m:"Октябрь",  t:"Логарифмы и их свойства"},
+  {n:9,  m:"Ноябрь",   t:"Логарифмические уравнения"},
+  {n:10, m:"Ноябрь",   t:"Тригонометрия: единичная окружность, значения, формулы приведения"},
+  {n:11, m:"Ноябрь",   t:"Тригонометрические формулы: сложение, двойной угол"},
+  {n:12, m:"Ноябрь",   t:"Тригонометрические уравнения"},
+  {n:13, m:"Декабрь",  t:"Системы линейных и нелинейных уравнений"},
+  {n:14, m:"Декабрь",  t:"Системы иррациональных, показательных, логарифмических и тригонометрических уравнений"},
+  {n:15, m:"Декабрь",  t:"Линейные и квадратные неравенства"},
+  {n:16, m:"Декабрь",  t:"Рациональные неравенства, метод интервалов; рубежный тест за полугодие"},
+  {n:17, m:"Январь",   t:"Показательные неравенства"},
+  {n:18, m:"Январь",   t:"Логарифмические неравенства"},
+  {n:19, m:"Январь",   t:"Иррациональные и простейшие тригонометрические неравенства"},
+  {n:20, m:"Февраль",  t:"Системы неравенств"},
+  {n:21, m:"Февраль",  t:"Арифметическая прогрессия"},
+  {n:22, m:"Февраль",  t:"Геометрическая прогрессия"},
+  {n:23, m:"Февраль",  t:"Функции: область определения, свойства, графики"},
+  {n:24, m:"Март",     t:"Производная: правила вычисления"},
+  {n:25, m:"Март",     t:"Касательная к графику"},
+  {n:26, m:"Март",     t:"Возрастание и убывание, экстремумы, наибольшее и наименьшее значения"},
+  {n:27, m:"Март",     t:"Первообразная и интеграл; площадь криволинейной трапеции"},
+  {n:28, m:"Апрель",   t:"Математическое моделирование: движение, работа, проценты, смеси"},
+  {n:29, m:"Апрель",   t:"Планиметрия: треугольники и четырёхугольники"},
+  {n:30, m:"Апрель",   t:"Планиметрия: окружность, площади фигур"},
+  {n:31, m:"Апрель",   t:"Стереометрия, координаты и векторы"},
+  {n:32, m:"Май",      t:"Пробный ЕНТ №1 и разбор ошибок", mock:true},
+  {n:33, m:"Май",      t:"Повторение слабых тем по итогам пробника"},
+  {n:34, m:"Май",      t:"Пробный ЕНТ №2 и итоги", mock:true}
+];
+
+/* ---------- прогресс (хранится в браузере ученика) ---------- */
+const KEY = "ent-math-done";
+function loadDone() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
+function saveDone(list) { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {} }
+
+const view = document.getElementById("pm");
+
+function typeset() {
+  if (window.renderMathInElement) {
+    renderMathInElement(view, {
+      delimiters: [{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],
+      throwOnError: false
+    });
+  }
+}
+
+function renderList() {
+  const done = loadDone();
+  let html = `
+    <a class="back-btn" href="${BACK_URL}">← К выбору разделов</a>
+    <h2>Профильная математика</h2>
+    <p class="pm-progress">Пройдено занятий: ${done.length} из ${TOPICS.length}</p>
+    <div class="pm-bar"><i style="width:${Math.round(done.length / TOPICS.length * 100)}%"></i></div>`;
+  let month = "";
+  for (const t of TOPICS) {
+    if (t.m !== month) {
+      if (month) html += "</div>";
+      month = t.m;
+      html += `<div class="pm-month">${month}</div><div class="pm-topics">`;
+    }
+    const cls = "pm-topic" + (done.includes(t.n) ? " pm-done" : "") + (t.mock ? " pm-mock" : "");
+    html += `<button class="${cls}" data-n="${t.n}">
+      <span class="pm-num">${t.n}</span><span>${t.t}</span>
+      <span class="pm-tag">${t.mock ? "Пробный ЕНТ" : "Лекция и практика"}</span></button>`;
+  }
+  html += "</div>";
+  view.innerHTML = html;
+  view.querySelectorAll(".pm-topic").forEach(b =>
+    b.addEventListener("click", () => { location.hash = "#/t/" + b.dataset.n; }));
+}
+
+function tasksHtml(tasks) {
+  return tasks.map((k, i) => `
+    <div class="pm-task" data-i="${i}">
+      <p class="pm-q">${i + 1}. ${k.q}</p>
+      ${k.options.map((o, j) => `
+        <label class="pm-opt"><input type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join("")}
+      <p class="pm-explain" hidden>${k.explain || ""}</p>
+    </div>`).join("");
+}
+
+function practiceHtml(t) {
+  let html = "";
+  if (t.practiceUrl) html += `<p><a class="pm-btn" href="${t.practiceUrl}" target="_blank" rel="noopener">Открыть тренажёр</a></p>`;
+  if (t.tasks && t.tasks.length) {
+    html += tasksHtml(t.tasks) + `
+      <div class="pm-actions"><button class="pm-btn" id="pm-check">Проверить ответы</button></div>
+      <p class="pm-result" id="pm-result" hidden></p>`;
+  } else if (!t.practiceUrl) {
+    html += `<div class="pm-empty">Задачи для этого занятия ещё не добавлены.</div>`;
+  }
+  return html;
+}
+
+function bindCheck(t) {
+  const btn = document.getElementById("pm-check");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    let score = 0;
+    t.tasks.forEach((k, i) => {
+      const box = view.querySelector(`.pm-task[data-i="${i}"]`);
+      const picked = box.querySelector("input:checked");
+      const ok = picked && Number(picked.value) === k.answer;
+      if (ok) score++;
+      box.classList.toggle("pm-right", !!ok);
+      box.classList.toggle("pm-wrong", !ok);
+      box.querySelector(".pm-explain").hidden = false;
+    });
+    const res = document.getElementById("pm-result");
+    res.hidden = false;
+    res.textContent = `Результат: ${score} из ${t.tasks.length}`;
+    typeset();
+  });
+}
+
+function renderTopic(n, part) {
+  const t = TOPICS.find(x => x.n === n);
+  if (!t) { location.hash = "#/"; return; }
+  const done = loadDone().includes(n);
+  const isPractice = part === "practice";
+
+  let body, tabs = "";
+  if (t.mock) {
+    body = practiceHtml(t);
+  } else {
+    tabs = `<div class="pm-tabs" role="tablist">
+      <button role="tab" aria-selected="${!isPractice}" data-part="lecture">Лекция</button>
+      <button role="tab" aria-selected="${isPractice}" data-part="practice">Практика</button></div>`;
+    body = isPractice
+      ? practiceHtml(t)
+      : `<div class="pm-lecture">${t.lecture || '<div class="pm-empty">Лекция для этого занятия ещё не добавлена.</div>'}</div>`;
+  }
+
+  view.innerHTML = `
+    <a class="back-btn" href="#/">← К списку занятий</a>
+    <h2>Занятие ${t.n}. ${t.t}</h2>
+    ${tabs}
+    ${body}
+    <div class="pm-actions">
+      <button class="pm-btn" id="pm-mark">${done ? "Снять отметку «пройдено»" : "Отметить как пройденное"}</button>
+    </div>`;
+
+  view.querySelectorAll(".pm-tabs button").forEach(b =>
+    b.addEventListener("click", () => { location.hash = `#/t/${n}/${b.dataset.part}`; }));
+  document.getElementById("pm-mark").addEventListener("click", () => {
+    let list = loadDone();
+    list = list.includes(n) ? list.filter(x => x !== n) : [...list, n];
+    saveDone(list);
+    renderTopic(n, part);
+  });
+  if (t.mock || isPractice) bindCheck(t);
+  typeset();
+}
+
+function route() {
+  const m = location.hash.match(/^#\/t\/(\d+)(?:\/(lecture|practice))?$/);
+  if (m) renderTopic(Number(m[1]), m[2] || "lecture");
+  else renderList();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>window.addEventListener("load", route);</script>
 </body>
 </html>
