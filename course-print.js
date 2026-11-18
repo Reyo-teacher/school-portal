@@ -6,13 +6,14 @@
  function adapt(t,renderModel){
   let label='Ответ',answer=t.answer,fields,vis=t.model?renderModel(t.model):'';
   if(t.type==='choice')fields=[{id:'answer',type:'choice',label:'Выбери ответ',answer:t.answer,options:t.options.map(x=>({value:x,label:x}))}];
+  if(t.type==='net'){label='Начерти развёртку куба на сетке';answer='Например: четыре квадрата в ряд, по одному сверху и снизу второго. Допускаются другие правильные развёртки.';vis=renderModel({type:'grid',cols:5,rows:4});}
   if(t.type==='multi'){label='Выпиши все подходящие карточки';answer=t.answer.join(', ');vis+=`<p>Карточки: ${t.options.map(esc).join('; ')}</p>`;}
   if(t.type==='order'){label='Запиши карточки в нужном порядке';answer=t.answer.join(' → ');vis+=`<p>Карточки: ${t.options.map(esc).join('; ')}</p>`;}
   if(t.type==='shade'){label='Сколько частей закрашено';vis=renderModel({type:'fraction',n:0,d:t.total});}
   if(t.type==='ray'){label='Отметь точку на рисунке; её координата';answer=t.answer%t.unit===0?String(t.answer/t.unit):t.answer+'/'+t.unit;vis=ray(t);}
-  if(t.type==='sequence'){label='Твои числа и правило';answer='Например: '+Array.from({length:t.count},(_,i)=>t.start+(i+1)*3).join(', ')+'. Каждый раз +3. Принимается любой постоянный натуральный шаг.';}
+  if(t.type==='sequence'){label='Твои числа и правило';answer='Например: '+Array.from({length:t.count},(_,i)=>t.start+(i+1)*3).join(', ')+'. Каждый раз +3. Принимается любой постоянный '+(t.decimal?'положительный':'натуральный')+' шаг.';}
   if(t.type==='angle'){label='Построй угол транспортиром. Градусная мера';answer=t.answer+'°';vis='<div class="paper-drawing"></div>';}
-  if(t.type==='chart'){label='Построй диаграмму по таблице';answer=t.labels.map((x,i)=>x+': '+t.answer[i]).join('; ');vis+='<div class="paper-drawing"></div>';}
+  if(t.type==='chart'){label='Построй '+({pie:'круговую',line:'линейную',bars:'столбчатую'}[t.chartType||'bars'])+' диаграмму по таблице';answer=t.labels.map((x,i)=>x+': '+t.answer[i]).join('; ');vis+='<div class="paper-drawing"></div>';}
   return {html:esc(t.prompt),vis,fields:fields||[{id:'answer',type:'number',label,answer:String(answer)}],explanation:t.type==='sequence'?String(answer):t.success};
  }
  function sheetInfo(data,round,renderModel){

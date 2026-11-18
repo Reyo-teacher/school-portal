@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Задачи на разрезание фигур. Задачи на складывание фигур",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.3.2.1",
+      "text": "5.3.2.1 решать задачи с помощью разрезания и складывания фигур"
+    }
+  ],
+  "task_ids": [
+    "lesson-160-v1-step1",
+    "lesson-160-v1-step2",
+    "lesson-160-v1-step3",
+    "lesson-160-v1-step4",
+    "lesson-160-v1-step5",
+    "lesson-160-v1-step6",
+    "lesson-160-v2-step1",
+    "lesson-160-v2-step2",
+    "lesson-160-v2-step3",
+    "lesson-160-v2-step4",
+    "lesson-160-v2-step5",
+    "lesson-160-v2-step6",
+    "lesson-160-v3-step1",
+    "lesson-160-v3-step2",
+    "lesson-160-v3-step3",
+    "lesson-160-v3-step4",
+    "lesson-160-v3-step5",
+    "lesson-160-v3-step6",
+    "lesson-160-independent-1",
+    "lesson-160-independent-2",
+    "lesson-160-independent-3"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 165,
+    "lesson": 160
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Повторение курса математики 5 класса",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "review-169",
+      "text": "Повторение курса математики 5 класса"
+    }
+  ],
+  "task_ids": [
+    "lesson-169-v1-step1",
+    "lesson-169-v1-step2",
+    "lesson-169-v1-step3",
+    "lesson-169-v1-step4",
+    "lesson-169-v1-step5",
+    "lesson-169-v1-step6",
+    "lesson-169-v2-step1",
+    "lesson-169-v2-step2",
+    "lesson-169-v2-step3",
+    "lesson-169-v2-step4",
+    "lesson-169-v2-step5",
+    "lesson-169-v2-step6",
+    "lesson-169-v3-step1",
+    "lesson-169-v3-step2",
+    "lesson-169-v3-step3",
+    "lesson-169-v3-step4",
+    "lesson-169-v3-step5",
+    "lesson-169-v3-step6",
+    "lesson-169-independent-1",
+    "lesson-169-independent-2",
+    "lesson-169-independent-3"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 174,
+    "lesson": 169
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

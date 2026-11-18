@@ -2,7 +2,7 @@
 import argparse,json,re,hashlib
 from pathlib import Path
 from html import escape as e
-from course import naturals, divisibility, fractions, reviews
+from course import naturals, divisibility, fractions, reviews, fraction_words, decimal_lessons, sets_percent, geometry_data
 ROOT=Path(__file__).resolve().parents[1]
 DATA=json.loads((ROOT/'data/grade-5-curriculum.json').read_text())
 REGISTRY=ROOT/'data/grade-5-games.json'
@@ -14,9 +14,20 @@ FAMILIES.update({29:'fraction_intro',30:'fraction_intro',31:'reduce',32:'new_den
 for start,end,family in [(40,45,'compare_fractions'),(46,47,'add_same'),(48,50,'add_different'),(51,52,'subtract_natural'),(53,58,'mixed_operations'),(59,60,'multiply'),(61,64,'reciprocal'),(65,75,'divide'),(76,79,'fraction_operations')]:
     FAMILIES.update({n:family for n in range(start,end+1)})
 
+for start,end,family in [(80,81,'fraction_part'),(82,83,'compose_fraction'),(84,86,'joint_work'),(87,87,'decimal_intro'),(88,88,'decimal_read'),(89,90,'decimal_ray'),(91,91,'decimal_compare'),(92,95,'decimal_add'),(96,99,'decimal_multiply'),(100,103,'decimal_divide'),(104,105,'decimal_scale_mul'),(106,107,'decimal_scale_div'),(108,108,'approximate'),(109,110,'rounding'),(111,113,'decimal_words'),(114,114,'decimal_sequences'),(115,115,'decimal_invent'),(116,116,'sets_intro'),(117,117,'sets_symbols'),(118,118,'subset'),(119,119,'sets_relations'),(120,120,'union_intro'),(121,121,'union_build'),(122,125,'venn_words'),(126,127,'quarter3'),(128,129,'decimal_review'),(130,133,'percent_intro'),(134,135,'percent_part'),(136,136,'percent_ratio'),(137,137,'percent_whole'),(138,142,'percent_words'),(143,143,'angle_intro'),(144,144,'angle_build'),(145,145,'angle_calc'),(146,147,'polygons'),(148,148,'circle_intro'),(149,149,'circle_build'),(150,150,'sector'),(151,151,'chart_intro'),(152,153,'chart_build'),(154,156,'statistics'),(157,157,'solid_intro'),(158,158,'solid_net'),(159,162,'cut_fold'),(163,164,'chart_review'),(165,166,'quarter4'),(167,170,'final_review')]:
+    FAMILIES.update({n:family for n in range(start,end+1)})
+
 def content(lesson,variant):
     family=FAMILIES[lesson['number']]
-    module=reviews if family in ['quarter1','fraction_basics','fraction_operations'] else fractions if 29<=lesson['number']<=79 else divisibility if 15<=lesson['number']<=28 else naturals
+    number=lesson['number']
+    if family in ['quarter1','fraction_basics','fraction_operations','quarter3','decimal_review','quarter4','final_review']: module=reviews
+    elif number<=14: module=naturals
+    elif number<=28: module=divisibility
+    elif number<=79: module=fractions
+    elif number<=86: module=fraction_words
+    elif number<=115: module=decimal_lessons
+    elif number<=142: module=sets_percent
+    else: module=geometry_data
     return module.make(family,(lesson['number']-1 if family=='review' else lesson['topicLesson']-1)+variant,lesson['number'])
 
 def url(l):return l.get('contentPage',l['url'])
@@ -30,12 +41,16 @@ def make_data(lesson):
             if t.get('options'):
                 opts=t['options'];shift=(lesson['number']+i+v)%len(opts);t['options']=opts[shift:]+opts[:shift]
         variants.append(pack['tasks'])
+    practice=content(lesson,3)['tasks'][3:]
+    for i,t in enumerate(practice):t['id']=f"lesson-{lesson['number']}-independent-{i+1}"
+    for t in [item for variant in variants for item in variant]+practice:
+        if t['type']=='number' and any(x in t['prompt'] for x in ['обыкновенной дробью','неправильной дробью','одной дробью']):t['format']='fraction'
     p=packs[0];n=lesson['number']
     mode='practice'
     if lesson['kind']=='assessment':mode='preparation'
     elif lesson['kind']=='analysis':mode='correction'
     elif lesson['kind']=='diagnostic':mode='self_check'
-    return {'version':1,'number':n,'title':lesson['title'],'mission':p['mission'],'intro':'Сначала наглядный пример, затем небольшие задания. Ошибку можно исправить.','icon':{'ch1':'🔢','ch2':'🧩','ch3':'🍰','ch4':'🧮','ch5':'🛠️','ch6':'💧','ch7':'🗂️','ch8':'💯','ch9':'📐','ch10':'📊','ch11':'📦'}.get(lesson['section'],'🦉'),'variants':variants,'notes':p['notes'],'example':p['example'],'paper':p['paper'],'next':url(DATA['lessons'][n]) if n<170 else 'grade-5.html','mode':mode,'practice':content(lesson,3)['tasks'][3:],'reflection':['Я могу объяснить правило своими словами.','Я решил похожий пример без подсказки.','Я знаю, как проверить ответ.']}
+    return {'version':1,'number':n,'title':lesson['title'],'mission':p['mission'],'intro':'Сначала наглядный пример, затем небольшие задания. Ошибку можно исправить.','icon':{'ch1':'🔢','ch2':'🧩','ch3':'🍰','ch4':'🧮','ch5':'🛠️','ch6':'💧','ch7':'🗂️','ch8':'💯','ch9':'📐','ch10':'📊','ch11':'📦'}.get(lesson['section'],'🦉'),'variants':variants,'notes':p['notes'],'example':p['example'],'paper':p['paper'],'next':url(DATA['lessons'][n]) if n<170 else 'grade-5.html','mode':mode,'practice':practice,'reflection':['Я могу объяснить правило своими словами.','Я решил похожий пример без подсказки.','Я знаю, как проверить ответ.']}
 
 def render_practice(t):
     answer=t.get('answer','Свободный ответ по правилу задания.')
@@ -50,6 +65,9 @@ def render_practice(t):
     if model.get('type')=='table': visual='<table class="unit-table">'+''.join('<tr>'+''.join('<td>'+e(str(x))+'</td>' for x in row)+'</tr>' for row in [model['headers']]+model['rows'])+'</table>'
     if model.get('type')=='bars': visual='<p>'+e('; '.join(f"{label}: {value}" for label,value in zip(model['labels'],model['values'])))+'</p>'
     if model.get('type')=='fraction': visual=f"<p>На рисунке закрашено {model['n']} частей; одно целое состоит из {model['d']} равных частей. Нарисуй эту модель.</p>"
+    if model: visual='<div data-practice-model="'+e(json.dumps(model,ensure_ascii=False),quote=True)+'"></div>'
+    if t['type']=='net': answer='Например: четыре квадрата в ряд, по одному сверху и снизу второго.';visual='<p>Нарисуй клетчатое поле 5 × 4.</p>'
+    if t['type']=='sequence': answer='Любой постоянный положительный шаг по условию. Проверь разности соседних чисел.'
     return '<li><p>'+e(t['prompt'])+'</p>'+options+visual+'<details><summary>Подсказка</summary><p>'+e(t['hint'])+'</p></details><details><summary>Сверь ответ</summary><p>'+e(str(answer))+'</p><p>'+e(t['success'])+'</p></details></li>'
 
 def render_course_page(lesson,data=None):
@@ -70,7 +88,7 @@ def render_course_page(lesson,data=None):
 
 def manifest(lesson,d):
     goals=[x.strip(' ;') for x in re.split(r'(?=5\.\d\.\d\.\d+\s)',lesson['objective']) if x.strip(' ;')]
-    return {'schema_version':'1.0','mode':'trainer','grade':5,'subject':'Математика','topic':lesson['title'],'interface_language':'ru','content_language':'ru','objective_source':'teacher_file','learning_objectives':[{'id':(x.split(' ',1)[0] if re.match(r'5\.',x) else f'review-{lesson["number"]}'),'text':x} for x in goals],'task_ids':[t['id'] for v in d['variants'] for t in v],'scoring':'feedback_only','source':{'file':'КТП_математика_5_класс.docx','source_row':lesson['sourceRow'],'lesson':lesson['number']},'browser_execution':'not_checked','audio_playback':'not_checked','practice_mode':d['mode']}
+    return {'schema_version':'1.0','mode':'trainer','grade':5,'subject':'Математика','topic':lesson['title'],'interface_language':'ru','content_language':'ru','objective_source':'teacher_file','learning_objectives':[{'id':(x.split(' ',1)[0] if re.match(r'5\.',x) else f'review-{lesson["number"]}'),'text':x} for x in goals],'task_ids':[t['id'] for v in d['variants'] for t in v]+[t['id'] for t in d['practice']],'scoring':'feedback_only','source':{'file':'КТП_математика_5_класс.docx','source_row':lesson['sourceRow'],'lesson':lesson['number']},'browser_execution':'not_checked','audio_playback':'not_checked','practice_mode':d['mode']}
 
 def build(numbers):
     registry=json.loads(REGISTRY.read_text()) if REGISTRY.exists() else {'version':1,'lessons':[4,5]}

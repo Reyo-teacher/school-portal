@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Объединение и пересечение множеств",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.4.1.2",
+      "text": "5.4.1.2 знать определения объединения и пересечения множеств"
+    }
+  ],
+  "task_ids": [
+    "lesson-120-v1-step1",
+    "lesson-120-v1-step2",
+    "lesson-120-v1-step3",
+    "lesson-120-v1-step4",
+    "lesson-120-v1-step5",
+    "lesson-120-v1-step6",
+    "lesson-120-v2-step1",
+    "lesson-120-v2-step2",
+    "lesson-120-v2-step3",
+    "lesson-120-v2-step4",
+    "lesson-120-v2-step5",
+    "lesson-120-v2-step6",
+    "lesson-120-v3-step1",
+    "lesson-120-v3-step2",
+    "lesson-120-v3-step3",
+    "lesson-120-v3-step4",
+    "lesson-120-v3-step5",
+    "lesson-120-v3-step6",
+    "lesson-120-independent-1",
+    "lesson-120-independent-2",
+    "lesson-120-independent-3"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 124,
+    "lesson": 120
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

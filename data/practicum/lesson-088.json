@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Десятичная дробь. Чтение и запись десятичных дробей. Перевод десятичной дроби в обыкновенную дробь",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.5.2.5",
+      "text": "5.5.2.5 читать и записывать десятичные дроби"
+    },
+    {
+      "id": "5.1.2.25",
+      "text": "5.1.2.25 переходить от одной формы записи дробей к другой"
+    }
+  ],
+  "task_ids": [
+    "lesson-88-v1-step1",
+    "lesson-88-v1-step2",
+    "lesson-88-v1-step3",
+    "lesson-88-v1-step4",
+    "lesson-88-v1-step5",
+    "lesson-88-v1-step6",
+    "lesson-88-v2-step1",
+    "lesson-88-v2-step2",
+    "lesson-88-v2-step3",
+    "lesson-88-v2-step4",
+    "lesson-88-v2-step5",
+    "lesson-88-v2-step6",
+    "lesson-88-v3-step1",
+    "lesson-88-v3-step2",
+    "lesson-88-v3-step3",
+    "lesson-88-v3-step4",
+    "lesson-88-v3-step5",
+    "lesson-88-v3-step6",
+    "lesson-88-independent-1",
+    "lesson-88-independent-2",
+    "lesson-88-independent-3"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 92,
+    "lesson": 88
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

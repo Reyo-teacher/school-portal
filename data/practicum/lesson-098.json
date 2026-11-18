@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Умножение десятичной дроби на натуральное число. Умножение десятичных дробей",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.1.2.28",
+      "text": "5.1.2.28 выполнять умножение десятичной дроби на натуральное число и на десятичную дробь"
+    }
+  ],
+  "task_ids": [
+    "lesson-98-v1-step1",
+    "lesson-98-v1-step2",
+    "lesson-98-v1-step3",
+    "lesson-98-v1-step4",
+    "lesson-98-v1-step5",
+    "lesson-98-v1-step6",
+    "lesson-98-v2-step1",
+    "lesson-98-v2-step2",
+    "lesson-98-v2-step3",
+    "lesson-98-v2-step4",
+    "lesson-98-v2-step5",
+    "lesson-98-v2-step6",
+    "lesson-98-v3-step1",
+    "lesson-98-v3-step2",
+    "lesson-98-v3-step3",
+    "lesson-98-v3-step4",
+    "lesson-98-v3-step5",
+    "lesson-98-v3-step6",
+    "lesson-98-independent-1",
+    "lesson-98-independent-2",
+    "lesson-98-independent-3"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 102,
+    "lesson": 98
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

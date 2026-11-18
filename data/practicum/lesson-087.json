@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Десятичная дробь. Чтение и запись десятичных дробей. Перевод десятичной дроби в обыкновенную дробь",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.1.1.13",
+      "text": "5.1.1.13 усвоить понятие десятичной дроби"
+    },
+    {
+      "id": "5.1.1.14",
+      "text": "5.1.1.14 понимать равенство чисел, записанных в виде десятичной дроби, например: 1,3 и 1,30"
+    }
+  ],
+  "task_ids": [
+    "lesson-87-v1-step1",
+    "lesson-87-v1-step2",
+    "lesson-87-v1-step3",
+    "lesson-87-v1-step4",
+    "lesson-87-v1-step5",
+    "lesson-87-v1-step6",
+    "lesson-87-v2-step1",
+    "lesson-87-v2-step2",
+    "lesson-87-v2-step3",
+    "lesson-87-v2-step4",
+    "lesson-87-v2-step5",
+    "lesson-87-v2-step6",
+    "lesson-87-v3-step1",
+    "lesson-87-v3-step2",
+    "lesson-87-v3-step3",
+    "lesson-87-v3-step4",
+    "lesson-87-v3-step5",
+    "lesson-87-v3-step6",
+    "lesson-87-independent-1",
+    "lesson-87-independent-2",
+    "lesson-87-independent-3"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 91,
+    "lesson": 87
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}

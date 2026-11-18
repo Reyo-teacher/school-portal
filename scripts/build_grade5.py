@@ -81,7 +81,7 @@ def document(title, body, scripts=''):
 def label(lesson):
     labels = []
     if lesson['number'] in GAME_LESSONS:
-        labels.append('Игра с озвучкой')
+        labels.append('Игра · практика · печать')
     if lesson['assessment']:
         labels.append(lesson['assessment'])
     if lesson['analysis']:

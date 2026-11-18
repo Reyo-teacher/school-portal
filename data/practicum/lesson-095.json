@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "mode": "trainer",
+  "grade": 5,
+  "subject": "Математика",
+  "topic": "Сложение и вычитание десятичных дробей",
+  "interface_language": "ru",
+  "content_language": "ru",
+  "objective_source": "teacher_file",
+  "learning_objectives": [
+    {
+      "id": "5.1.2.27",
+      "text": "5.1.2.27 выполнять сложение и вычитание десятичных дробей"
+    }
+  ],
+  "task_ids": [
+    "lesson-95-v1-step1",
+    "lesson-95-v1-step2",
+    "lesson-95-v1-step3",
+    "lesson-95-v1-step4",
+    "lesson-95-v1-step5",
+    "lesson-95-v1-step6",
+    "lesson-95-v2-step1",
+    "lesson-95-v2-step2",
+    "lesson-95-v2-step3",
+    "lesson-95-v2-step4",
+    "lesson-95-v2-step5",
+    "lesson-95-v2-step6",
+    "lesson-95-v3-step1",
+    "lesson-95-v3-step2",
+    "lesson-95-v3-step3",
+    "lesson-95-v3-step4",
+    "lesson-95-v3-step5",
+    "lesson-95-v3-step6",
+    "lesson-95-independent-1",
+    "lesson-95-independent-2",
+    "lesson-95-independent-3"
+  ],
+  "scoring": "feedback_only",
+  "source": {
+    "file": "КТП_математика_5_класс.docx",
+    "source_row": 99,
+    "lesson": 95
+  },
+  "browser_execution": "not_checked",
+  "audio_playback": "not_checked",
+  "practice_mode": "practice"
+}
