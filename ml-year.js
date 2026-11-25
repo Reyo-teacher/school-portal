@@ -49,26 +49,60 @@
     const t=svg("desc",{},s); t.textContent=d.labels.map((x,i)=>x+": "+d.values[i]).join("; ");
   }
   const phases=[
-    ["Числа, уравнения и данные",5],["Статистика и зависимости",9],
-    ["Закономерности, вероятность и время",13],["Геометрия и итоговое повторение",17]];
+    {name:"Числа и уравнения",subtitle:"Доли, множества, проценты и первые диаграммы",icon:"✦",color:"sky",limit:5},
+    {name:"Статистика и зависимости",subtitle:"От гистограмм до движения и тарифов",icon:"▥",color:"mint",limit:9},
+    {name:"Закономерности и вероятность",subtitle:"Считаем варианты, читаем время и масштаб",icon:"◇",color:"violet",limit:13},
+    {name:"Геометрия и финиш",subtitle:"Площади, пространственная логика и итоговый пробник",icon:"⚑",color:"amber",limit:17}
+  ];
+  const storageKey="school-portal:ml-year-progress:v1";
+  function readProgress(){
+    try{const saved=JSON.parse(localStorage.getItem(storageKey)||"{}");return saved&&typeof saved==="object"&&!Array.isArray(saved)?saved:{};}catch{return {};}
+  }
+  const progress=readProgress();
+  const done=w=>Number.isInteger(progress[w])&&progress[w]>=0&&progress[w]<=10;
+  function saveScore(w,score){
+    if(!done(w)||progress[w]<score)progress[w]=score;
+    try{localStorage.setItem(storageKey,JSON.stringify(progress));}catch{}
+  }
   const raw=new URL(location.href).searchParams.get("week"),week=Number(raw);
   if(!raw||!Number.isInteger(week)||week<1||week>34){
     $("map").hidden=false;
-    add($("map"),"p","На нечётной неделе изучаем тему. На чётной решаем 10 задач по изученному: сначала новой темы, затем и более ранних. Чем дальше по курсу, тем шире повторение.","section-note");
+    const state=add($("map"),"aside",undefined,"route-progress");
+    const completed=Array.from({length:34},(_,i)=>i+1).filter(done).length;
+    const firstOpen=Array.from({length:34},(_,i)=>i+1).find(w=>!done(w));
+    const stateCopy=add(state,"div",undefined,"route-state");
+    add(stateCopy,"strong",`Пройдено ${completed} из 34 недель`);
+    const bar=add(stateCopy,"progress");bar.max=34;bar.value=completed;bar.setAttribute("aria-label","Прогресс по неделям");
+    add(stateCopy,"small","Сохраняется только в этом браузере.");
+    const cta=add(state,"a",firstOpen?(completed?`Продолжить с недели ${firstOpen}`:"Начать маршрут"):"Повторить итоговый пробник","route-cta");
+    cta.href="?week="+(firstOpen||34);
+    const jump=add($("map"),"nav",undefined,"route-jump");jump.setAttribute("aria-label","Этапы маршрута");
+    phases.forEach((p,j)=>{const link=add(jump,"a",`${j+1}. ${p.name}`);link.href="#etap-"+(j+1);});
     let i=0;
-    for(const [title,limit] of phases){
-      const phase=add($("map"),"section",undefined,"phase");add(phase,"h2",title);const grid=add(phase,"div",undefined,"pairs");
-      for(;i<limit;i++){
-        const pair=add(grid,"article",undefined,"pair");add(pair,"h3",bank.topics[i]);
-        const one=add(pair,"a",`Неделя ${2*i+1} · Тема`);one.href="?week="+(2*i+1);
-        const two=add(pair,"a",i===0?"Неделя 2 · Закрепление":i===16?"Неделя 34 · Итоговый пробник":`Неделя ${2*i+2} · Смешанный тест`,"mixed");two.href="?week="+(2*i+2);
+    const station=(parent,w,title,description,cls)=>{
+      const link=add(parent,"a",undefined,"station "+cls+(done(w)?" is-done":""));link.href="?week="+w;
+      const badge=add(link,"span",String(w),"station-num");badge.setAttribute("aria-hidden","true");
+      const copy=add(link,"span",undefined,"station-copy");add(copy,"small",`Неделя ${w} · ${description}`);add(copy,"strong",title);
+      if(done(w))add(copy,"small","Лучший результат: "+progress[w]+"/10","station-result");
+      const arrow=add(link,"span",done(w)?"✓":"→","station-arrow");arrow.setAttribute("aria-hidden","true");
+    };
+    phases.forEach((p,j)=>{
+      const step=add($("map"),"section",undefined,"phase phase-"+p.color);step.id="etap-"+(j+1);
+      const banner=add(step,"header",undefined,"phase-head");const icon=add(banner,"span",p.icon,"phase-icon");icon.setAttribute("aria-hidden","true");
+      const copy=add(banner,"div");add(copy,"p",`ЭТАП ${j+1} · НЕДЕЛИ ${i*2+1}–${p.limit*2}`,"phase-kicker");add(copy,"h2",p.name);add(copy,"p",p.subtitle,"phase-desc");
+      const route=add(step,"div",undefined,"phase-trail");
+      for(;i<p.limit;i++){
+        const pair=add(route,"article",undefined,"route-pair");
+        station(pair,2*i+1,bank.topics[i],"Новая тема","station-topic");
+        station(pair,2*i+2,i===0?"Закрепление первой темы":i===16?"Итоговый пробник":"Смешанный тест",i===0?"Практика":i===16?"Финиш":"Повторение",i===16?"station-final":"station-review");
       }
-    }
+    });
     return;
   }
+  document.body.classList.add("ml-quiz");
   let attempt=0,qs=[],submitted=false;
   const i=Math.ceil(week/2)-1, thematic=week%2===1;
-  $("toMap").hidden=false;$("work").hidden=false;
+  $("toMap").hidden=false;$("toMap").href="ml-tests.html?course=34";$("work").hidden=false;
   $("intro").textContent="Тренажёр ЕНТ · 10 заданий с одним правильным ответом";
   $("weekType").textContent=`Неделя ${week} из 34 · ${thematic?"новая тема":week===2?"закрепление":"накопительное повторение"}`;
   $("weekTitle").textContent=thematic?bank.topics[i]:week===34?"Итоговый пробник":week===2?"Закрепление первой темы":"Смешанный тест";
@@ -98,6 +132,7 @@
     const results=$("results");results.replaceChildren();results.hidden=false;
     add(results,"h2",`Результат: ${score} из ${qs.length}`);
     if(blanks)add(results,"p",`Без ответа: ${blanks}. Они не засчитаны.`);
+    else saveScore(week,score);
     qs.forEach((q,i)=>{
       const ok=q.answer===answers[i];
       $("quiz").children[i].className="question "+(ok?"correct":"wrong");
