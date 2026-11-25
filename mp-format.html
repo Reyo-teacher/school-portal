@@ -112,6 +112,12 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f59e
 @keyframes pm-hop{0%,100%{transform:translate(-50%,-100%)}50%{transform:translate(-50%,calc(-100% - 8px))}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.pm-pin{animation:none}}
 @media (max-width:560px){header .owl{font-size:28px}}
+
+.pm-figure{max-width:430px;margin:14px 0;background:#edf7fc;border:1px solid #c7e1f0;border-radius:14px;padding:9px 12px}.pm-figure svg{display:block;width:100%;height:auto;fill:#183d58}.pm-figure figcaption{color:#355470;font-size:.91rem;margin-top:5px}
+.pm-btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}.pm-mark-note{color:#526c81;font-size:.9rem;margin-bottom:.35rem}
+.pm-result{padding:.6rem .85rem;background:#eaf5fb;border-radius:12px}.pm-result h3{margin:.45em 0}.pm-result li{font-size:.94rem;margin:.4em 0}.pm-result a{color:#175a86}
+.pm-node.pm-soon{background:#64778a;color:white}.pm-label.pm-soon{background:#f7f9fb}.pm-label.pm-soon em{color:#53687c}.pm-label.pm-mock.pm-soon{background:#f3f5f8}
+@media(max-width:420px){.pm-label{font-size:12px;padding:4px 6px}.pm-label em{font-size:10px}.pm-node.pm-soon.pm-mock{font-size:25px;width:62px;height:62px}}
 </style>
 </head>
 <body>
@@ -131,41 +137,13 @@ const BACK_URL = "ent.html";
      tasks        — задачи практики: {q, options:[], answer:индекс, explain}
      practiceUrl  — ссылка на готовый тренажёр (если есть)
    mock:true — пробный ЕНТ: одна страница без деления на лекцию и практику
-   Занятие №4 заполнено как образец.
+   Стартовый блок: диагностика и занятия 2–4.
    ============================================================ */
 const TOPICS = [
-  {n:1,  m:"Сентябрь", t:"Входная диагностика; структура ЕНТ по профильной математике"},
-  {n:2,  m:"Сентябрь", t:"Числа и выражения: радикалы, степени"},
-  {n:3,  m:"Сентябрь", t:"Дробные и целые выражения; формулы сокращённого умножения"},
-  {n:4,  m:"Сентябрь", t:"Линейные и квадратные уравнения",
-    lecture: String.raw`
-      <h3>Линейное уравнение</h3>
-      <p>Уравнение вида $ax=b$.</p>
-      <ul>
-        <li>Если $a\ne 0$, то $x=\dfrac{b}{a}$ — один корень.</li>
-        <li>Если $a=0$ и $b\ne 0$ — корней нет.</li>
-        <li>Если $a=0$ и $b=0$ — корень любое число.</li>
-      </ul>
-      <h3>Квадратное уравнение</h3>
-      <p>Уравнение $ax^2+bx+c=0$, $a\ne 0$. Дискриминант $D=b^2-4ac$.</p>
-      <div class="pm-rule">
-        $D>0$: два корня $x_{1,2}=\dfrac{-b\pm\sqrt{D}}{2a}$<br>
-        $D=0$: один корень $x=-\dfrac{b}{2a}$<br>
-        $D<0$: действительных корней нет
-      </div>
-      <h3>Теорема Виета</h3>
-      <p>Для приведённого уравнения $x^2+px+q=0$: $x_1+x_2=-p$, $x_1\cdot x_2=q$.</p>`,
-    tasks: [
-      {q: String.raw`Решите уравнение $x^2-5x+6=0$.`,
-       options: [String.raw`$2;\ 3$`, String.raw`$-2;\ -3$`, String.raw`$1;\ 6$`, String.raw`$-1;\ 6$`],
-       answer: 0, explain: String.raw`По теореме Виета сумма корней равна 5, произведение равно 6: это 2 и 3.`},
-      {q: String.raw`Найдите сумму корней уравнения $x^2-7x+10=0$.`,
-       options: ["7", "-7", "10", "-10"],
-       answer: 0, explain: String.raw`Сумма корней приведённого уравнения равна $-p=7$.`},
-      {q: String.raw`При каком значении $a$ уравнение $ax=6$ не имеет корней?`,
-       options: [String.raw`$a=0$`, String.raw`$a=6$`, String.raw`$a=1$`, "Корень есть при любом a"],
-       answer: 0, explain: String.raw`При $a=0$ получаем $0=6$ — неверное равенство, корней нет.`}
-    ]},
+  {"n": 1, "m": "Сентябрь", "t": "Входная диагностика; структура ЕНТ по профильной математике", "diagnostic": true, "lecture": "<p class=\"pm-rule\"><strong>Зачем диагностика?</strong> Чтобы понять, с чего начать. Это не пробный ЕНТ и не прогноз результата экзамена.</p>\n<p>Реши 10 задач без подсказок. После проверки увидишь, где есть пробел: числа и выражения, уравнения, графики или геометрия.</p>\n<h3>Как устроен профильный ЕНТ</h3><p>40 заданий: 25 обычных с одним ответом, 5 с одним ответом по общему контексту, 5 с одним или несколькими верными ответами и 5 на соответствие. Максимум — 50 баллов.</p>\n<p><a href=\"https://new.testcenter.kz/?lang=ru&amp;page_id=15094\">Спецификации и образцы НЦТ</a></p>\n<p><a class=\"pm-btn\" href=\"#/t/1/practice\">Начать диагностику</a></p>", "tasks": [{"q": "Упрости $\\sqrt{75}$.", "options": ["$5\\sqrt3$", "$3\\sqrt5$", "$25\\sqrt3$", "$15\\sqrt5$"], "answer": 0, "explain": "$75=25\\cdot3$, поэтому $\\sqrt{75}=5\\sqrt3$.", "skill": "numbers"}, {"q": "Вычисли $3^4:3^2$.", "options": ["3", "6", "27", "9"], "answer": 3, "explain": "При делении степеней с одной основой вычитаем показатели: $3^{4-2}=9$.", "skill": "numbers"}, {"q": "Разложи $x^2-25$ на множители.", "options": ["$(x-5)^2$", "$(x-5)(x+5)$", "$(x-25)(x+1)$", "$(x-5)(x+1)$"], "answer": 1, "explain": "Разность квадратов: $x^2-5^2=(x-5)(x+5)$.", "skill": "expressions"}, {"q": "При каком $x$ выражение $\\frac{1}{x-3}$ не определено?", "options": ["$x=0$", "$x=-3$", "$x=3$", "$x=1$"], "answer": 2, "explain": "Знаменатель не может быть нулём. $x-3=0$ при $x=3$.", "skill": "expressions"}, {"q": "Реши $4x-7=9$.", "options": ["$x=4$", "$x=2$", "$x=-4$", "$x=\\frac12$"], "answer": 0, "explain": "Прибавляем 7: $4x=16$. Делим на 4: $x=4$.", "skill": "equations"}, {"q": "Реши $x^2=9$.", "options": ["$x=9$", "$x=3$", "$x=-3$", "$x=-3$ или $x=3$"], "answer": 3, "explain": "Квадрат и числа $3$, и числа $-3$ равен 9.", "skill": "equations"}, {"q": "Если $f(x)=2x-1$, чему равно $f(3)$?", "options": ["6", "5", "3", "−5"], "answer": 1, "explain": "Подставляем вместо $x$ число 3: $2\\cdot3-1=5$.", "skill": "graphs"}, {"q": "При каком $x$ график $y=-2x+6$ пересекает ось $x$?", "options": ["$x=-3$", "$x=6$", "$x=3$", "$x=0$"], "answer": 2, "explain": "На оси $x$ значение $y=0$. Решаем $-2x+6=0$, откуда $x=3$.", "skill": "graphs"}, {"q": "У прямоугольного треугольника катеты 6 и 8. Найди гипотенузу.", "options": ["10", "14", "7", "100"], "answer": 0, "explain": "По теореме Пифагора $c^2=6^2+8^2=100$, значит $c=10$.", "skill": "geometry"}, {"q": "Основание треугольника равно 8 см, высота к нему — 3 см. Найди площадь.", "options": ["24 см²", "16 см²", "11 см²", "12 см²"], "answer": 3, "explain": "$S=8\\cdot3:2=12$ см².", "skill": "geometry"}]},
+  {"n": 2, "m": "Сентябрь", "t": "Числа и выражения: радикалы, степени", "lecture": "<p class=\"pm-rule\"><strong>Главная мысль.</strong> Степень говорит, сколько раз берём множитель. Квадратный корень отвечает на вопрос: какое неотрицательное число в квадрате даёт исходное число?</p><figure class=\"pm-figure\"><svg viewBox=\"0 0 380 170\" role=\"img\" aria-label=\"Решётка шесть на шесть: 36 маленьких квадратов, сторона большого квадрата равна 6.\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"126\" y=\"16\" width=\"132\" height=\"132\" rx=\"4\" fill=\"#dbeef8\" stroke=\"#35749c\" stroke-width=\"2\"/><path d=\"M148 16v132m22-132v132m22-132v132m22-132v132m22-132v132M126 38h132m-132 22h132m-132 22h132m-132 22h132m-132 22h132\" stroke=\"#8cb3ce\"/><text x=\"192\" y=\"88\" font-size=\"22\" text-anchor=\"middle\">36</text><text x=\"273\" y=\"85\" font-size=\"17\">6</text><text x=\"192\" y=\"166\" font-size=\"17\" text-anchor=\"middle\">6</text></svg><figcaption>Площадь квадрата — 36. Длина стороны — √36 = 6. Корень из числа сам по себе не отрицателен.</figcaption></figure>\n<h3>Что запомнить</h3><ul><li>При умножении степеней с одинаковой основой показатели складываем: $a^m\\cdot a^n=a^{m+n}$.</li><li>При делении вычитаем: $a^m:a^n=a^{m-n}$, если $a\\ne0$. Например, $2^{-3}=1/2^3=1/8$.</li><li>Из-под корня можно вынести квадратный множитель: $\\sqrt{72}=\\sqrt{36\\cdot2}=6\\sqrt2$. Складывать можно одинаковые корни: $6\\sqrt2-2\\sqrt2=4\\sqrt2$.</li></ul>\n<div class=\"pm-rule\"><strong>Проверь себя.</strong> $\\sqrt{x^2}=|x|$, не всегда $x$. Например, $\\sqrt{(-5)^2}=5$.</div>\n<p><a class=\"pm-btn\" href=\"#/t/2/practice\">Перейти к практике</a></p>", "tasks": [{"q": "Упрости $\\sqrt{48}$.", "options": ["$2\\sqrt3$", "$4\\sqrt3$", "$12\\sqrt3$", "$3\\sqrt{16}$"], "answer": 1, "explain": "$48=16\\cdot3$. Значит $\\sqrt{48}=4\\sqrt3$."}, {"q": "Вычисли $2^3\\cdot2^4$.", "options": ["64", "256", "14", "128"], "answer": 3, "explain": "Складываем показатели: $2^7=128$."}, {"q": "Чему равно $3^{-2}$?", "options": ["$\\frac19$", "$-9$", "$\\frac16$", "$9$"], "answer": 0, "explain": "Отрицательная степень даёт обратное число: $3^{-2}=1/3^2=1/9$."}, {"q": "Упрости $\\sqrt{(-7)^2}$.", "options": ["−7", "49", "7", "−49"], "answer": 2, "explain": "$\\sqrt{(-7)^2}=\\sqrt{49}=7$."}, {"q": "Упрости $\\sqrt{50}-\\sqrt8$.", "options": ["$\\sqrt2$", "$3\\sqrt2$", "$7\\sqrt2$", "$\\sqrt{42}$"], "answer": 1, "explain": "$\\sqrt{50}=5\\sqrt2$, $\\sqrt8=2\\sqrt2$. Разность равна $3\\sqrt2$."}, {"q": "Вычисли $(2^3)^2:2^4$.", "options": ["2", "8", "16", "4"], "answer": 3, "explain": "Степень степени: $(2^3)^2=2^6$. Делим: $2^{6-4}=4$."}, {"q": "При каком условии определено $\\sqrt{x-4}$ в действительных числах?", "options": ["$x\\ge4$", "$x>4$", "$x\\le4$", "При любом $x$"], "answer": 0, "explain": "Под корнем должно быть число не меньше нуля: $x-4\\ge0$."}]},
+  {"n": 3, "m": "Сентябрь", "t": "Дробные и целые выражения; формулы сокращённого умножения", "lecture": "<p class=\"pm-rule\"><strong>Главная мысль.</strong> Чтобы упростить дробь, разложи числитель и знаменатель на множители. Сократить можно общий множитель, но не часть суммы.</p><figure class=\"pm-figure\"><svg viewBox=\"0 0 380 170\" role=\"img\" aria-label=\"Квадрат со стороной a плюс b разбит на четыре части: a в квадрате, два прямоугольника ab и b в квадрате.\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"88\" y=\"15\" width=\"104\" height=\"104\" fill=\"#cde8f7\"/><rect x=\"192\" y=\"15\" width=\"45\" height=\"104\" fill=\"#d4f0df\"/><rect x=\"88\" y=\"119\" width=\"104\" height=\"45\" fill=\"#d4f0df\"/><rect x=\"192\" y=\"119\" width=\"45\" height=\"45\" fill=\"#fae6ac\"/><path d=\"M88 15h149v149H88zM192 15v149M88 119h149\" stroke=\"#3e6888\" stroke-width=\"2\" fill=\"none\"/><g text-anchor=\"middle\" font-size=\"18\"><text x=\"142\" y=\"72\">a²</text><text x=\"221\" y=\"72\">ab</text><text x=\"142\" y=\"148\">ab</text><text x=\"221\" y=\"148\">b²</text></g><text x=\"257\" y=\"91\" font-size=\"16\">a + b</text></svg><figcaption>Два зелёных прямоугольника дают 2ab. Их нельзя потерять при раскрытии квадрата суммы.</figcaption></figure>\n<h3>Три полезные формулы</h3><ul><li>$(a+b)^2=a^2+2ab+b^2$.</li><li>$(a-b)^2=a^2-2ab+b^2$.</li><li>$a^2-b^2=(a-b)(a+b)$.</li></ul>\n<h3>Пример с дробью</h3><ol><li>В дроби $\\frac{x^2-9}{x-3}$ сначала запиши ограничение: $x\\ne3$.</li><li>Разложи числитель: $x^2-9=(x-3)(x+3)$.</li><li>Сократи общий множитель: получится $x+3$, но запрет $x\\ne3$ остаётся.</li></ol>\n<p><a class=\"pm-btn\" href=\"#/t/3/practice\">Перейти к практике</a></p>", "tasks": [{"q": "Раскрой скобки: $(x+4)^2$.", "options": ["$x^2+16$", "$x^2+4x+16$", "$x^2+8x+16$", "$x^2-8x+16$"], "answer": 2, "explain": "Средний член равен $2\\cdot x\\cdot4=8x$."}, {"q": "Разложи $9a^2-16$.", "options": ["$(3a-4)(3a+4)$", "$(9a-4)(a+4)$", "$(3a-4)^2$", "$(3a+4)^2$"], "answer": 0, "explain": "$9a^2-16=(3a)^2-4^2$. Применяем разность квадратов."}, {"q": "Упрости $3x(2x-5)+4x$.", "options": ["$6x^2-15x$", "$6x^2-19x$", "$6x^2-x$", "$6x^2-11x$"], "answer": 3, "explain": "Раскрываем скобки: $6x^2-15x+4x=6x^2-11x$."}, {"q": "Сократи $\\frac{x^2-16}{x-4}$, сохранив ограничение.", "options": ["$x-4$ при $x\\ne4$", "$x+4$ при $x\\ne4$", "$x+4$ для всех $x$", "$x-4$ при $x\\ne-4$"], "answer": 1, "explain": "Разложение: $(x-4)(x+4)$. Сокращаем при $x\\ne4$."}, {"q": "Упрости $(x-3)^2-x(x-6)$.", "options": ["−9", "$-12x+9$", "9", "$6x+9$"], "answer": 2, "explain": "$x^2-6x+9-(x^2-6x)=9$."}, {"q": "Упрости $(\\frac{2a}{b})^3$ при $b\\ne0$.", "options": ["$\\frac{8a^3}{b^3}$", "$\\frac{6a^3}{b^3}$", "$\\frac{8a}{b^3}$", "$\\frac{2a^3}{b}$"], "answer": 0, "explain": "Возводим каждый множитель в степень: $2^3=8$, числитель содержит $a^3$, знаменатель — $b^3$."}, {"q": "При каких значениях определена дробь $\\frac{x+7}{x^2-4}$?", "options": ["При всех $x$", "$x\\ne2$", "$x\\ne-2$", "$x\\ne-2$ и $x\\ne2$"], "answer": 3, "explain": "$x^2-4=(x-2)(x+2)$. Знаменатель равен нулю при $2$ и $-2$."}]},
+  {"n": 4, "m": "Сентябрь", "t": "Линейные и квадратные уравнения", "lecture": "<p class=\"pm-rule\"><strong>Главная мысль.</strong> Решить уравнение значит найти все значения, при которых левая часть равна правой. Если перенести всё в левую часть и построить её график, корни — это значения $x$, при которых $y=0$.</p><figure class=\"pm-figure\"><svg viewBox=\"0 0 380 170\" role=\"img\" aria-label=\"График y равно x в квадрате минус 5x плюс 6. Парабола пересекает горизонтальную ось в точках 2 и 3.\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M35 122H330M87 15v150\" stroke=\"#406481\" stroke-width=\"2\"/><g stroke=\"#b8cbd9\"><path d=\"M87 122v-3m41 3v-3m41 3v-3m41 3v-3m41 3v-3m41 3v-3\"/></g><polyline points=\"87.00,26.00 89.05,29.96 91.10,33.84 93.15,37.64 95.20,41.36 97.25,45.00 99.30,48.56 101.35,52.04 103.40,55.44 105.45,58.76 107.50,62.00 109.55,65.16 111.60,68.24 113.65,71.24 115.70,74.16 117.75,77.00 119.80,79.76 121.85,82.44 123.90,85.04 125.95,87.56 128.00,90.00 130.05,92.36 132.10,94.64 134.15,96.84 136.20,98.96 138.25,101.00 140.30,102.96 142.35,104.84 144.40,106.64 146.45,108.36 148.50,110.00 150.55,111.56 152.60,113.04 154.65,114.44 156.70,115.76 158.75,117.00 160.80,118.16 162.85,119.24 164.90,120.24 166.95,121.16 169.00,122.00 171.05,122.76 173.10,123.44 175.15,124.04 177.20,124.56 179.25,125.00 181.30,125.36 183.35,125.64 185.40,125.84 187.45,125.96 189.50,126.00 191.55,125.96 193.60,125.84 195.65,125.64 197.70,125.36 199.75,125.00 201.80,124.56 203.85,124.04 205.90,123.44 207.95,122.76 210.00,122.00 212.05,121.16 214.10,120.24 216.15,119.24 218.20,118.16 220.25,117.00 222.30,115.76 224.35,114.44 226.40,113.04 228.45,111.56 230.50,110.00 232.55,108.36 234.60,106.64 236.65,104.84 238.70,102.96 240.75,101.00 242.80,98.96 244.85,96.84 246.90,94.64 248.95,92.36 251.00,90.00 253.05,87.56 255.10,85.04 257.15,82.44 259.20,79.76 261.25,77.00 263.30,74.16 265.35,71.24 267.40,68.24 269.45,65.16 271.50,62.00 273.55,58.76 275.60,55.44 277.65,52.04 279.70,48.56 281.75,45.00 283.80,41.36 285.85,37.64 287.90,33.84 289.95,29.96 292.00,26.00\" fill=\"none\" stroke=\"#28669d\" stroke-width=\"3\"/><circle cx=\"169\" cy=\"122\" r=\"5\" fill=\"#ae552f\"/><circle cx=\"210\" cy=\"122\" r=\"5\" fill=\"#ae552f\"/><g font-size=\"16\" text-anchor=\"middle\"><text x=\"169\" y=\"148\">2</text><text x=\"210\" y=\"148\">3</text><text x=\"335\" y=\"125\">x</text><text x=\"91\" y=\"15\">y</text></g></svg><figcaption>На оси x значение y равно нулю. Поэтому абсциссы точек пересечения — корни уравнения.</figcaption></figure>\n<h3>Линейное уравнение</h3><p>Собери слагаемые с $x$ в одной части, числа — в другой. Например, $3x-5=7$: получаем $3x=12$, значит $x=4$. Если коэффициент при $x$ равен нулю, остаётся либо верное равенство (подходит любое $x$), либо неверное (решений нет).</p>\n<h3>Квадратное уравнение</h3><p>Приведи его к виду $ax^2+bx+c=0$, где $a\\ne0$. Дискриминант $D=b^2-4ac$:</p>\n<ul><li>$D>0$: два корня, $x_{1,2}=\\frac{-b\\pm\\sqrt D}{2a}$.</li><li>$D=0$: один корень, $x=-\\frac{b}{2a}$.</li><li>$D<0$: действительных корней нет.</li></ul>\n<div class=\"pm-rule\"><strong>Пример.</strong> $x^2-5x+6=0$: $D=25-24=1$, корни 2 и 3. Можно быстрее: по Виету ищем два числа с суммой 5 и произведением 6. На рисунке парабола пересекает ось именно в этих точках.</div><p><a class=\"pm-btn\" href=\"#/t/4/practice\">Перейти к практике</a></p>", "tasks": [{"q": "Реши $5x+3=18$.", "options": ["$x=2$", "$x=4$", "$x=3$", "$x=-3$"], "answer": 2, "explain": "Вычитаем 3: $5x=15$. Делим на 5: $x=3$."}, {"q": "Найди корни $x^2-5x+6=0$.", "options": ["$2$ и $3$", "$-2$ и $-3$", "$1$ и $6$", "$-1$ и $6$"], "answer": 0, "explain": "По Виету сумма равна 5, а произведение 6. Подходят 2 и 3."}, {"q": "Найди сумму корней $x^2-7x+10=0$.", "options": ["−7", "10", "−10", "7"], "answer": 3, "explain": "По Виету сумма равна числу с противоположным знаком к коэффициенту при $x$: $7$."}, {"q": "При каком $a$ уравнение $ax=6$ не имеет корней?", "options": ["$a=6$", "$a=0$", "$a=1$", "Корень есть при любом $a$"], "answer": 1, "explain": "При $a=0$ имеем неверное равенство $0=6$. При ненулевом $a$ можно разделить на $a$."}, {"q": "Сколько действительных корней имеет $x^2+2x+5=0$?", "options": ["Один", "Два", "Ни одного", "Бесконечно много"], "answer": 2, "explain": "$D=4-20=-16<0$. Действительных корней нет."}, {"q": "Реши $2x^2-8x=0$.", "options": ["$0$ и $4$", "Только $4$", "$0$ и $-4$", "$2$ и $4$"], "answer": 0, "explain": "Выносим $2x$: $2x(x-4)=0$. Значит $x=0$ или $x=4$."}, {"q": "У параболы $y=x^2-6x+9$ сколько общих точек с осью $x$?", "options": ["Ни одной", "Две", "Три", "Одна"], "answer": 3, "explain": "$y=(x-3)^2$, поэтому $y=0$ только при $x=3$. Парабола касается оси."}]},
   {n:5,  m:"Октябрь",  t:"Дробно-рациональные уравнения"},
   {n:6,  m:"Октябрь",  t:"Иррациональные уравнения"},
   {n:7,  m:"Октябрь",  t:"Показательные уравнения"},
@@ -199,10 +177,19 @@ const TOPICS = [
 ];
 
 /* ---------- прогресс (хранится в браузере ученика) ---------- */
-const KEY = "ent-math-done";
+const OLD_KEY = "ent-math-done";
+const KEY = "ent-math-done-v2";
+const isReady = t => !!(t && (t.practiceUrl || (Array.isArray(t.tasks) && t.tasks.length)));
 const MCOL = {"Сентябрь":"#ea580c","Октябрь":"#16a34a","Ноябрь":"#0284c7","Декабрь":"#9333ea","Январь":"#db2777",
   "Февраль":"#0d9488","Март":"#4f46e5","Апрель":"#d97706","Май":"#0891b2"};
-function loadDone() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
+function loadDone() {
+  try {
+    const current = localStorage.getItem(KEY);
+    const saved = JSON.parse(current === null ? (localStorage.getItem(OLD_KEY) || "[]") : current);
+    if (!Array.isArray(saved)) return [];
+    return [...new Set(saved)].filter(n => (current !== null || n === 4) && isReady(TOPICS.find(t => t.n === n)));
+  } catch (e) { return []; }
+}
 function saveDone(list) { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {} }
 
 const view = document.getElementById("pm");
@@ -219,7 +206,7 @@ function typeset() {
 const LEVELS = [[0,"Новичок"],[60,"Ученик"],[150,"Знаток"],[250,"Мастер"],[350,"Чемпион ЕНТ"]];
 function gameStats(done) {
   let xp = 0;
-  done.forEach(n => { const t = TOPICS.find(x => x.n === n); if (t) xp += t.mock ? 30 : 10; });
+  done.forEach(n => { const t = TOPICS.find(x => x.n === n); if (isReady(t)) xp += t.mock ? 30 : 10; });
   let lv = 0;
   LEVELS.forEach((l, i) => { if (xp >= l[0]) lv = i; });
   return {xp, lv: lv + 1, title: LEVELS[lv][1]};
@@ -227,7 +214,7 @@ function gameStats(done) {
 
 function owlPhrase(d, total) {
   if (d === 0) return "Привет! Я покажу дорогу. Начнём с первого занятия?";
-  if (d === total) return "Ты прошёл весь путь! Теперь ты готов к ЕНТ!";
+  if (d === total) return "Доступные занятия пройдены! Можно вернуться к практике." ;
   if (d / total >= 0.5) return "Больше половины пути позади. Вперёд!";
   return "Отлично идёшь! Следующая остановка ждёт тебя.";
 }
@@ -260,15 +247,17 @@ function renderList() {
     d += ` C ${p.x} ${my}, ${q.x} ${my}, ${q.x} ${q.y}`;
   }
 
-  const next = TOPICS.find(t => !done.includes(t.n));
+  const ready = TOPICS.filter(isReady).length;
+  const next = TOPICS.find(t => isReady(t) && !done.includes(t.n));
   let html = `
     <a class="back-btn" href="${BACK_URL}">← К выбору разделов</a>
     <h2>Путь к ЕНТ: профильная математика</h2>
-    <div class="pm-intro"><span class="pm-owl">🦉</span><div class="pm-bubble">${owlPhrase(done.length, TOPICS.length)}</div></div>
+    <div class="pm-intro"><span class="pm-owl">🦉</span><div class="pm-bubble">${owlPhrase(done.length, ready)}</div></div>
     <div class="pm-stats">
       <span class="pm-chip">⭐ ${st.xp} очков</span>
       <span class="pm-chip pm-lv">🏅 Уровень ${st.lv}: ${st.title}</span>
       <span class="pm-chip pm-dn">✅ ${done.length} из ${TOPICS.length}</span>
+      <span class="pm-chip">Готово занятий: ${ready}</span>
     </div>
     <div class="pm-map" style="height:${H}px">
       <svg class="pm-road" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">
@@ -280,17 +269,17 @@ function renderList() {
   }
   for (const p of pts) {
     const t = p.t, isDone = done.includes(t.n), isNext = next && next.n === t.n;
-    const flags = (isDone ? " pm-done" : "") + (t.mock ? " pm-mock" : "");
+    const flags = (isDone ? " pm-done" : "") + (t.mock ? " pm-mock" : "") + (isReady(t) ? "" : " pm-soon");
     const right = p.x < 50;
     const side = right
       ? `left:calc(${p.x}% + ${t.mock ? 54 : 46}px);max-width:calc(${100 - p.x}% - ${t.mock ? 62 : 54}px)`
       : `right:calc(${100 - p.x}% + ${t.mock ? 54 : 46}px);max-width:calc(${p.x}% - ${t.mock ? 62 : 54}px);text-align:right`;
     html += `<button class="pm-node${flags}${isNext ? " pm-next" : ""}" data-n="${t.n}" style="left:${p.x}%;top:${p.y}px;--mc:${MCOL[t.m]}"
-        aria-label="Занятие ${t.n}: ${t.t}"><span>${t.mock ? "🏆" : t.n}</span></button>
-      <div class="pm-label${flags}" data-n="${t.n}" style="top:${p.y}px;${side};--mc:${MCOL[t.m]}">${t.mock ? "<em>Пробный ЕНТ</em>" : ""}${t.t}</div>`;
+        aria-label="Занятие ${t.n}: ${t.t}${isReady(t) ? "" : " (в разработке)"}"><span>${t.mock ? "🏆" : t.n}</span></button>
+      <div class="pm-label${flags}" data-n="${t.n}" style="top:${p.y}px;${side};--mc:${MCOL[t.m]}">${!isReady(t) ? "<em>В разработке</em>" : t.mock ? "<em>Пробный ЕНТ</em>" : ""}${t.t}</div>`;
   }
-  const pin = next ? pts.find(p => p.t.n === next.n) : pts[pts.length - 1];
-  html += `<div class="pm-pin" style="left:${pin.x}%;top:${pin.y - (pin.t.mock ? 44 : 34)}px">${next ? "🦉" : "🎉"}</div>`;
+  const pin = next ? pts.find(p => p.t.n === next.n) : null;
+  if (pin) html += `<div class="pm-pin" style="left:${pin.x}%;top:${pin.y - (pin.t.mock ? 44 : 34)}px">🦉</div>`;
   html += "</div>";
 
   view.innerHTML = html;
@@ -314,7 +303,7 @@ function practiceHtml(t) {
   if (t.tasks && t.tasks.length) {
     html += tasksHtml(t.tasks) + `
       <div class="pm-actions"><button class="pm-btn" id="pm-check">Проверить ответы</button></div>
-      <p class="pm-result" id="pm-result" hidden></p>`;
+      <section class="pm-result" id="pm-result" tabindex="-1" aria-live="polite" hidden></section>`;
   } else if (!t.practiceUrl) {
     html += `<div class="pm-empty">Задачи для этого занятия ещё не добавлены.</div>`;
   }
@@ -325,12 +314,20 @@ function bindCheck(t) {
   const btn = document.getElementById("pm-check");
   if (!btn) return;
   btn.addEventListener("click", () => {
-    let score = 0;
+    let score = 0, answered = 0;
+    const bySkill = {};
     t.tasks.forEach((k, i) => {
       const box = view.querySelector(`.pm-task[data-i="${i}"]`);
       const picked = box.querySelector("input:checked");
       const ok = picked && Number(picked.value) === k.answer;
       if (ok) score++;
+      if (picked) answered++;
+      if (k.skill) {
+        const group = bySkill[k.skill] || (bySkill[k.skill] = {correct:0, total:0, blank:0});
+        group.total++;
+        if (ok) group.correct++;
+        if (!picked) group.blank++;
+      }
       box.classList.toggle("pm-right", !!ok);
       box.classList.toggle("pm-wrong", !ok);
       box.querySelector(".pm-explain").hidden = false;
@@ -338,6 +335,42 @@ function bindCheck(t) {
     const res = document.getElementById("pm-result");
     res.hidden = false;
     res.textContent = `Результат: ${score} из ${t.tasks.length}`;
+    if (answered < t.tasks.length) {
+      const blank = document.createElement("p");
+      blank.textContent = "Без ответа: " + (t.tasks.length - answered) + ".";
+      res.appendChild(blank);
+    }
+    if (t.diagnostic) {
+      const heading = document.createElement("h3");heading.textContent = "Что повторить";res.appendChild(heading);
+      const skills = {
+        numbers:["Степени и корни",2,"Начни с правил степеней и извлечения корней."],
+        expressions:["Выражения",3,"Разложи на множители и выпиши запреты для знаменателя."],
+        equations:["Уравнения",4,"Потренируй перенос слагаемых и поиск всех корней."],
+        graphs:["Функции и графики",4,"Подставляй x в формулу, а для пересечения оси x ищи y = 0."],
+        geometry:["Геометрия",null,"Повтори теорему Пифагора и площадь треугольника: основание × высота ÷ 2."]
+      };
+      const list = document.createElement("ul");
+      for (const [key, group] of Object.entries(bySkill)) {
+        const [label, lesson, tip] = skills[key];
+        const row = document.createElement("li");
+        row.textContent = label + ": " + group.correct + " из " + group.total + ". ";
+        if (group.correct === group.total) row.append("Обе задачи решены верно.");
+        else {
+          row.append((group.blank ? "Есть пропуск. " : "") + tip + " ");
+          if (lesson) {
+            const link = document.createElement("a");
+            link.href = "#/t/" + lesson;
+            link.textContent = "Занятие " + lesson;
+            row.appendChild(link);
+          }
+        }
+        list.appendChild(row);
+      }
+      res.appendChild(list);
+      const mark = document.getElementById("pm-mark");
+      if (mark && !loadDone().includes(t.n)) mark.disabled = answered < t.tasks.length;
+    }
+    res.focus();
     typeset();
   });
 }
@@ -346,6 +379,10 @@ function renderTopic(n, part) {
   const t = TOPICS.find(x => x.n === n);
   if (!t) { location.hash = "#/"; return; }
   view.style.setProperty("--mc", MCOL[t.m]);
+  if (!isReady(t)) {
+    view.innerHTML = `<a class="back-btn" href="#/">← К списку занятий</a><h2>Занятие ${t.n}. ${t.t}</h2><div class="pm-empty"><strong>В разработке.</strong> Задания ещё не опубликованы. За эту остановку звёзды пока не начисляются.</div>`;
+    return;
+  }
   const done = loadDone().includes(n);
   const isPractice = part === "practice";
 
@@ -366,8 +403,9 @@ function renderTopic(n, part) {
     <h2>Занятие ${t.n}. ${t.t}</h2>
     ${tabs}
     ${body}
+    ${t.diagnostic && !done ? '<p class="pm-mark-note">Для отметки ответь на все 10 заданий и проверь ответы.</p>' : ""}
     <div class="pm-actions">
-      <button class="pm-btn pm-soft" id="pm-mark">${done ? "Снять отметку «пройдено»" : "Отметить как пройденное (+" + (t.mock ? 30 : 10) + " ⭐)"}</button>
+      <button class="pm-btn pm-soft" id="pm-mark"${t.diagnostic && !done ? " disabled" : ""}>${done ? "Снять отметку «пройдено»" : "Отметить как пройденное (+" + (t.mock ? 30 : 10) + " ⭐)"}</button>
     </div>`;
 
   view.querySelectorAll(".pm-tabs button").forEach(b =>
@@ -392,6 +430,7 @@ window.addEventListener("hashchange", route);
 </script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-<script>window.addEventListener("load", route);</script>
+<script>route();
+window.addEventListener("load", typeset);</script>
 </body>
 </html>
