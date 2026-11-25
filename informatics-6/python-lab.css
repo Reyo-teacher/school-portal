@@ -1,0 +1,14 @@
+.py-lab{display:grid;gap:.65rem}
+.py-lab :is(p,h3,pre,ul){margin:0}
+.py-lab label{color:#203b56;font-weight:700}
+.py-lab select{max-width:100%}
+.py-lab textarea{display:block;width:100%;resize:vertical;min-height:6rem;border:1px solid #9ab3c2;border-radius:.6rem;padding:.65rem;font: .95rem/1.6 ui-monospace,monospace;color:#142a38;background:#fff}
+.py-lab #py-code{background:#14283a;color:#f2f7fd;color-scheme:dark}
+.py-lab #py-input{min-height:3.5rem;margin-top:.25rem}
+.py-lab .py-log{white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f5f8;border-radius:.6rem;padding:.7rem;font-size:.93rem;color:#14283a}
+.py-lab .py-report{padding-left:1.45rem}
+.py-lab .py-report:empty,.py-lab .py-status:empty{display:none}
+.py-lab .py-report li[data-ok=false]{color:#874003}
+.py-lab .py-report li[data-ok=true]{color:#12634f}
+.py-lab .py-status{font-weight:750}
+.py-lab :disabled{cursor:wait;opacity:.65}

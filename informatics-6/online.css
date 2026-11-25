@@ -1,0 +1,11 @@
+.work-plan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.45rem;margin:.8rem 0 1rem}
+.work-plan span{border:1px solid var(--line);padding:.45rem .55rem;border-radius:.55rem;font-size:.88rem}
+.work-plan b{display:block;color:var(--accent)}
+.online-lab{margin:1rem 0;min-width:0;overflow-wrap:anywhere;padding:clamp(.7rem,2.5vw,1.15rem);border:1px solid #b9cdd3;border-radius:14px;background:#f8fcfc}
+.online-lab [data-lab]:empty:not(:has(+noscript))::before{content:'Загружается практикум…';color:#516578}
+.online-lab [data-lab]{min-width:0}
+.extra-practice,.paper-practice{padding:.75rem .8rem;margin:.55rem 0;background:#f1f5f6;border-radius:.65rem}
+.extra-practice summary,.paper-practice summary{font-weight:750;cursor:pointer;color:var(--accent)}
+.practice-lead{margin:.5rem 0}
+@media(max-width:520px){.work-plan{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{.online-lab,.work-plan,.practice-lead{display:none!important}.extra-practice,.paper-practice{border:0;background:none;padding:0}.extra-practice summary,.paper-practice summary{color:#000;margin-block:.4rem}}

@@ -1,0 +1,7 @@
+.info-visual {max-width:42rem; margin:1.2rem auto 1.4rem; padding:0 .15rem;}
+.info-visual svg {overflow:hidden; break-inside:avoid;}
+.info-visual figcaption {margin:.55rem .1rem 0; line-height:1.5; font-size:.92rem;}
+@media print {
+  .info-visual {max-width:32rem; break-inside:avoid; page-break-inside:avoid; margin:.45rem auto .75rem;}
+  .info-visual svg {print-color-adjust:exact; -webkit-print-color-adjust:exact;}
+}
