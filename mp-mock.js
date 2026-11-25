@@ -24,14 +24,38 @@ const el=(parent,tag,text,cl)=>{
 const say={"2":"Степени и корни","3":"Преобразование выражений","4":"Линейные и квадратные уравнения","5":"Дробно-рациональные уравнения","6":"Иррациональные уравнения","7":"Показательные уравнения","8":"Логарифмы","9":"Логарифмические уравнения","10":"Единичная окружность","12":"Тригонометрические уравнения","13":"Системы уравнений","15":"Неравенства","16":"Метод интервалов","17":"Показательные неравенства","18":"Логарифмические неравенства","21":"Арифметическая прогрессия","22":"Геометрическая прогрессия","23":"Функции и графики","24":"Производная","25":"Касательная","26":"Экстремумы","27":"Интегралы","28":"Моделирование","29":"Планиметрия","30":"Окружность и векторы на плоскости","31":"Стереометрия и векторы"};
 const getVariant = () => Number(location.hash.match(/^#variant-([12])$/)?.[1]||0);
 const parts={0:["Один правильный ответ","В каждом задании выбери один вариант."],25:["Один ответ по общему контексту","Прочитай общий текст. Для каждого задания выбери один ответ."],30:["Один или несколько правильных ответов","Отметь все верные варианты. Верных ответов может быть от одного до трёх."] ,35:["Соответствие","Для каждой строки выбери подходящий ответ."]};
-let version=0;
+let version=0, activeExam=null, submitted=false;
+const attempts=new Map();
+const attemptFor=v=>attempts.get(v)||0;
+const attemptKey=v=>"school-portal:mp-mock-attempt:"+v;
+function openAttempt(v){
+  let n=0;
+  try{n=Number(localStorage.getItem(attemptKey(v)));}catch{}
+  if(!Number.isSafeInteger(n)||n<0||n>2000000000)n=0;
+  setAttempt(v,n);
+}
+function setAttempt(v,n){
+  attempts.set(v,n);
+  try{localStorage.setItem(attemptKey(v),String(n+1));}catch{}
+}
+function nextSet(){
+  if(!version)return;
+  const paper=$("paper");
+  if(!submitted&&(paper.querySelector("input:checked")||[...paper.querySelectorAll("select")].some(x=>x.value))&&!window.confirm("Начать новый набор? Текущие ответы будут сброшены."))return;
+  setAttempt(version,attemptFor(version)+1);render();$("name").scrollIntoView({block:"start"});
+}
 function render(){
- const v=getVariant();version=v;
+ const v=getVariant();
+ if(v&&v!==version)openAttempt(v);
+ version=v;submitted=false;
  $("choose").hidden=!!v;$("exam").hidden=!v;
  if(!v)return;
- const {context,questions}=root.MP_MOCKS[v-1];
+ const original=root.MP_MOCKS[v-1],attempt=attemptFor(v);
+ activeExam=attempt&&root.ProfilePractice?.freshMock ? root.ProfilePractice.freshMock(original,v,attempt) : original;
+ if(activeExam!==original&&root.ProfileMockSections?.fresh)activeExam=root.ProfileMockSections.fresh(activeExam,v,attempt);
+ const {context,questions}=activeExam;
  const paper=$("paper"),res=$("result");paper.replaceChildren();res.replaceChildren();res.hidden=true;
- $("name").textContent="Вариант "+v;
+ $("name").textContent="Вариант "+v+(activeExam!==original?" · новый набор "+attempt:"");
  questions.forEach((q,i)=>{
    if(parts[i]){
      el(paper,"h3",parts[i][0],"part");el(paper,"p",parts[i][1]);
@@ -59,8 +83,9 @@ function render(){
  el(act,"a","К выбору вариантов").href="#/";
 }
 $("paper").addEventListener("submit",ev=>{
- ev.preventDefault();if(!version)return;
- const qs=root.MP_MOCKS[version-1].questions,fd=new FormData($("paper"));
+ ev.preventDefault();if(!version||!activeExam)return;
+ submitted=true;
+ const qs=activeExam.questions,fd=new FormData($("paper"));
  const res=$("result");res.replaceChildren();res.hidden=false;
  let points=0, blanks=0;
  const totals={},details=[];
@@ -77,7 +102,14 @@ $("paper").addEventListener("submit",ev=>{
  el(res,"h2","Результат: "+points+" из 50");
  if(blanks)el(res,"p","Без ответа: "+blanks+" из 40.");
  const guide=el(res,"section",undefined,"repeat");
- const gaps=Object.entries(totals).filter(([,loss])=>loss>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
+ const allGaps=Object.entries(totals).filter(([,loss])=>loss>0).sort((a,b)=>b[1]-a[1]);
+ root.PortalResultShare?.mount(res,{subject:"Профильная математика",title:"Пробный ЕНТ. "+$("name").textContent,score:points,max:50,topics:allGaps.map(([n])=>say[n]||"Занятие "+n),blank:blanks});
+ if(root.ProfilePractice?.freshMock){
+   const controls=el(res,"div",undefined,"actions");
+   const retry=el(controls,"button","Решить новый набор");retry.type="button";
+   retry.addEventListener("click",nextSet);
+ }
+ const gaps=allGaps.slice(0,5);
  el(guide,"h3",gaps.length?"Что повторить":"Все задания решены верно");
  if(gaps.length){
    const list=el(guide,"ul");
@@ -98,6 +130,9 @@ $("paper").addEventListener("submit",ev=>{
  });
  res.focus();
 });
+const fresh=$("fresh");
+fresh.hidden=!root.ProfilePractice?.freshMock;
+fresh.addEventListener("click",nextSet);
 addEventListener("hashchange",()=>{render();window.scrollTo(0,0);});
 render();
 })(typeof window!=="undefined"?window:null);

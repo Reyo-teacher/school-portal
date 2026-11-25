@@ -119,6 +119,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f59e
 .pm-node.pm-soon{background:#64778a;color:white}.pm-label.pm-soon{background:#f7f9fb}.pm-label.pm-soon em{color:#53687c}.pm-label.pm-mock.pm-soon{background:#f3f5f8}
 @media(max-width:420px){.pm-label{font-size:12px;padding:4px 6px}.pm-label em{font-size:10px}.pm-node.pm-soon.pm-mock{font-size:25px;width:62px;height:62px}}
 </style>
+<link rel="stylesheet" href="portal-result-share.css?v=1">
 </head>
 <body>
 <div class="wrapper">
@@ -126,6 +127,8 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f59e
   <div class="card" id="pm"></div>
 </div>
 
+<script src="mp-practice-gen.js?v=1"></script>
+<script defer src="portal-result-share.js?v=1"></script>
 <script>
 /* BACK_URL — страница выбора раздела ЕНТ */
 const BACK_URL = "ent.html";
@@ -287,23 +290,59 @@ function renderList() {
     b.addEventListener("click", () => { location.hash = "#/t/" + b.dataset.n; }));
 }
 
-function tasksHtml(tasks, topic) {
+const practiceAttempt = new Map();
+const attemptFor = n => {
+  if (practiceAttempt.has(n)) return practiceAttempt.get(n);
+  let step = 0;
+  try {
+    const saved = Number(sessionStorage.getItem("profile-practice-attempt-" + n));
+    if (Number.isSafeInteger(saved) && saved > 0) step = saved;
+  } catch {}
+  practiceAttempt.set(n, step);
+  return step;
+};
+function activePractice(t) {
+  const step = attemptFor(t.n);
+  if (!step || !window.ProfilePractice) return t.tasks;
+  try {
+    const tasks = window.ProfilePractice.freshLesson(t.n, step);
+    return tasks.length === t.tasks.length ? tasks : t.tasks;
+  } catch { return t.tasks; }
+}
+const escapeTaskText = s => String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]);
+const skillNames = {
+  numbers:["Степени и корни",2,"Начни с правил степеней и извлечения корней."],
+  expressions:["Выражения",3,"Разложи на множители и выпиши запреты для знаменателя."],
+  equations:["Уравнения",4,"Потренируй перенос слагаемых и поиск всех корней."],
+  graphs:["Функции и графики",23,"Подставляй x в формулу, а для пересечения оси x ищи y = 0."],
+  geometry:["Геометрия",29,"Повтори теорему Пифагора и площадь треугольника: основание × высота ÷ 2."]
+};
+const mixedLabels = {
+  16:["Метод интервалов","Метод интервалов","Метод интервалов","Метод интервалов","Степени и корни","Область допустимых значений","Показательные уравнения","Логарифмические уравнения","Тригонометрические уравнения","Системы уравнений"],
+  33:["Дробно-рациональные уравнения","Иррациональные уравнения","Экстремумы и значения на отрезке","Функции и графики"]
+};
+
+function tasksHtml(tasks, topic, generated) {
+  const fmt = generated ? escapeTaskText : x => x;
   return tasks.map((k, i) => `
     ${topic===16 && i===4 ? '<h3>Рубежный тест: шесть задач по пройденному</h3>' : ""}
     <div class="pm-task" data-i="${i}">
-      <p class="pm-q">${i + 1}. ${k.q}</p>
+      <p class="pm-q">${i + 1}. ${fmt(k.q)}</p>
       ${k.options.map((o, j) => `
-        <label class="pm-opt"><input type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join("")}
-      <p class="pm-explain" hidden>${k.explain || ""}</p>
+        <label class="pm-opt"><input type="radio" name="q${i}" value="${j}"><span>${fmt(o)}</span></label>`).join("")}
+      <p class="pm-explain" hidden>${fmt(k.explain || "")}</p>
     </div>`).join("");
 }
 
-function practiceHtml(t) {
+function practiceHtml(t, tasks = null) {
   let html = "";
   if (t.practiceUrl) html += `<p><a class="pm-btn" href="${t.practiceUrl}">${t.mock ? "Открыть пробный ЕНТ" : "Открыть тренажёр"}</a></p>`;
-  if (t.tasks && t.tasks.length) {
-    html += tasksHtml(t.tasks, t.n) + `
-      <div class="pm-actions"><button class="pm-btn" id="pm-check">Проверить ответы</button></div>
+  if (tasks && tasks.length) {
+    const canGenerate = !!window.ProfilePractice;
+    const formText = tasks===t.tasks ? "Первый вариант" : "Новый вариант №" + attemptFor(t.n);
+    if (canGenerate) html += `<p class="pm-mark-note"><strong id="pm-attempt" tabindex="-1">${formText}.</strong> Для повторной тренировки можно получить другие условия и числа по этой же теме.</p>`;
+    html += tasksHtml(tasks, t.n, tasks!==t.tasks) + `
+      <div class="pm-actions"><button class="pm-btn" id="pm-check">Проверить ответы</button>${canGenerate ? '<button class="pm-btn pm-soft" id="pm-new">Новый вариант</button>' : ''}</div>
       <section class="pm-result" id="pm-result" tabindex="-1" aria-live="polite" hidden></section>`;
   } else if (!t.practiceUrl) {
     html += `<div class="pm-empty">Задачи для этого занятия ещё не добавлены.</div>`;
@@ -311,18 +350,20 @@ function practiceHtml(t) {
   return html;
 }
 
-function bindCheck(t) {
+function bindCheck(t, tasks) {
   const btn = document.getElementById("pm-check");
   if (!btn) return;
   btn.addEventListener("click", () => {
     let score = 0, answered = 0;
     const bySkill = {};
-    t.tasks.forEach((k, i) => {
+    const weak = new Set();
+    tasks.forEach((k, i) => {
       const box = view.querySelector(`.pm-task[data-i="${i}"]`);
       const picked = box.querySelector("input:checked");
       const ok = picked && Number(picked.value) === k.answer;
       if (ok) score++;
       if (picked) answered++;
+      if (!ok) weak.add(k.topicLabel || skillNames[k.skill]?.[0] || mixedLabels[t.n]?.[i] || t.t);
       if (k.skill) {
         const group = bySkill[k.skill] || (bySkill[k.skill] = {correct:0, total:0, blank:0});
         group.total++;
@@ -335,24 +376,17 @@ function bindCheck(t) {
     });
     const res = document.getElementById("pm-result");
     res.hidden = false;
-    res.textContent = `Результат: ${score} из ${t.tasks.length}`;
-    if (answered < t.tasks.length) {
+    res.textContent = `Результат: ${score} из ${tasks.length}`;
+    if (answered < tasks.length) {
       const blank = document.createElement("p");
-      blank.textContent = "Без ответа: " + (t.tasks.length - answered) + ".";
+      blank.textContent = "Без ответа: " + (tasks.length - answered) + ".";
       res.appendChild(blank);
     }
     if (t.diagnostic) {
       const heading = document.createElement("h3");heading.textContent = "Что повторить";res.appendChild(heading);
-      const skills = {
-        numbers:["Степени и корни",2,"Начни с правил степеней и извлечения корней."],
-        expressions:["Выражения",3,"Разложи на множители и выпиши запреты для знаменателя."],
-        equations:["Уравнения",4,"Потренируй перенос слагаемых и поиск всех корней."],
-        graphs:["Функции и графики",4,"Подставляй x в формулу, а для пересечения оси x ищи y = 0."],
-        geometry:["Геометрия",null,"Повтори теорему Пифагора и площадь треугольника: основание × высота ÷ 2."]
-      };
       const list = document.createElement("ul");
       for (const [key, group] of Object.entries(bySkill)) {
-        const [label, lesson, tip] = skills[key];
+        const [label, lesson, tip] = skillNames[key];
         const row = document.createElement("li");
         row.textContent = label + ": " + group.correct + " из " + group.total + ". ";
         if (group.correct === group.total) row.append("Обе задачи решены верно.");
@@ -369,8 +403,12 @@ function bindCheck(t) {
       }
       res.appendChild(list);
       const mark = document.getElementById("pm-mark");
-      if (mark && !loadDone().includes(t.n)) mark.disabled = answered < t.tasks.length;
+      if (mark && !loadDone().includes(t.n)) mark.disabled = answered < tasks.length;
     }
+    window.PortalResultShare?.mount(res, {
+      subject:"Профильная математика", title:`Занятие ${t.n}. ${t.t}`,
+      score, max:tasks.length, topics:[...weak], blank:tasks.length-answered
+    });
     res.focus();
     typeset();
   });
@@ -386,6 +424,7 @@ function renderTopic(n, part) {
   }
   const done = loadDone().includes(n);
   const isPractice = part === "practice";
+  const tasks = isPractice && !t.mock ? activePractice(t) : null;
 
   let body, tabs = "";
   if (t.mock) {
@@ -395,7 +434,7 @@ function renderTopic(n, part) {
       <button role="tab" aria-selected="${!isPractice}" data-part="lecture">Лекция</button>
       <button role="tab" aria-selected="${isPractice}" data-part="practice">Практика</button></div>`;
     body = isPractice
-      ? practiceHtml(t)
+      ? practiceHtml(t, tasks)
       : `<div class="pm-lecture">${t.lecture || '<div class="pm-empty">Лекция для этого занятия ещё не добавлена.</div>'}</div>`;
   }
 
@@ -417,7 +456,19 @@ function renderTopic(n, part) {
     saveDone(list);
     renderTopic(n, part);
   });
-  if (t.mock || isPractice) bindCheck(t);
+  if (tasks?.length) {
+    bindCheck(t, tasks);
+    const next = document.getElementById("pm-new");
+    if (next) next.addEventListener("click", () => {
+      if (document.getElementById("pm-result")?.hidden && view.querySelector(".pm-task input:checked") &&
+          !window.confirm("Начать новый набор? Текущие ответы будут сброшены.")) return;
+      const step = attemptFor(n) + 1;
+      practiceAttempt.set(n, step);
+      try { sessionStorage.setItem("profile-practice-attempt-" + n, String(step)); } catch {}
+      renderTopic(n, part);
+      document.getElementById("pm-attempt")?.focus();
+    });
+  }
   typeset();
 }
 

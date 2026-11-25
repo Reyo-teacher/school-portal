@@ -100,7 +100,18 @@
     return;
   }
   document.body.classList.add("ml-quiz");
-  let attempt=0,qs=[],submitted=false;
+  const attemptKey="school-portal:ml-year-attempt:"+week;
+  let nextAttempt=null;
+  function takeAttempt(){
+    if(nextAttempt===null){
+      try{const raw=localStorage.getItem(attemptKey);nextAttempt=raw===null?0:Number(raw);}catch{nextAttempt=Math.floor(Math.random()*100000000);}
+      if(!Number.isSafeInteger(nextAttempt)||nextAttempt<0||nextAttempt>2000000000)nextAttempt=0;
+    }
+    const current=nextAttempt++;
+    try{localStorage.setItem(attemptKey,String(nextAttempt));}catch{}
+    return current;
+  }
+  let attempt=takeAttempt(),qs=[],submitted=false;
   const i=Math.ceil(week/2)-1, thematic=week%2===1;
   $("toMap").hidden=false;$("toMap").href="ml-tests.html?course=34";$("work").hidden=false;
   $("intro").textContent="Тренажёр ЕНТ · 10 заданий с одним правильным ответом";
@@ -108,7 +119,11 @@
   $("weekTitle").textContent=thematic?bank.topics[i]:week===34?"Итоговый пробник":week===2?"Закрепление первой темы":"Смешанный тест";
   $("scope").textContent=thematic?"10 заданий по одной теме.":week===2?"Пока пройдена одна тема: числа, доли и округление.":"В каждом наборе есть последняя тема и выборка из более ранних. Тем, которые будут дальше, здесь нет.";
   function render(){
-    qs=bank.build(week,attempt);submitted=false;
+    const signature=items=>items.map(q=>q.prompt+"|"+JSON.stringify(q.visual||null)).sort().join("\n");
+    const previous=qs.length?signature(qs):"";
+    let candidate=bank.build(week,attempt);
+    for(let retry=0;retry<8&&signature(candidate)===previous;retry++){attempt=takeAttempt();candidate=bank.build(week,attempt);}
+    qs=candidate;submitted=false;
     $("quiz").replaceChildren();$("results").replaceChildren();$("results").hidden=true;
     $("scope").dataset.attempt=String(attempt);
     qs.forEach((q,index)=>{
@@ -133,6 +148,10 @@
     add(results,"h2",`Результат: ${score} из ${qs.length}`);
     if(blanks)add(results,"p",`Без ответа: ${blanks}. Они не засчитаны.`);
     else saveScore(week,score);
+    const missed=new Map();
+    qs.forEach((q,i)=>{if(q.answer!==answers[i])missed.set(q.topic,(missed.get(q.topic)||0)+1);});
+    const topics=[...missed].sort((a,b)=>b[1]-a[1]).map(([topic])=>bank.topics[topic-1]);
+    window.PortalResultShare?.mount(results,{subject:"Математическая грамотность",title:`Неделя ${week}. ${$("weekTitle").textContent}`,score,max:qs.length,topics,blank:blanks});
     qs.forEach((q,i)=>{
       const ok=q.answer===answers[i];
       $("quiz").children[i].className="question "+(ok?"correct":"wrong");
@@ -146,8 +165,9 @@
   });
   $("retry").addEventListener("click",()=>{
     if(!submitted&&$("quiz").querySelector(":checked")&&!window.confirm("Начать другой набор? Текущие ответы будут сброшены."))return;
-    attempt++;render();$("weekTitle").scrollIntoView({block:"start"});
+    attempt=takeAttempt();render();$("weekTitle").scrollIntoView({block:"start"});
   });
+  $("retry").textContent="Новый набор заданий";
   $("printBtn").addEventListener("click",()=>window.print());
   render();
 })();

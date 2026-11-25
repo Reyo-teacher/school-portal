@@ -1,0 +1,10 @@
+.portal-result-share{margin:1rem 0;padding:.7rem .9rem;border:1px solid #afc7de;border-radius:12px;background:#edf5ff;color:#193a57;font:1rem/1.45 system-ui,sans-serif}
+.portal-result-share summary{cursor:pointer;font-weight:750;padding:.25em 0;min-height:32px}
+.portal-result-share p{margin:.35rem 0}
+.portal-result-share textarea{display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;margin:.6rem 0;padding:.5rem .65rem;background:white;color:#193a57;border:1px solid #8daac5;border-radius:8px;font:inherit}
+.portal-share-actions{display:flex;flex-wrap:wrap;gap:.6rem}
+.portal-share-actions a,.portal-share-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;font:inherit;font-weight:700;padding:.35rem .75rem;border:1px solid #275982;border-radius:8px;background:#fff;color:#214e74;text-decoration:none;cursor:pointer}
+.portal-share-actions a{background:#235b48;border-color:#235b48;color:#fff}
+.portal-result-share :focus-visible{outline:2px solid #a95820;outline-offset:2px}
+.portal-share-status:empty{display:none}
+@media print{.portal-result-share{display:none!important}}
