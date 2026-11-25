@@ -118,6 +118,8 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f59e
 .pm-result{padding:.6rem .85rem;background:#eaf5fb;border-radius:12px}.pm-result h3{margin:.45em 0}.pm-result li{font-size:.94rem;margin:.4em 0}.pm-result a{color:#175a86}
 .pm-node.pm-soon{background:#64778a;color:white}.pm-label.pm-soon{background:#f7f9fb}.pm-label.pm-soon em{color:#53687c}.pm-label.pm-mock.pm-soon{background:#f3f5f8}
 @media(max-width:420px){.pm-label{font-size:12px;padding:4px 6px}.pm-label em{font-size:10px}.pm-node.pm-soon.pm-mock{font-size:25px;width:62px;height:62px}}
+.pm-correct-answer{margin:.55em 0;font-weight:700;color:#173f4a}
+.pm-practice-tier{margin:22px 0 10px;border-left:4px solid #4282ba;padding:5px 10px;background:#edf6ff;color:#163f65;border-radius:5px}
 </style>
 <link rel="stylesheet" href="portal-result-share.css?v=1">
 </head>
@@ -127,7 +129,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f59e
   <div class="card" id="pm"></div>
 </div>
 
-<script src="mp-practice-gen.js?v=1"></script>
+<script src="mp-practice-gen.js?v=practice20"></script>
 <script defer src="portal-result-share.js?v=1"></script>
 <script>
 /* BACK_URL — страница выбора раздела ЕНТ */
@@ -303,10 +305,10 @@ const attemptFor = n => {
 };
 function activePractice(t) {
   const step = attemptFor(t.n);
-  if (!step || !window.ProfilePractice) return t.tasks;
+  if (!window.ProfilePractice) return t.tasks;
   try {
     const tasks = window.ProfilePractice.freshLesson(t.n, step);
-    return tasks.length === t.tasks.length ? tasks : t.tasks;
+    return tasks.length === window.ProfilePractice.practiceCount ? tasks : t.tasks;
   } catch { return t.tasks; }
 }
 const escapeTaskText = s => String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]);
@@ -324,12 +326,16 @@ const mixedLabels = {
 
 function tasksHtml(tasks, topic, generated) {
   const fmt = generated ? escapeTaskText : x => x;
+  const tiers = ["Базовые задания", "Применение", "Повышенная сложность"];
   return tasks.map((k, i) => `
-    ${topic===16 && i===4 ? '<h3>Рубежный тест: шесть задач по пройденному</h3>' : ""}
+    ${generated && k.section !== tasks[i-1]?.section && topic===16 ? '<h3>'+k.section+'</h3>' : ""}
+    ${generated && (k.tier !== tasks[i-1]?.tier || k.section !== tasks[i-1]?.section) ? '<h4 class="pm-practice-tier">'+tiers[k.tier]+'</h4>' : ""}
+    ${!generated && topic===16 && i===4 ? '<h3>Рубежный тест по пройденному</h3>' : ""}
     <div class="pm-task" data-i="${i}">
       <p class="pm-q">${i + 1}. ${fmt(k.q)}</p>
       ${k.options.map((o, j) => `
         <label class="pm-opt"><input type="radio" name="q${i}" value="${j}"><span>${fmt(o)}</span></label>`).join("")}
+      <p class="pm-correct-answer" hidden></p>
       <p class="pm-explain" hidden>${fmt(k.explain || "")}</p>
     </div>`).join("");
 }
@@ -339,9 +345,11 @@ function practiceHtml(t, tasks = null) {
   if (t.practiceUrl) html += `<p><a class="pm-btn" href="${t.practiceUrl}">${t.mock ? "Открыть пробный ЕНТ" : "Открыть тренажёр"}</a></p>`;
   if (tasks && tasks.length) {
     const canGenerate = !!window.ProfilePractice;
-    const formText = tasks===t.tasks ? "Первый вариант" : "Новый вариант №" + attemptFor(t.n);
-    if (canGenerate) html += `<p class="pm-mark-note"><strong id="pm-attempt" tabindex="-1">${formText}.</strong> Для повторной тренировки можно получить другие условия и числа по этой же теме.</p>`;
+    const step = attemptFor(t.n);
+    const formText = step ? "Новый вариант №" + step : "Первый вариант";
+    if (canGenerate) html += `<p class="pm-mark-note"><strong id="pm-attempt" tabindex="-1">${formText}: ${tasks.length} заданий.</strong> Начни с базовых задач, затем переходи к заданиям посложнее. В новом варианте условия меняются.</p>`;
     html += tasksHtml(tasks, t.n, tasks!==t.tasks) + `
+      <p id="pm-answered" aria-live="polite">Отвечено: 0 из ${tasks.length}</p>
       <div class="pm-actions"><button class="pm-btn" id="pm-check">Проверить ответы</button>${canGenerate ? '<button class="pm-btn pm-soft" id="pm-new">Новый вариант</button>' : ''}</div>
       <section class="pm-result" id="pm-result" tabindex="-1" aria-live="polite" hidden></section>`;
   } else if (!t.practiceUrl) {
@@ -353,6 +361,11 @@ function practiceHtml(t, tasks = null) {
 function bindCheck(t, tasks) {
   const btn = document.getElementById("pm-check");
   if (!btn) return;
+  const tally = document.getElementById("pm-answered");
+  const reportAnswered = () => {
+    if (tally) tally.textContent = `Отвечено: ${view.querySelectorAll(".pm-task input:checked").length} из ${tasks.length}`;
+  };
+  view.querySelectorAll(".pm-task input").forEach(input => input.addEventListener("change", reportAnswered));
   btn.addEventListener("click", () => {
     let score = 0, answered = 0;
     const bySkill = {};
@@ -372,6 +385,9 @@ function bindCheck(t, tasks) {
       }
       box.classList.toggle("pm-right", !!ok);
       box.classList.toggle("pm-wrong", !ok);
+      const cue = box.querySelector(".pm-correct-answer");
+      cue.hidden = !!ok || tasks === t.tasks;
+      if (!cue.hidden) cue.textContent = "Верный ответ: " + k.options[k.answer];
       box.querySelector(".pm-explain").hidden = false;
     });
     const res = document.getElementById("pm-result");
@@ -389,7 +405,7 @@ function bindCheck(t, tasks) {
         const [label, lesson, tip] = skillNames[key];
         const row = document.createElement("li");
         row.textContent = label + ": " + group.correct + " из " + group.total + ". ";
-        if (group.correct === group.total) row.append("Обе задачи решены верно.");
+        if (group.correct === group.total) row.append("Все задачи блока решены верно.");
         else {
           row.append((group.blank ? "Есть пропуск. " : "") + tip + " ");
           if (lesson) {
@@ -443,7 +459,7 @@ function renderTopic(n, part) {
     <h2>Занятие ${t.n}. ${t.t}</h2>
     ${tabs}
     ${body}
-    ${t.diagnostic && !done ? '<p class="pm-mark-note">Для отметки ответь на все 10 заданий и проверь ответы.</p>' : ""}
+    ${t.diagnostic && !done ? '<p class="pm-mark-note">Для отметки ответь на все задания диагностики и проверь ответы.</p>' : ""}
     <div class="pm-actions">
       <button class="pm-btn pm-soft" id="pm-mark"${t.diagnostic && !done ? " disabled" : ""}>${done ? "Снять отметку «пройдено»" : "Отметить как пройденное (+" + (t.mock ? 30 : 10) + " ⭐)"}</button>
     </div>`;
