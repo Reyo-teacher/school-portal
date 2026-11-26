@@ -217,6 +217,43 @@ html[data-motion="off"] :is(.group,.week,.week::after,.port-icon):hover{transfor
 .workshop-check summary{padding:7px 0;text-underline-offset:3px}.workshop-check summary:hover{text-decoration:underline}
 .workshop-check p{padding:7px 9px;background:#e7edf7;border-left:3px solid var(--paint);border-radius:5px}
 
+#lesson:has(.field-lab){background:#fefdf9;border-top-color:#236658}
+.field-lab{--field-accent:#236658;--field-rule:#ddd8c9;--field-ink:#26382f;padding:clamp(12px,2.6vw,23px);margin:18px 0 16px;border:1px solid #cfc8b9;border-left:5px solid #236658;border-radius:12px;background:#f6f1e5;color:var(--field-ink)}
+.field-intro{padding:2px 0 13px;margin-bottom:12px;border-bottom:1px solid var(--field-rule)}
+.field-eyebrow{display:inline-block;font:800 .72rem/1.2 ui-monospace,monospace;letter-spacing:.09em;color:#1b5b4a;background:#e6f0e7;padding:5px 8px;border-radius:4px}
+.field-intro h3{font-size:clamp(1.33rem,3.2vw,2rem);margin:.4em 0 .22em}.field-intro p,.field-card p{margin:.4em 0}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-card{background:#fffdf8;border:1px solid var(--field-rule);border-radius:9px;padding:12px;min-width:0}
+.field-card h4{margin:0 0 .45em;font-size:1.08rem}
+.field-card h4 span{display:inline-grid;place-items:center;min-width:26px;height:26px;margin-right:.2em;border-radius:50%;background:var(--field-accent);color:white;font-family:ui-monospace,monospace}
+.field-card ol{padding-left:1.25em;margin:.4em 0}.field-card li+li{margin-top:.45em}
+.field-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:9px 0}
+.field-fields label,.field-observation{display:block;font-size:.92rem;font-weight:730}
+.field-fields input,.field-run,.field-observation textarea{display:block;width:100%;min-width:0;min-height:44px;margin-top:4px;border:1px solid #777e75;border-radius:6px;background:white;color:#1b3028;padding:5px 8px;font:inherit;font-size:16px}
+.field-run{max-width:145px;margin:0}.field-lab [aria-invalid=true]{border:2px solid #b02737;background:#fff4f3}
+.field-formula{font-size:.92rem;background:#f0ecde;padding:6px 8px;border-radius:5px}
+#field-calc,#field-compare{background:#e8f2ea;border-left:3px solid var(--field-accent);border-radius:4px;padding:7px 9px;font-weight:720}
+.field-note{font-size:.84rem;color:#485544}.field-card .field-note{margin-top:.7em}
+.field-record,.field-trouble,.field-teacher{margin-top:10px}
+.field-record table{width:100%;border-collapse:collapse;table-layout:fixed}
+.field-record caption{text-align:left;color:#405445;font-size:.87rem;margin-bottom:6px}
+.field-record th,.field-record td{padding:5px 4px;text-align:left;border-bottom:1px solid var(--field-rule)}
+.field-record thead th:first-child{width:20%}
+.field-record thead th{font-size:.84rem}.field-record tbody th{padding-left:8px}
+.field-offset{font-variant-numeric:tabular-nums;font-weight:700}
+.field-observation textarea{margin-top:5px;resize:vertical}.field-observation textarea:focus-visible{outline:3px solid #236658;outline-offset:2px}
+.field-card summary{color:#194f40;min-height:32px;padding:5px 0}.field-card dd{margin:0 0 .65em}.field-card dt{font-weight:780}
+.field-print-blanks{display:none}
+@media(max-width:650px){.field-grid{grid-template-columns:1fr}.field-lab{padding:10px}.field-card{padding:9px}}
+@media print{
+ .field-lab{background:#fff!important;border:1px solid #aaa;margin:10px 0;padding:8px;break-inside:avoid}
+ .field-intro{padding-bottom:4px;margin-bottom:5px}.field-intro h3{font-size:15pt}.field-card{background:white!important;padding:6px}
+ .field-grid{grid-template-columns:1fr 1fr}.field-record{margin-top:5px}
+ .field-record table,.field-observation,#field-compare,.field-trouble,.field-teacher{display:none!important}
+ .field-fields input{min-height:0;padding:1px 4px;margin-top:1px;font-size:11pt}
+ .field-print-blanks{display:block}.field-card .field-note{margin-top:.2em}
+}
+
 </style></head><body>
 <header><div><a class="home-button" href="./"><span aria-hidden="true">⌂</span> На главную</a><nav aria-label="Навигация раздела"><a href="#catalog">Маршрут</a><a href="#workshop">Мастерская</a><button hidden type="button" id="motion-toggle" aria-pressed="false">Пауза анимации</button></nav></div></header>
 <div class="intro"><div class="scene" aria-hidden="true"><svg viewBox="0 0 1200 550" preserveAspectRatio="xMidYMid slice">
@@ -470,7 +507,7 @@ function catalogue(){
   const group=el('section');group.id='course-'+(k+1);group.className='course-bank';group.dataset.course=k+1;const heading=el('h3',g[1]+' · '+g[2]);const courseTitle=el('div');courseTitle.className='bank-title';courseTitle.append(heading);const up=el('a','↑ К маршруту');up.href='#catalog';courseTitle.append(up);group.append(courseTitle);
   const cont=el('div');cont.className='weeks';
   for(let i=ranges[k];i<ranges[k+1];i++){
-   const w=el('a');w.href=lessonHash(i);w.className='week'+(i===selected?' current':'');if(i===selected)w.setAttribute('aria-current','true');const label=el('span',WEEKS[i][0]);label.className='week-label';w.append(el('b',String(i+1).padStart(2,'0')),label);const model=Object.values(PROJECTS).find(p=>p.week===i+1);if(model){const mark=el('span','Сборка');mark.className='week-build';w.append(mark);}
+   const w=el('a');w.href=lessonHash(i);w.className='week'+(i===selected?' current':'');if(i===selected)w.setAttribute('aria-current','true');const label=el('span',WEEKS[i][0]);label.className='week-label';w.append(el('b',String(i+1).padStart(2,'0')),label);const model=Object.values(PROJECTS).find(p=>p.week===i+1);if(model){const mark=el('span',i===20?'Полевой опыт':'Сборка');mark.className='week-build';w.append(mark);}
    const complete=[0,1,2].filter(v=>record(i,v)?.done).length;if(complete){const d=el('span',complete+'/3');d.className='done';d.setAttribute('aria-label','Выполнено '+complete+' из 3');w.append(d);}cont.append(w);
   }group.append(cont);byid('courseweeks').append(group);
  });
@@ -546,6 +583,71 @@ function paintMissions(){
   const link=el('a',label+(record(selected,j)?.done?' ✓':''));link.href=lessonHash(selected,j);link.className='btn'+(j===variant?' primary':'');if(j===variant)link.setAttribute('aria-current','true');n.append(link);
  }
 }
+const FIELD_KEY='ev3-field-21-v1';
+const FIELD_DEFAULT={diameter:'56',target:'50',runs:['','',''],observation:''};
+const fieldNumber=s=>/^(?:\d+(?:[.,]\d{1,2})?|[.,]\d{1,2})$/.test(String(s).trim())?Number(String(s).trim().replace(',','.')):NaN;
+const fieldFmt=(x,d=2)=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:d}).format(x);
+const fieldDelta=(x,d=2)=>(x>0?'+':x<0?'−':'')+fieldFmt(Math.abs(x),d);
+function fieldMath(d,cm){return {circ:Math.PI*d/10,turns:10*cm/(Math.PI*d),degrees:3600*cm/(Math.PI*d)};}
+function fieldSummary(arr,target){
+ const mean=arr.reduce((a,b)=>a+b,0)/arr.length;
+ return {mean,bias:mean-target,spread:Math.max(...arr)-Math.min(...arr),each:arr.map(x=>x-target)};
+}
+function fieldLesson(i){return i===20?`<section class="field-lab" id="ev3-field-lab" aria-labelledby="field-title">
+ <div class="field-intro"><span class="field-eyebrow">ПОЛЕВОЙ ЖУРНАЛ · НЕДЕЛЯ 21</span><h3 id="field-title">Доедет ли EV3 ровно на 50 см?</h3><p>Сначала рассчитай обороты, затем сделай три заезда на настоящем роботе и сравни. Без набора можно выполнить расчёт и объяснить, как провести опыт. Не подставляй придуманные измерения.</p></div>
+ <div class="field-grid">
+ <section class="field-card"><h4><span>1</span> Рассчитай</h4><p>За один оборот колесо проходит примерно π × диаметр. Укажи диаметр колеса, а не его радиус.</p>
+ <div class="field-fields"><label>Диаметр колеса, мм<input id="field-diameter" type="text" inputmode="decimal" maxlength="8" value="56"></label><label>Цель, см<input id="field-target" type="text" inputmode="decimal" maxlength="8" value="50"></label></div>
+ <p class="field-formula">Обороты = цель в см ÷ (π × диаметр в мм ÷ 10)</p>
+ <p id="field-calc" role="status"></p>
+ <p class="field-note">Градусы в расчёте относятся к колесу. При прямом приводе (1:1) это и градусы мотора. Если есть передача, один оборот мотора не всегда равен обороту колеса.</p></section>
+ <section class="field-card"><h4><span>2</span> Сделай три заезда</h4><ol><li>Отметь старт и цель лентой на ровном полу. Измеряй путь по одной и той же точке корпуса, например по передней кромке.</li><li>Задай обоим приводным моторам одинаковое число оборотов или градусов, с остановкой в конце. Начни с малой скорости.</li><li>Три раза запускай с одной точки, не меняя скорость и покрытие. После полной остановки измеряй пройденный путь.</li></ol>
+ <p class="field-note">Нужны EV3, рулетка и лента. Перед запуском освободи дорожку; не ставь робота на край стола.</p></section>
+ </div>
+ <section class="field-card field-record"><h4><span>3</span> Сравни с целью</h4>
+ <table><caption>Реальные замеры. «+» = дальше цели, «−» = не доехал.</caption><thead><tr><th scope="col">Заезд</th><th scope="col">Путь, см</th><th scope="col">Разница, см</th></tr></thead><tbody>
+ ${[1,2,3].map(n=>`<tr><th scope="row">${n}</th><td><input class="field-run" type="text" inputmode="decimal" maxlength="8" aria-label="Путь заезда ${n}, сантиметры"></td><td class="field-offset">—</td></tr>`).join('')}
+ </tbody></table>
+ <div class="field-print-blanks" aria-hidden="true"><p>Заезд 1: __________ см. Заезд 2: __________ см. Заезд 3: __________ см.</p><p>Средний путь: __________ см. Разброс (максимум − минимум): __________ см.</p></div>
+ <p id="field-compare" role="status">Запиши все три замера, чтобы увидеть среднее и разброс.</p>
+ <label class="field-observation">Что проверишь в следующем опыте? <textarea id="field-observation" maxlength="500" rows="2" placeholder="Изменю только …, чтобы проверить …"></textarea></label>
+ <p class="field-print-blanks">Мой следующий опыт: __________________________________________________</p>
+ <p class="field-note">Записи остаются в этом браузере и не отправляются учителю.</p>
+ </section>
+ <details class="field-card field-trouble"><summary>Почему робот не попал в цель?</summary><dl>
+ <dt>Три результата похожи, но все короче или длиннее цели</dt><dd>Проверь единицы, диаметр и передачу. Если робот перелетает цель, попробуй только снизить скорость, чтобы проверить влияние торможения.</dd>
+ <dt>Результаты заметно отличаются между собой</dt><dd>Проверь, что робот стартует одинаково. Осмотри шины и поверхность: колесо может проскальзывать. Измени только одно условие, затем повтори серию.</dd>
+ <dt>В симуляторе всё точно, а на полу нет</dt><dd>Клетка симулятора условна. Браузер не учитывает сцепление, торможение и мелкие перекосы реального робота.</dd>
+ </dl></details>
+ <details class="field-card field-teacher"><summary>Учителю: план на 45 минут</summary><p><b>5 мин</b> — прогноз; <b>10 мин</b> — диаметр, единицы и расчёт; <b>20 мин</b> — три заезда; <b>10 мин</b> — сравнение, возможная причина, план повторной проверки.</p><p><b>Считаем:</b> длина окружности, среднее арифметическое и разброс. <b>Проверяем:</b> ученик не путает диаметр с радиусом, мм с см, градусы с оборотами и может назвать одно контролируемое условие.</p><p><b>Быстрой команде:</b> сделайте ещё три заезда на другой скорости. Сравните среднее и разброс двух серий, не меняя колёса или покрытие.</p></details>
+ </section>`:'';
+}
+function initField(i){
+ if(i!==20)return;
+ const diameter=byid('field-diameter'),target=byid('field-target'),calc=byid('field-calc'),compare=byid('field-compare'),note=byid('field-observation');
+ const runs=[...document.querySelectorAll('.field-run')],delta=[...document.querySelectorAll('.field-offset')];
+ let saved=FIELD_DEFAULT;
+ try{const v=JSON.parse(localStorage.getItem(FIELD_KEY)||'null');if(v&&Array.isArray(v.runs))saved=v;}catch{}
+ diameter.value=saved.diameter??'56';target.value=saved.target??'50';runs.forEach((e,k)=>e.value=saved.runs[k]??'');note.value=saved.observation??'';
+ function valid(e,n,min,max,optional=false){const good=Number.isFinite(n)&&n>=min&&n<=max;e.setAttribute('aria-invalid',String(!(good||(optional&&!e.value.trim()))));return good;}
+ function update(){
+  const d=fieldNumber(diameter.value),t=fieldNumber(target.value),dOK=valid(diameter,d,10,200),tOK=valid(target,t,5,200);
+  if(dOK&&tOK){const a=fieldMath(d,t);calc.textContent=`Один оборот ≈ ${fieldFmt(a.circ)} см · Нужно ≈ ${fieldFmt(a.turns,3)} об. или ${fieldFmt(a.degrees,0)}°.`;}
+  else calc.textContent='Для опыта укажи диаметр 10–200 мм и цель 5–200 см. Можно вводить десятичную запятую.';
+  const raw=runs.map(e=>fieldNumber(e.value)),ok=runs.map((e,k)=>valid(e,raw[k],0,300,true));
+  delta.forEach((e,k)=>e.textContent=tOK&&ok[k]?fieldDelta(raw[k]-t):'—');
+  if(runs.some((e,k)=>e.value.trim()&&!ok[k]))compare.textContent='Проверь замеры: введи число от 0 до 300 см; оставь поле пустым, если заезда ещё не было.';
+  else if(!tOK)compare.textContent='Укажи длину до цели, чтобы сравнить результаты.';
+  else if(!ok.every(Boolean))compare.textContent='Записано заездов: '+ok.filter(Boolean).length+' из 3.';
+  else {const a=fieldSummary(raw,t);compare.textContent=`Средний путь: ${fieldFmt(a.mean)} см. Отклонение среднего от цели: ${fieldDelta(a.bias)} см. Разброс: ${fieldFmt(a.spread)} см (самый длинный минус самый короткий заезд).`;}
+ }
+ for(const e of [diameter,target,...runs,note])e.addEventListener('input',()=>{
+  try{localStorage.setItem(FIELD_KEY,JSON.stringify({diameter:diameter.value,target:target.value,runs:runs.map(x=>x.value),observation:note.value}));}catch{}
+  if(e!==note)update();
+ });
+ update();
+}
+
 function openWeek(i,v=0){
  selected=i;variant=v;
  try{localStorage.setItem('ev3-last-lesson',JSON.stringify({week:i+1,variant:v}));}catch{}
@@ -562,10 +664,10 @@ function openWeek(i,v=0){
  lesson.innerHTML='<div class="navrow no-print"><a href="#catalog">↑ Все занятия</a><button type="button" id="print" class="btn">Печать листа</button></div>'+
  '<div class="lesson-head"><span class="pill">Неделя '+(i+1)+' · 2 × 45 мин</span> <span class="pill">'+group+'</span><h2>'+name+'</h2><p class="meta">'+hook+'</p></div>'+
  '<section class="theory"><strong>Коротко о главном</strong><p>'+rule+'</p></section>'+
- '<div class="timeline"><section class="card"><h3>1-й учебный час · 45 мин</h3><ul><li>5 мин: цель и прогноз.</li><li>10 мин: принцип работы и подготовка деталей.</li><li>20 мин: сборка или проверка модуля по разделу ниже.</li><li>10 мин: контрольный опыт. '+lab+'</li></ul></section>'+
+ '<div class="timeline"><section class="card"><h3>1-й учебный час · 45 мин</h3>'+(i===20?'<ul><li>5 мин: предположи, на сколько робот доедет.</li><li>10 мин: измерь колесо и рассчитай обороты.</li><li>20 мин: выполни три заезда.</li><li>10 мин: сравни результаты в полевом журнале.</li></ul>':'<ul><li>5 мин: цель и прогноз.</li><li>10 мин: принцип работы и подготовка деталей.</li><li>20 мин: сборка или проверка модуля по разделу ниже.</li><li>10 мин: контрольный опыт. '+lab+'</li></ul>')+'</section>'+
  '<section class="card"><h3>2-й учебный час · 45 мин</h3><ul><li>10 мин: собери начальный алгоритм из блоков.</li><li>15 мин: выполни базовую и самостоятельную миссии.</li><li>15 мин: проверь на EV3 или реши задачу «Вызов».</li><li>5 мин: запиши вывод и одну доработку.</li></ul></section></div>'+
  '<details class="card lessonextra no-print"><summary>1. Собери модель или навесной модуль</summary><div class="modelgrid compact">'+IDs.map(id=>modelCard(id,true)).join('')+'</div><p class="meta">При нехватке деталей используйте уже собранную базу. Без набора начертите схему портов и перейдите в симулятор.</p></details>'+
- projectWeek(i)+
+ fieldLesson(i)+projectWeek(i)+
  '<details class="card lessonextra no-print"><summary>2. Собери программу в блочной среде</summary><p>'+recipe+'</p>'+codeDiagram(i)+'<p class="meta">Это схема алгоритма для среды наподобие EV3 Classroom, а не копия её интерфейса. Для запуска на настоящем EV3 перенесите блоки вручную в установленную программу.</p><a href="'+CLDEMOS+'" target="_blank" rel="noopener">Уроки LEGO по блочному программированию ↗</a></details>'+
  '<h3>3. Практика на поле</h3><nav id="missions" class="tools no-print" aria-label="Три задания недели"></nav><p><strong>Миссия '+(v+1)+'/3.</strong> '+mission+'</p><div class="sim"><section class="box"><h3>Поле запуска</h3><div class="map" id="map"></div>'+
  '<div class="legend"><span><strong>С</strong> старт</span><span><strong>⚑</strong> финиш</span><span><strong>×</strong> стена</span><span><strong>1, 2…</strong> метки</span><span><strong>■</strong> груз</span><span><strong>В</strong> выгрузка</span><span>красная клетка: метка цвета</span><span>тёмная дорожка: линия</span></div>'+
@@ -578,6 +680,7 @@ function openWeek(i,v=0){
  '<div class="tools"><button type="button" class="btn primary" id="run">Запустить</button><button type="button" class="btn" id="step">Шаг</button><button type="button" class="btn" id="undo">Убрать последний</button><button type="button" class="btn" id="clear">Очистить</button></div></section></div>'+
  '<div class="paperonly"><p><strong>Обозначения:</strong> С — старт; ⚑ — финиш; × — стена; ■ — груз; В — выгрузка. К — красная метка; тёмная дорожка — линия. Номера показывают порядок меток.</p><p><strong>Команды:</strong> '+allowed(i).map(k=>COMMANDS[k]).join(' · ')+' · Повтор.</p><p><strong>Моя программа:</strong> ________________________________________________________________</p></div>'+
  '<section class="box reflection"><h3>Объясни свой результат</h3><p><label for="reflection">'+reflect+'</label></p><textarea id="reflection" placeholder="Запиши короткий вывод"></textarea><p class="meta">Заметка сохраняется только в этом браузере, если доступно локальное хранение.</p><p class="paperonly">______________________________________________________________________________________</p></section><div class="footnav no-print">'+navPrev+navNext+'</div>';
+ initField(i);
  byid('reflection').value=m.note||'';byid('reflection').oninput=e=>{record(i,v,true).note=e.target.value;store();};
  for(const key of allowed(i)){
   byid('palette').append(button(COMMANDS[key],()=>{if(cycle===null)blocks.push(key);else blocks[cycle].body.push(key);result=null;renderBlocks();saveBlocks();}));
