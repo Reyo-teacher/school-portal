@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LEGO EV3 · Годовой курс робототехники</title>
+<style>
+:root{color-scheme:light;--ink:#152822;--muted:#4b625a;--dark:#153b32;--green:#147053;--paper:#fcfcf3;--line:#d2ded5;--accent:#ffdc70}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);font:16px/1.55 system-ui,sans-serif;color:var(--ink)}button,a,input,select{font:inherit}button{cursor:pointer}a{color:#0b6249;text-underline-offset:3px}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a65200;outline-offset:3px}header,.intro{background:var(--dark);color:white}header{border-bottom:1px solid #4d6b62}header>div{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:12px;padding:11px 24px;font-size:.85rem;letter-spacing:.06em}header a,.intro a{color:#fff}main{max-width:1160px;margin:auto;padding:22px 24px}.intro{padding:40px 24px}.intro>div{max-width:1112px;margin:auto}.tag{display:inline-block;color:var(--accent);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.intro h1{font-size:clamp(2rem,5vw,3.9rem);margin:.2em 0;letter-spacing:-.05em;line-height:1.04}.intro p{color:#e2f2e9;margin:.7em 0 0;max-width:725px}
+h2,h3,h4{line-height:1.18;letter-spacing:-.025em}h2{font-size:1.65rem}h3{font-size:1.23rem}.meta{color:var(--muted);font-size:.92rem}.card,.group,.box{background:white;border:1px solid var(--line);border-radius:16px;padding:16px}.groups{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.group{text-align:left;display:block;text-decoration:none;color:var(--ink)}.group:hover{border-color:var(--green);transform:translateY(-2px)}.group strong{display:block;margin:5px 0}.group .number{font-weight:900;color:var(--green);letter-spacing:.08em}.group p{margin:5px 0;font-size:.9rem}.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:8px;margin-bottom:20px}.week{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);padding:9px;background:#fff;border-radius:9px;border:1px solid var(--line);font-size:.92rem}.week b{min-width:2.25ch;color:var(--green)}.week:hover,.week.current{border-color:var(--green);background:#e4f4e9}.done{margin-left:auto;color:#146445}.section{scroll-margin-top:15px}.navrow,.legend,.tools,.footnav,.metrics{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.navrow{justify-content:space-between}.pill{font-weight:700;font-size:.8rem;background:#e7f3e9;color:#104b36;border-radius:20px;padding:3px 10px}.lesson-head{margin:12px 0}#lesson h2{font-size:clamp(1.8rem,4vw,2.85rem);margin:.3em 0}.theory{background:#f5f8e9;border-left:5px solid var(--green);padding:12px 16px;border-radius:8px}.theory p{margin:.45em 0}.timeline{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}.timeline h3{margin:.2em 0}.timeline ul{padding-left:1.3em;margin:.6em 0}.sim{display:grid;grid-template-columns:1.02fr .98fr;gap:14px;margin:12px 0}.sim>section{min-width:0}.sim h3{margin:.2em 0 .6em}.map svg{display:block;width:100%;height:auto;max-height:342px}.legend{font-size:.78rem;color:var(--muted);margin:8px 0}.legend span{white-space:nowrap}.metrics{font-size:.86rem;color:var(--muted);border-top:1px solid var(--line);padding-top:7px}.status{border-radius:8px;background:#eef4f1;padding:8px 10px;margin-top:8px;min-height:44px}.status.good{background:#dbf4df;color:#124c2d}.status.bad{background:#fff0db;color:#653909}.tools button,.footnav a,.btn,.seq button{border:1px solid #b9cec0;border-radius:8px;background:#f9fcfa;color:var(--ink);padding:5px 8px;text-decoration:none}.tools button:hover,.seq button:hover{background:#e2f2e9}.btn.primary{background:#136848;color:white;border-color:#136848;font-weight:750}.params{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:9px 0}.params label{font-size:.85rem}.params input{width:4em;padding:3px;border:1px solid #93a89e;border-radius:6px}.seq{margin:8px 0 10px;min-height:52px;border:1px dashed #b3cbbd;border-radius:8px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;list-style:none}.seq li{display:flex;gap:3px;align-items:center;font-size:.83rem;padding:4px 6px;border-radius:6px;background:#e8f4ed}.seq li span{max-width:100%;overflow-wrap:anywhere}.seq button{padding:0 5px}.seq .cycle{background:#fff1bd}.reflection{margin-top:14px}.reflection p{margin:.45em 0}textarea{width:100%;font:inherit;min-height:62px;border:1px solid #b9cec0;border-radius:8px;padding:7px}.footnav{margin:12px 0;justify-content:space-between}.legend strong{color:var(--ink)}footer{border-top:1px solid var(--line);max-width:1110px;margin:15px auto;padding:10px 24px 25px;color:var(--muted);font-size:.9rem}details>summary{cursor:pointer;font-weight:700}.paperonly{display:none}
+@media(max-width:850px){.groups{grid-template-columns:repeat(3,1fr)}}@media(max-width:620px){header>div,main,.intro{padding-left:12px;padding-right:12px}.groups{grid-template-columns:repeat(2,1fr)}.sim,.timeline{grid-template-columns:1fr}.weeks{grid-template-columns:1fr 1fr}.week{font-size:.85rem}.intro{padding-top:27px;padding-bottom:27px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.group:hover{transform:none}}
+@media print{@page{size:A4;margin:12mm}body{font:10.5pt/1.25 sans-serif;background:white}header,.intro,#catalog,footer,.no-print,.navrow,.footnav,.legend,.metrics,.status,.program,.reflection textarea,.reflection .meta,.params{display:none!important}main{padding:0;max-width:none}#lesson{display:block!important}.paperonly{display:block}.card,.box{border:1px solid #777;padding:8px;border-radius:0}.sim{display:block}.sim>section h3{display:none}.map svg{height:180px;width:auto;max-width:100%;margin:auto}.timeline{grid-template-columns:1fr 1fr}.theory{background:white;border:1px solid #aaa}.reflection{margin:7px 0}.lesson-head{margin:4px 0}#lesson h2{font-size:22pt}.map,.theory,.timeline,.reflection,.paperonly{break-inside:avoid}*{print-color-adjust:exact}}
+</style></head><body>
+<header><div><span>УЧЕБНЫЙ ПОРТАЛ · РОБОТОТЕХНИКА</span><a href="#catalog">Все занятия</a></div></header>
+<div class="intro"><div><span class="tag">5 курсов · 34 недели · 68 учебных часов</span><h1>LEGO EV3<br>От первого заезда до своей миссии</h1><p>34 занятия по два учебных часа, одно занятие в неделю. Нужен только браузер. В школе тот же принцип можно проверить на настоящем EV3.</p></div></div>
+<main><section id="catalog"><h2>Маршрут года</h2><p class="meta" id="progress"></p><nav class="groups" id="groups" aria-label="Пять курсов"></nav><div id="courseweeks"></div></section><article id="lesson" class="section" hidden></article></main>
+<footer>Авторские задания для кружка. Начальный уровень. Модель упрощает движение, а не имитирует прошивку EV3. <a href="https://education.lego.com/en-us/support/mindstorms-ev3/building-instructions">Схемы сборки LEGO Education</a> · <a href="https://makecode.mindstorms.com/about">Дополнительная среда MakeCode EV3</a></footer>
+<script>const WEEKS=[["Первый запуск", "Старт и финиш на прямой", "Вперёд перемещает на одну клетку. Направление показывает стрелка на корпусе.", "Рассмотри схему блока EV3: порты A–D для моторов, 1–4 для датчиков. Подключи приводы по схеме школьной модели или отметь порты на бумаге.", "Проведи робота прямо до финиша. Сосчитай клетки от центра старта до центра финиша.", "Откуда лучше считать расстояние: от края робота или от центра стартовой клетки?", "FFF"], ["Назад и остановка", "Робот возвращается задним ходом", "Команда «Назад» меняет движение, но не направление корпуса. После последней команды робот останавливается.", "Дай физическому роботу движение назад на небольшую дистанцию. Перед запуском освободи зону за ним.", "Доедь до контрольной точки и вернись на финиш задним ходом без разворота.", "Что отличается между командой «Назад» и двумя поворотами направо?", "FFB"], ["Право и лево", "Поворот корпуса на 90°", "После поворота «вперёд» относится к новому направлению робота, а не к верху экрана.", "Поставь метку на корпусе и сравни поворот по часовой стрелке и против неё. Работайте парами: один управляет, другой наблюдает.", "Пройди угловой коридор. Останавливаться нужно на финише.", "Как изменится маршрут, если в первой точке повернуть налево вместо направо?", "FFRFF"], ["Последовательность команд", "Одна команда меняет весь маршрут", "Программа выполняется по порядку. Отладку полезно начинать с первого шага, где результат стал неверным.", "Дай партнёру маршрут с одной ошибкой. Он должен указать номер команды и предложить только одно исправление.", "Посети контрольную клетку и выведи робота из коридора. При ошибке просмотри порядок команд.", "Почему нет смысла исправлять последнюю команду, если робот свернул не туда раньше?", "FRFFLFF"], ["Повтор", "Одинаковые действия можно свернуть в цикл", "Цикл повторяет один и тот же набор действий указанное число раз.", "Разложи 4 одинаковых пары карточек «вперёд, направо». Найди повтор, сравни количество карточек до и после сокращения.", "Объедь квадрат, используя блок «Повтор». Посети все три метки и вернись на финиш.", "Какие команды входят в один повтор и сколько раз он нужен?", "FRFRFRFR", "repeat"], ["Парковка EV3", "Точная остановка с нужным направлением", "Финиш зависит и от положения, и от направления. Сначала проверь координату, затем поворот.", "На полу обозначь гараж бумажной лентой. Проедь три раза с одинаковой программой и отметь, где робот реально остановился.", "Въедь в гараж и оставь корпус направленным вниз по полю.", "Почему две программы могут закончиться в одной клетке, но только одна выполнит парковку?", "FFFRFF", "heading"], ["Датчик касания", "Контакт и препятствие", "Датчик касания сообщает «нажат» или «не нажат». Здесь блок реагирует на препятствие перед бампером.", "Проверь показание кнопки вручную при выключенных моторах. Затем проведи опыт на малой скорости с мягкой преградой.", "Въедь в тупик и используй «Если касание», чтобы отступить на клетку. Заверши в безопасной зоне.", "Что может пойти не так, если нажимать датчик слишком поздно?", "FFt"], ["Ультразвук", "Дистанция до препятствия", "Ультразвуковой датчик оценивает расстояние. В модели порог задаётся целым числом клеток, на EV3 обычно используют сантиметры.", "Сравни показание на двух отмеченных расстояниях. Запиши, что изменилось при наклоне плоской преграды.", "Подъедь к метке и используй блок расстояния: при близкой стене робот должен повернуть.", "Чем измерение расстояния отличается от датчика касания?", "FFdFF"], ["Цветовая метка", "Как робот узнаёт перекрёсток", "Датчик цвета распознаёт цвет метки. Блок должен срабатывать только там, где метка действительно под датчиком.", "Проверь красную и светлую бумагу при одинаковой высоте датчика; не меняй положение корпуса между замерами.", "Поверни по красной метке. Сделай так, чтобы ветка условия реально сработала.", "Почему нельзя заменить условие постоянным поворотом, если метка может сдвинуться?", "FFcFF"], ["Условие «если»", "Истинная и ложная ветви", "Условие не означает, что действие выполнится обязательно. Проверяй случай, когда условие верно, и случай, когда оно ложно.", "Сыграйте в «робота и датчик»: одна и та же команда на зелёной и красной карточке должна вести себя по-разному.", "Первая проверка цвета должна пройти мимо белой клетки, вторая должна повернуть на красной.", "Как убедиться, что программа не поворачивает на белой клетке?", "FcFcFF", "colorboth"], ["Порог расстояния", "Одна граница для двух ситуаций", "Если порог слишком высокий, робот повернёт рано. Если слишком низкий, робот подъедет ближе, чем нужно.", "Поставь две линии на разном расстоянии от стенки. Выбери промежуточный порог, проверь и объясни выбор.", "Проверь расстояние дважды. На старте рано поворачивать, а у метки поворот должен сработать.", "Что изменится, если поставить порог в 4 клетки вместо 2?", "dFFdFF", "distboth"], ["Два датчика в одном маршруте", "Сначала цвет, потом расстояние", "Каждая проверка отвечает на свой вопрос: цвет — о метке, расстояние — о преграде.", "Обозначь на схеме две точки включения датчиков. Проверь каждый участок отдельно перед общим запуском.", "На первой метке поверни по цвету, затем поверни по расстоянию до стены.", "Как изолировать ошибку, если программа не доезжает до конечной точки?", "FFcFFdFF"], ["Робот-постовой", "Два условия и безопасное завершение", "Хорошая программа проходит проверку не только на финише: важно, как она проходит опасные места.", "Нарисуй карточку проверки: старт, момент реакции, остановка. Испытай маршрут дважды, меняя положение стартовой отметки в отдельном опыте.", "Сработай на красной метке, затем используй касание, чтобы отойти от стены, и остановись.", "Какое доказательство кроме финальной позиции показывает, что робот отреагировал на препятствие?", "FFcFFt"], ["Светлое и тёмное", "Датчик отражённого света измеряет не название цвета, а уровень отражения", "Условные значения тренажёра: тёмное 20, светлое 80. На реальном поле измерь оба значения заново.", "Измерь показания над лентой и над фоном. Запиши оба числа и предложи порог посередине.", "Установи порог между показаниями и пройди первый участок разметки блоком «По линии».", "Почему показания при другом освещении надо измерять снова?", "llll"], ["Калибровка", "Не на всех полях одинаковый контраст", "На малоконтрастном поле значения сближаются. Рабочий порог выше тёмного и не выше светлого.", "Смени высоту датчика или фон, запиши новую пару показаний и пересчитай порог.", "Пройди дорожку с новым контрастом. Не используй настройки прошлой недели вслепую.", "Что будет, если порог ниже уровня тёмного покрытия?", "llll", "contrast"], ["Первый поворот на линии", "Робот корректирует направление по разметке", "В тренажёре одна команда «По линии» делает один переход вдоль дорожки. На EV3 это несколько коротких поправок руления.", "На поле из ленты отметь точку, где робот должен начать поворот. Испытай короткими шагами на малой скорости.", "Доведи робота по дорожке с поворотом, не сходя с неё.", "Зачем у физического робота маленькие шаги коррекции вместо одного большого?", "llRlll"], ["Цикл слежения", "Много коротких поправок вместо одной длинной", "Повтор делает одинаковое действие на каждом участке. В программе EV3 цикл снова читает датчик после каждой коррекции.", "Сравни схему с четырьмя одинаковыми проверками и схему с циклом. Укажи, где происходит следующее считывание.", "Пройди дорожку, записав повтор команды «По линии» внутри цикла.", "Что именно нужно повторять: только движение или ещё и чтение датчика?", "lllll", "repeat"], ["Сложная трасса", "Несколько поворотов подряд", "В модели направление меняется по разметке. Реальный робот при большой скорости может пропустить край ленты.", "Если есть набор, сделай три заезда с одной настройкой, затем три с другой. Записывай число сходов; меняй только скорость.", "Пройди трассу с двумя поворотами. Сравни два решения, выбери то, которое легче прочитать.", "Почему одного удачного заезда недостаточно, чтобы выбрать скорость?", "llRllLll"], ["Выход с линии", "Из следования по разметке в обычное движение", "Линия может вести только часть пути. После неё нужны обычные команды, чтобы попасть в конечную зону.", "На полу положи ленту только на первый участок. Отметь границу, где алгоритм линии должен смениться обычным движением.", "Пройди дорожку, затем отъедь от неё в отмеченную зону. Не пытайся продолжать считывать линию вне ленты.", "Как определить момент смены программы на настоящем поле?", "lllRFF"], ["Зачётная трасса", "Устойчивое следование на сложном покрытии", "Результат зависит от маршрута и правильно выбранного порога. Отладь их по очереди.", "Запиши две версии настроек. Для каждой отметь, где был сход и какое изменение ты проверяешь следующим.", "Пройди длинную малоконтрастную дорожку, используя повтор и не сходя с разметки.", "Как отличить ошибку порога от неверной команды в последовательности?", "llRlllLll", "contrast repeat"], ["От оборотов к расстоянию", "Длина пути примерно равна длине окружности колеса, умноженной на число оборотов", "Для колеса 56 мм один оборот даёт примерно 17,6 см без проскальзывания. Клетка модели не равна обороту мотора.", "Измерь диаметр колеса и вычисли путь за два оборота. Сравни расчёт с рулеткой; запиши разницу.", "Проедь к двум контрольным клеткам. До старта запиши длину пути в клетках и порядок проезда.", "Почему расчёт по диаметру не всегда совпадает с измерением?", "FFFF"], ["Точный разворот", "Команда поворота задаёт угол корпуса", "Два поворота на 90° дают 180°. Гиродатчик измеряет изменение ориентации, а не путь колёс.", "Обнули гиродатчик по инструкции установленной среды при неподвижном роботе. Сравни наблюдаемый угол с планируемым.", "Доедь до точки, развернись на месте и вернись к старту лицом влево.", "Что задаёт гиродатчик: длину пути или угол поворота?", "FFRRFF", "heading"], ["Доставка с контрольными точками", "Один большой маршрут делится на участки", "Удобнее проверить каждый участок отдельно: старт, контрольная точка, финиш.", "Запиши на бумаге длину и поворот для каждого участка. Проверь, что партнёр понимает схему без устных подсказок.", "Пройди две контрольные точки по порядку. У каждой должен быть свой участок программы.", "Какая точка помогает понять, на каком участке появилась ошибка?", "FFRFFLFF"], ["Повторяемость", "Измерение одного и того же опыта несколько раз", "Тренажёр повторяет одинаковый результат. Реальный EV3 может немного отклоняться из-за поверхности, сборки или проскальзывания.", "Запусти одну программу трижды с одинаковой стартовой отметки. Измерь отклонение от цели в сантиметрах и сравни результаты.", "Собери маршрут с повтором, затем запусти его дважды и опиши, чего не учитывает модель.", "Как сравнить три заезда, если один закончился ближе к цели случайно?", "FFRFFRFFRFFR", "repeat"], ["Разбор ошибки", "Исправляй одну причину за попытку", "По траектории видно, где робот перестал следовать плану. Исправь одну команду и повтори тест.", "Намеренно внеси одну ошибку в команду поворота. Обменяйся задачей с партнёром и попроси объяснить исправление.", "Пройди S-образный коридор. После неверного заезда найди первую клетку, где план и факт перестали совпадать.", "Почему изменение сразу трёх команд мешает понять причину ошибки?", "FLFFRFFRFF"], ["Альтернативные маршруты", "Два маршрута могут решать одну задачу", "Сравнивай число перемещений и поворотов отдельно. Короткий путь не всегда проще для реального робота.", "Выбери два маршрута к одной цели. Сравни повороты и длину, отметь, какой удобнее повторять на полу.", "На широком поле пройди сначала маршрут по меткам, затем спланируй другой способ добраться до них по порядку.", "Почему маршрут с меньшим числом поворотов может оказаться устойчивее?", "FFRFFLFF", "open"], ["Доставка груза", "Захват и разгрузка меняют состояние робота", "В модели груз берётся на клетке с меткой и выгружается в зоне разгрузки. На EV3 это можно изобразить средним мотором или держателем.", "Если есть набор, проверь крепление груза без движения, затем протестируй на низкой скорости. Без набора отметь захват карточкой.", "Забери груз, довези его до зоны и выгрузи. Простого попадания на финиш недостаточно.", "Как доказать, что робот не только приехал, но и доставил груз?", "FFpRFFu"], ["Таза Қазақстан: план миссии", "Сначала описываем критерий успеха", "Проект начинается с измеримой цели: забрать метку, отвезти в нужную зону и вернуться на базу.", "Нарисуй схему поля. Определи, на каких участках понадобится проверка и сколько времени займёт перестройка маршрута.", "Забери условный мусор, выгрузи его и вернись на стартовую клетку.", "Какими тремя событиями можно доказать, что миссия выполнена?", "FFpRFFuRFFRFF"], ["Подход к пункту сбора", "Сенсор помогает пройти участок с препятствием", "Ультразвук проверяет, есть ли предмет на пути. Решение о повороте не должно зависеть только от числа шагов.", "Сначала проверь реакцию датчика без груза, затем повтори с макетом контейнера. Напарник ведёт журнал испытаний.", "Доедь до точки сбора, забери метку и поверни по расстоянию, чтобы доставить её в зону.", "Почему полезно проверять сенсор отдельно от механизма захвата?", "FFpdFFu"], ["Сортировка по цвету", "Метка указывает, куда ехать", "Цвет может менять маршрут. Проверь не только условие на красном, но и ситуацию без красной метки.", "Используй цветные карточки для условных материалов. Назови, почему реальную сортировку нельзя определять только цветом упаковки.", "Забери метку и выбери поворот по красному сигналу до зоны выгрузки.", "Как убедиться, что маршрут меняет именно метка, а не жёстко заданный поворот?", "FFpcFFu"], ["Две доставки", "После выгрузки захват снова свободен", "Робот переносит один груз за раз. Вторую метку берут после первой выгрузки.", "Раздели задачу на две доставки. После первой проверь, что захват действительно открыт и готов к повтору.", "Выполни две доставки по одному предмету. Проверь, что обе выгрузки засчитаны.", "Почему удобнее проверять каждую доставку отдельно?", "FFpRFFuLFFpRFFu"], ["Испытание маршрута", "Сначала журнал испытаний, потом вывод", "До заезда запиши ожидаемый результат; после отметь, где программа сработала или ошиблась.", "Проведи три испытания: обычное, с контрольной остановкой и после одного изменения алгоритма. Для модели сравни версии программы.", "Пройди до зоны сбора по линии, забери груз и доставь его без выхода за границы поля.", "Как записать неудачный прогон так, чтобы другой ученик мог повторить проверку?", "lllpRFFu"], ["Улучшение проекта", "Меняем одну настройку и сравниваем по тому же критерию", "Проверяй улучшение по числу поворотов, ошибок или испытаний без сбоя, а не по внешнему виду кода.", "Сравни две версии; заранее задай одинаковый старт и условие успеха. Объясни, что сохранилось и что изменилось.", "Пройди трассу, используя датчик цвета и блок повтора. Затем попробуй сократить запись, не изменив правильный результат.", "Какое измерение подтверждает, что новая версия действительно удобнее?", "FFcFFRFFRFFRFF", "repeat"], ["Защита проекта", "Демонстрация, испытания и вывод", "Хорошая защита показывает цель, рабочую программу, измерения и следующее улучшение.", "В паре покажите один заезд, назовите одно ограничение модели и объясните, что дополнительно проверили бы на школьном EV3.", "Выполни финальную доставку: бери груз на метке, отреагируй на цвет, избегай стены, выгрузи и вернись на базу.", "Какое доказательство успешной миссии вы включите в журнал и почему?", "FFpcFFdFFuRRFFLFFLFF"]];</script><script>const GROUPS=[
+['01','Первый запуск','Недели 1–6','Моторы, повороты, циклы и парковка.'],
+['02','Робот и датчики','Недели 7–13','Касание, расстояние, цвет и условия.'],
+['03','Гонки по линии','Недели 14–20','Отражённый свет, порог и устойчивое слежение.'],
+['04','Точные маршруты','Недели 21–27','Измерения, гиродатчик, отладка и доставка.'],
+['05','Инженерная миссия','Недели 28–34','Проект «Таза Қазақстан»: собрать, испытать, улучшить.']];
+const COMMANDS={F:'Вперёд',B:'Назад',R:'Направо 90°',L:'Налево 90°',t:'Если касание → назад',d:'Если близко → направо',c:'Если красный → направо',l:'По линии',p:'Взять груз',u:'Выгрузить'};
+const dirs=[[1,0],[0,1],[-1,0],[0,-1]], key=(x,y)=>x+','+y, fmt=(set)=>[...set];
+function setup(w,i){
+ const route=w[6].split(''), mode=w[7]||'', track=new Set(), walls=new Set(), red=new Set(), cargo=new Set(), docks=new Set(), corridor=new Set(['0,0']), moves=[], must=new Set();
+ let x=0,y=0,h=0,mv=0; let dSeen=0,cSeen=0;
+ function ahead(n){const [dx,dy]=dirs[h];return key(x+dx*n,y+dy*n);}
+ function step(n,line=false){if(line)track.add(key(x,y));const [dx,dy]=dirs[h];x+=n*dx;y+=n*dy;corridor.add(key(x,y));moves.push(key(x,y));mv++;if(line)track.add(key(x,y));}
+ for(const c of route){
+  if(c==='F')step(1);if(c==='B')step(-1);if(c==='l'){step(1,true);must.add('l');}
+  if(c==='R')h=(h+1)%4;
+  if(c==='L')h=(h+3)%4;
+  if(c==='t'){walls.add(ahead(1));step(-1);must.add('t');}
+  if(c==='c'){if(mode!=='colorboth'||cSeen>0){red.add(key(x,y));h=(h+1)%4;}cSeen++;must.add('c');}
+  if(c==='d'){const trigger=mode!=='distboth'||dSeen>0;if(trigger){walls.add(ahead(1));h=(h+1)%4;}dSeen++;must.add('d');}
+  if(c==='p'){cargo.add(key(x,y));must.add('p');}
+  if(c==='u'){docks.add(key(x,y));must.add('u');}
+ }
+ const checkpoints=[];
+ if(!track.size&&!cargo.size&&![0,2,5,6,7,8,9,10,11,12].includes(i)&&moves.length>=3){
+   for(const j of [Math.floor((moves.length-1)/3),Math.floor(2*(moves.length-1)/3)]){
+    const k=moves[j];if(k!=='0,0'&&k!==key(x,y)&&!checkpoints.includes(k))checkpoints.push(k);
+   }
+ }
+ if(i===4){checkpoints.splice(0);checkpoints.push(...moves.slice(0,3));}
+ const goal=key(x,y), positions=fmt(new Set([...corridor,...walls])).map(k=>k.split(',').map(Number));
+ let minX=Math.min(...positions.map(a=>a[0]))-1,maxX=Math.max(...positions.map(a=>a[0]))+1;
+ let minY=Math.min(...positions.map(a=>a[1]))-1,maxY=Math.max(...positions.map(a=>a[1]))+1;
+ while(maxY-minY<4)maxY++; while(maxX-minX<5)maxX++;
+ if([...walls].some(k=>corridor.has(k)))throw new Error('Стена пересекает маршрут '+(i+1)+' '+[...walls]);
+ return {route,walls,red,cargo,docks,track,corridor,checkpoints,goal,head:mode==='heading'?h:null,mode,must,minX,maxX,minY,maxY,dark:mode.includes('contrast')?42:20,light:mode.includes('contrast')?58:80,i};
+}
+function simulate(map,blocks,opts={}){
+ let x=0,y=0,h=0,dist=Number(opts.dist??2), light=Number(opts.light??50), carried=false, dropped=0, idx=0, stepN=0, repeats=0, error='', last='', hist=[], visits=['0,0'], picked=new Set(), used={}, counts={F:0,B:0,R:0,L:0};
+ const save=(msg)=>{hist.push({x,y,h,carried,dropped,msg,visits:[...visits],picked:[...picked]});};
+ function look(n){const [dx,dy]=dirs[h];return key(x+dx*n,y+dy*n);}
+ function move(n,along){const pos=look(n),[a,b]=pos.split(',').map(Number);
+   if(a<map.minX||a>map.maxX||b<map.minY||b>map.maxY||map.walls.has(pos)){error='Преграда или край поля. Проверь направление и длину участка.';return;}
+   if(along&&(!map.track.has(key(x,y))||!map.track.has(pos))){error='Робот съехал с тёмной дорожки. Проверь место поворота.';return;}
+   x=a;y=b;visits.push(pos);if(pos===map.checkpoints[idx])idx++;
+ }
+ const trig=(c,truth)=>{used[c]??={yes:0,no:0};used[c][truth?'yes':'no']++; return truth;};
+ function doIt(c){
+  if(error)return;
+  if(!Object.hasOwn(COMMANDS,c)){error='Неизвестная команда. Очисти и собери программу заново.';return;}
+  if(++stepN>160){error='Слишком много шагов. Сократи программу или число повторов.';return;}
+  last=COMMANDS[c];
+  if(c==='F'||c==='B'){counts[c]++;move(c==='F'?1:-1);}
+  if(c==='R'||c==='L'){counts[c]++;h=(h+(c==='R'?1:3))%4;}
+  if(c==='t'){if(trig(c,map.walls.has(look(1)))){last+=': да';move(-1);}else last+=': нет';}
+  if(c==='d'){
+    let seen=Infinity;for(let j=1;j<=12;j++)if(map.walls.has(look(j))){seen=j;break;}
+    if(trig(c,seen<=dist)){h=(h+1)%4;last+=': '+seen+' кл., поворот';}else last+=Number.isFinite(seen)?': '+seen+' кл., прямо':': стены не видно';
+  }
+  if(c==='c'){if(trig(c,map.red.has(key(x,y)))){h=(h+1)%4;last+=': красный, поворот';}else last+=': нет красного';}
+  if(c==='l'){if(light>map.dark&&light<=map.light){trig(c,true);move(1,true);}else {trig(c,false);error='Порог не разделяет тёмное и светлое. Выбери число больше тёмного, но не выше светлого.';}}
+  if(c==='p'){const k=key(x,y);if(!carried&&map.cargo.has(k)&&!picked.has(k)){carried=true;picked.add(k);trig(c,true);}else error='Здесь нельзя взять груз. Проверь метку и свободен ли захват.';}
+  if(c==='u'){if(carried&&map.docks.has(key(x,y))){carried=false;dropped++;trig(c,true);}else error='Выгрузи в отмеченной зоне и только после захвата.';}
+  save(last??'');
+ }
+ save('Старт');
+ for(const z of blocks){
+   if(error)break;
+   if(typeof z==='string')doIt(z);else if(z&&z.body.length){
+     if(z.n>=2)repeats++;
+     for(let j=0;j<z.n&&!error;j++)for(const c of z.body)doIt(c);
+   }
+ }
+ if(!error){
+  if(!stepN)error='Добавь хотя бы одну команду.';
+  else if([...map.must].some(c=>!used[c]?.yes))error='Финиш не единственная цель. Нужна выполненная команда темы: '+[...map.must].filter(c=>!used[c]?.yes).map(c=>COMMANDS[c]).join(', ')+'.';
+  else if(map.mode==='colorboth'&&!used.c?.no || map.mode==='distboth'&&!used.d?.no)error='Проверь условие и в точке, где оно не должно сработать.';
+  else if(map.mode.includes('repeat')&&!repeats)error='Сверни одинаковые действия в блок «Повтор».';
+  else if(idx<map.checkpoints.length)error='Пройди метки в нужном порядке. Следующая метка: № '+(idx+1)+'.';
+  else if(dropped!==map.cargo.size)error='Не весь груз доставлен в зону выгрузки.';
+  else if(key(x,y)!==map.goal)error='Робот остановился не на финише. Проверь траекторию.';
+  else if(map.head!==null&&h!==map.head)error='Робот приехал, но корпус направлен не туда. Сверь стрелку финиша.';
+ }
+ return {error,hist,stepN,turns:counts.R+counts.L, moves:visits.length-1,dropped};
+}
+function solution(map){
+ const v=map.route;
+ if(!map.mode.includes('repeat'))return v.slice();
+ for(let len=Math.floor(v.length/2);len>=1;len--)for(let i=0;i+len*2<=v.length;i++){
+   if(v.slice(i,i+len).join('')===v.slice(i+len,i+len*2).join(''))return [...v.slice(0,i),{n:2,body:v.slice(i,i+len)},...v.slice(i+len*2)];
+ }
+ throw new Error('Нет повторяющейся группы: '+map.i);
+}
+if(typeof module!=='undefined')module.exports={setup,simulate,solution};
+</script><script>'use strict';
+const byid=s=>document.getElementById(s), el=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n;};
+const ranges=[0,6,13,20,27,34], ylabels=['→','↓','←','↑'];
+const stkey='ev3-year-v1';
+let mem={};try{mem=JSON.parse(localStorage.getItem(stkey)||'{}')||{}}catch{}
+const store=()=>{try{localStorage.setItem(stkey,JSON.stringify(mem));}catch{}};
+let selected=-1, blocks=[], cycle=null, current=null, frame=0, result=null, activeRun=0;
+const idxGroup=i=>ranges.findIndex((n,k)=>k<5&&i>=n&&i<ranges[k+1]);
+function qs(){
+ const m=location.hash.match(/^#week-(\d+)$/);
+ if(m&&+m[1]>=1&&+m[1]<=34){const i=+m[1]-1;if(i!==selected)openWeek(i);byid('lesson').scrollIntoView();return;}
+ if(selected!==-1){++activeRun;selected=-1;byid('lesson').hidden=true;}
+}
+function catalogue(){
+ const count=Object.values(mem).filter(v=>v.done).length;
+ byid('progress').textContent='Пройдено на этом устройстве: '+count+' из 34. Можно открыть любую неделю.';
+ byid('groups').replaceChildren(); byid('courseweeks').replaceChildren();
+ GROUPS.forEach((g,k)=>{
+  const card=el('a');card.className='group';card.href='#course-'+(k+1);
+  const a=el('span',g[0]);a.className='number';const b=el('strong',g[1]);const c=el('p',g[2]);const d=el('p',g[3]);d.className='meta';card.append(a,b,c,d);byid('groups').append(card);
+  const group=el('section');group.id='course-'+(k+1);const heading=el('h3',g[1]+' · '+g[2]);group.append(heading);
+  const cont=el('div');cont.className='weeks';
+  for(let i=ranges[k];i<ranges[k+1];i++){
+   const w=el('a');w.href='#week-'+(i+1);w.className='week'+(i===selected?' current':'');w.append(el('b',String(i+1).padStart(2,'0')),el('span',WEEKS[i][0]));
+   if(mem[i]?.done){const d=el('span','✓');d.className='done';d.setAttribute('aria-label','выполнено');w.append(d);}cont.append(w);
+  }group.append(cont);byid('courseweeks').append(group);
+ });
+}
+function svg(tag,attrs){
+ const n=document.createElementNS('http://www.w3.org/2000/svg',tag);
+ for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);return n;
+}
+function renderMap(state){const m=current, size=38,pad=4;
+ const ww=(m.maxX-m.minX+1)*size+2*pad, hh=(m.maxY-m.minY+1)*size+2*pad;
+ const S=svg('svg',{viewBox:'0 0 '+ww+' '+hh,role:'img','aria-label':'Поле робота с финишем, метками и препятствиями'});
+ const point=(x,y)=>[(x-m.minX)*size+pad,(y-m.minY)*size+pad];
+ const sym=(x,y,s,fill='#143f33',dy=0)=>{const t=svg('text',{x:x+19,y:y+25+dy,'text-anchor':'middle','font-size':16,'font-weight':800,fill});t.textContent=s;S.append(t);};
+ const alt=[];
+ for(let y=m.minY;y<=m.maxY;y++)for(let x=m.minX;x<=m.maxX;x++){
+  const [px,py]=point(x,y),k=key(x,y),isGoal=k===m.goal,isHome=k==='0,0',wall=m.walls.has(k),line=m.track.has(k),red=m.red.has(k),dock=m.docks.has(k),visit=state?.visits?.includes(k),parcel=m.cargo.has(k)&&!state?.picked?.includes(k);
+  const background=wall?'#415347':red?'#fca99f':line?'#53665d':dock?'#b7e6ff':isGoal?'#c5ead5':m.corridor.has(k)&&!m.mode.includes('open')?'#edf5e9':'#fbfcf8';
+  S.append(svg('rect',{x:px,y:py,width:size,height:size,rx:4,fill:background,stroke:'#b8c9bd'}));
+  if(visit&&!wall)S.append(svg('circle',{cx:px+19,cy:py+19,r:4,fill:'#e08417'}));
+  const checkpoint=m.checkpoints.indexOf(k);if(checkpoint!==-1)sym(px,py,String(checkpoint+1));
+  if(wall)sym(px,py,'×','#fff');
+  if(red&&!parcel)sym(px,py,'К','#66241a');
+  if(isGoal)sym(px,py,m.head===null?'⚑':'⚑'+ylabels[m.head],line?'#fff':'#104d31',isHome||dock?-6:0);
+  if(isHome&&!isGoal)sym(px,py,'С',line?'#fff':'#104d31');
+  if(dock)sym(px,py,'В',isGoal?'#104d31':'#195578',isGoal?8:0);
+  if(parcel)sym(px,py,'■',line?'#ffe780':'#713800',red?0:0);
+  if(isGoal||isHome||wall||red||dock||parcel||checkpoint>=0)alt.push((isHome?'старт ':'' )+(isGoal?'финиш ':'' )+(wall?'стена ':'' )+(red?'красная метка ':'' )+(dock?'выгрузка ':'' )+(parcel?'груз ':'' )+(checkpoint>=0?'метка '+(checkpoint+1)+' ':'')+': столбец '+(x-m.minX+1)+', строка '+(y-m.minY+1));
+ }
+ if(state){const [x,y]=point(state.x,state.y),g=svg('g',{transform:'translate('+(x+19)+' '+(y+19)+') rotate('+(state.h*90)+')'});
+ g.append(svg('rect',{x:-14,y:-11,width:28,height:22,rx:6,fill:'#ffd86a',stroke:'#663800','stroke-width':2}),svg('path',{d:'M -3 -5 L 8 0 L -3 5 Z',fill:'#412b18'}));
+ if(state.carried)g.append(svg('circle',{cx:-9,cy:0,r:3,fill:'#8d3516'}));S.append(g);}
+ byid('map').replaceChildren(S);byid('description').textContent=alt.join('; ')+'. Строки считаются сверху, столбцы слева.';
+}
+function saveBlocks(){if(selected<0)return; mem[selected]??={};mem[selected].blocks=blocks;mem[selected].cycle=cycle;mem[selected].dist=+byid('distance')?.value||2;mem[selected].light=Number(byid('light').value);store();}
+function renderBlocks(){
+ const container=byid('sequence');container.replaceChildren();
+ if(!blocks.length){const p=el('span','Пока пусто. Выбери команды ниже.');p.className='meta';container.append(p);}
+ blocks.forEach((c,i)=>{
+  const n=el('li');if(typeof c!=='string')n.className='cycle';
+  n.append(el('span',typeof c==='string'?COMMANDS[c]:'Повтор ×'+c.n+' ['+(c.body.map(k=>COMMANDS[k]).join(' → ')||'пусто')+']'+(cycle===i?' · открыт':'')));
+  n.append(button('×',()=>{blocks.splice(i,1);if(cycle===i)cycle=null;else if(cycle!==null&&cycle>i)cycle--;renderBlocks();saveBlocks();},'Удалить блок '+(i+1)));
+  container.append(n);
+ });
+ byid('repeat').textContent=cycle===null?'Начать повтор':'Закрыть повтор';
+}
+function button(txt,fn,aria){const b=el('button',txt);b.type='button';b.onclick=fn;if(aria)b.setAttribute('aria-label',aria);return b;}
+function allowed(i){if(i<=5)return ['F','B','R','L'];if(i<=12)return ['F','B','R','L','t','d','c'];if(i<=19)return ['F','B','R','L','l'];if(i<=25)return ['F','B','R','L'];return ['F','B','R','L','l','t','d','c','p','u'];}
+function setStatus(msg,kind=''){const s=byid('status');s.className='status '+kind;s.textContent=msg;}
+function showCurrent(end){
+ const h=result.hist[frame];renderMap(h);byid('steptext').textContent='Шаг '+frame+' из '+(result.hist.length-1)+' · '+h.msg;
+ if(end){
+  setStatus(result.error||'Миссия выполнена. Сохрани вывод или попробуй улучшить решение.',result.error?'bad':'good');
+  byid('summary').textContent='Перемещений: '+result.moves+' · Явных поворотов: '+result.turns+(current.cargo.size?' · Доставлено: '+result.dropped+'/'+current.cargo.size:'');
+  if(!result.error){mem[selected]??={};mem[selected].done=true;store();catalogue();}
+ }
+}
+function launch(){
+  ++activeRun;if(cycle!==null){cycle=null;renderBlocks();}
+  saveBlocks();result=simulate(current,blocks,{dist:+byid('distance').value,light:+byid('light').value});frame=result.hist.length-1;showCurrent(true);
+}
+function tick(){
+ ++activeRun;
+ if(!result||frame>=result.hist.length-1){result=simulate(current,blocks,{dist:+byid('distance').value,light:+byid('light').value});frame=0;}
+ else frame++;
+ showCurrent(frame===result.hist.length-1);if(frame!==result.hist.length-1)setStatus('Пошаговый просмотр. Нажми «Шаг» ещё раз.');
+}
+function resetBoard(){
+ ++activeRun;result=null;frame=0;renderMap({x:0,y:0,h:0,visits:[],picked:[]});byid('steptext').textContent='Робот на старте';byid('summary').textContent='';setStatus('Собери программу. Перед запуском предскажи маршрут.');
+}
+function openWeek(i){
+ selected=i;current=setup(WEEKS[i],i);const m=mem[i]||{};
+ blocks=Array.isArray(m.blocks)?m.blocks:[];cycle=Number.isInteger(m.cycle)&&blocks[m.cycle]?.body?m.cycle:null;
+ const [name,hook,rule,lab,mission,reflect]=WEEKS[i];
+ const group=GROUPS[idxGroup(i)][1];
+ const lesson=byid('lesson');lesson.hidden=false;
+ const navPrev=i>0?'<a href="#week-'+i+'">← Неделя '+i+'</a>':'<a href="#catalog">← Все занятия</a>';
+ const navNext=i<33?'<a href="#week-'+(i+2)+'">Неделя '+(i+2)+' →</a>':'<a href="#catalog">К списку занятий ↑</a>';
+ lesson.innerHTML='<div class="navrow no-print"><a href="#catalog">↑ Все занятия</a><button type="button" id="print" class="btn">Печать листа</button></div>'+
+ '<div class="lesson-head"><span class="pill">Неделя '+(i+1)+' · 2 × 45 мин</span> <span class="pill">'+group+'</span><h2>'+name+'</h2><p class="meta">'+hook+'</p></div>'+
+ '<section class="theory"><strong>Коротко о главном</strong><p>'+rule+'</p></section>'+
+ '<div class="timeline"><section class="card"><h3>1-й учебный час · 45 мин</h3><ul><li>5 мин: обсуди цель и предскажи результат.</li><li>10 мин: разбери правило и обозначения поля.</li><li>20 мин: '+lab+'</li><li>10 мин: запиши исходную схему программы и сравни с соседом.</li></ul></section>'+
+ '<section class="card"><h3>2-й учебный час · 45 мин</h3><ul><li>5 мин: отметь старт, финиш и опасные места.</li><li>20 мин: собери и проверь программу по заданию ниже.</li><li>15 мин: исправь одну ошибку или проверь вторую стратегию.</li><li>5 мин: ответь на вопрос внизу.</li></ul></section></div>'+
+ '<h3>Миссия</h3><p>'+mission+'</p><div class="sim"><section class="box"><h3>Поле запуска</h3><div class="map" id="map"></div>'+
+ '<div class="legend"><span><strong>С</strong> старт</span><span><strong>⚑</strong> финиш</span><span><strong>×</strong> стена</span><span><strong>1, 2…</strong> метки</span><span><strong>■</strong> груз</span><span><strong>В</strong> выгрузка</span><span>красная клетка: метка цвета</span><span>тёмная дорожка: линия</span></div>'+
+ '<details class="no-print"><summary>Текстовое описание поля</summary><p id="description"></p></details><p class="metrics"><span id="steptext"></span><span id="summary"></span></p><div id="status" class="status" role="status" aria-live="polite"></div></section>'+
+ '<section class="box program"><h3>Собери программу</h3><p class="meta">Клик добавляет блок. «×» удаляет. Для условных команд проверяй сообщение о датчике в пошаговом просмотре.</p>'+
+ '<ol id="sequence" class="seq" aria-label="Последовательность команд"></ol><div id="palette" class="tools"></div>'+
+ '<div class="params"><label>Повторов <input type="number" min="2" max="12" value="2" id="repeat-n"></label><button type="button" class="btn" id="repeat">Начать повтор</button></div>'+
+ '<div class="params"><label '+(!current.must.has('d')?'hidden':'')+'>Порог расстояния, клеток <input id="distance" type="number" value="'+(Number.isFinite(m.dist)?m.dist:2)+'" min="1" max="10"></label>'+
+ '<label '+(!current.track.size?'hidden':'')+'>Порог света <input id="light" type="number" value="'+(Number.isFinite(m.light)?m.light:50)+'" min="0" max="100"> · тёмное '+current.dark+', светлое '+current.light+'</label></div>'+
+ '<div class="tools"><button type="button" class="btn primary" id="run">Запустить</button><button type="button" class="btn" id="step">Шаг</button><button type="button" class="btn" id="undo">Убрать последний</button><button type="button" class="btn" id="clear">Очистить</button></div></section></div>'+
+ '<div class="paperonly"><p><strong>Обозначения:</strong> С — старт; ⚑ — финиш; × — стена; ■ — груз; В — выгрузка. К — красная метка; тёмная дорожка — линия. Номера показывают порядок меток.</p><p><strong>Команды:</strong> '+allowed(i).map(k=>COMMANDS[k]).join(' · ')+' · Повтор.</p><p><strong>Моя программа:</strong> ________________________________________________________________</p></div>'+
+ '<section class="box reflection"><h3>Объясни свой результат</h3><p><label for="reflection">'+reflect+'</label></p><textarea id="reflection" placeholder="Запиши короткий вывод"></textarea><p class="meta">Заметка сохраняется только в этом браузере, если доступно локальное хранение.</p><p class="paperonly">______________________________________________________________________________________</p></section><div class="footnav no-print">'+navPrev+navNext+'</div>';
+ byid('reflection').value=m.note||'';byid('reflection').oninput=e=>{mem[i]??={};mem[i].note=e.target.value;store();};
+ for(const key of allowed(i)){
+  byid('palette').append(button(COMMANDS[key],()=>{if(cycle===null)blocks.push(key);else blocks[cycle].body.push(key);result=null;renderBlocks();saveBlocks();}));
+ }
+ byid('repeat').onclick=()=>{if(cycle===null){const n=Math.max(2,Math.min(12,Math.trunc(+byid('repeat-n').value||2)));cycle=blocks.length;blocks.push({n,body:[]});}else cycle=null;result=null;renderBlocks();saveBlocks();};
+ byid('undo').onclick=()=>{if(cycle!==null&&blocks[cycle].body.length)blocks[cycle].body.pop();else {blocks.pop();if(cycle!==null)cycle=null;}result=null;renderBlocks();saveBlocks();};
+ byid('clear').onclick=()=>{blocks=[];cycle=null;renderBlocks();saveBlocks();resetBoard();};
+ byid('print').onclick=()=>{renderMap({x:0,y:0,h:0,visits:[],picked:[]});window.print();if(result)showCurrent(frame===result.hist.length-1);};
+ byid('run').onclick=launch;byid('step').onclick=tick;
+ byid('distance').onchange=byid('light').onchange=()=>{result=null;saveBlocks();};
+ renderBlocks();resetBoard();catalogue();
+}
+window.addEventListener('hashchange',qs);catalogue();qs();
+</script>
+</body></html>
