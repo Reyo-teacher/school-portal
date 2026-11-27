@@ -17,7 +17,7 @@ const isTest=()=>profile(mode);
 const pilot=()=>profiles[mode]||'Гость';
 let student=true, detail=null, response='', filter='year', storageFail=false, previousTab='';
 const ws=$('#workspace'), gate=$('#gate'), desk=$('#desk');
-const full=[...GARAGE,...RESERVE.map(([id,n,ys,t,k,d,u])=>[id,n,Number(ys.split(',')[0]),t,k,d,u,'#e8ede3',''])];
+const full=[...GARAGE,...RESERVE.map(([id,n,ys,t,k,d,u])=>[id,n,ys.split(',').map(Number),t,k,d,u,'#e8ede3',''])];
 const getBot=id=>full.find(b=>b[0]===id);
 const active=()=>Object.entries(mem.build).find(([k,v])=>Number.isFinite(v.start)&&v.start>0);
 const weeks=()=>CURRICULUM[mem.year];
@@ -82,7 +82,7 @@ const idFor=n=>mem.year+':'+n;
 function stateLabel(b){return !b?'Не начато':b.status==='approved'?'Подтверждено · '+b.score+' баллов':b.status==='pending'?'Ждёт проверки':b.start?'Идёт сборка':'На паузе'}
 function garage(){
  const current=active(), r=detail&&getBot(detail), e=r&&mem.build[buildKey(detail)], busy=current&&current[0]!==buildKey(detail), any=filter==='all';
- const pool=full.filter(x=>any||x[2]===mem.year||(mem.year>1&&x[0]==='base'));
+ const pool=full.filter(x=>any||(Array.isArray(x[2])?x[2].includes(mem.year):x[2]===mem.year)||(mem.year>1&&x[0]==='base'));
  const preview=r?'<section class="panel"><p class="eyebrow">СБОРКА / '+esc(r[4])+'</p><h2>'+esc(r[1])+'</h2><p>'+esc(r[5])+'</p><p>Ориентир: '+esc(r[3])+'.</p><p class="hint">Сначала проверь детали по схеме и освободите зону движения. Секундомер нужен для планирования, не для баллов. Нажми паузу на перерыве.</p><div class="timer" data-timer="'+esc(detail)+'">'+timeString(e?elapsed(e):0)+'</div><p>'+esc(stateLabel(e))+'</p><div class="actions">'+
  (!isTest()?'<span class="quiet">Войди в тестовый кабинет, чтобы проверить таймер и сохранение сборки.</span>':!e?'<button class="btn primary" data-action="start">Начать сборку и открыть инструкцию</button>':'')+
  (e?.status==='open'?(e.start?'<button class="btn" data-action="pause">Пауза</button>':'<button class="btn" data-action="start">Продолжить</button>')+'<button class="btn primary" data-action="submit">Готово, отправить учителю</button>':'')+

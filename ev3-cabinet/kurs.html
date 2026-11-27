@@ -707,7 +707,7 @@ function fieldLesson(i){return i===20?`<section class="field-lab" id="ev3-field-
  <p id="field-compare" role="status">Запиши все три замера, чтобы увидеть среднее и разброс.</p>
  <label class="field-observation">Что проверишь в следующем опыте? <textarea id="field-observation" maxlength="500" rows="2" placeholder="Изменю только …, чтобы проверить …"></textarea></label>
  <p class="field-print-blanks">Мой следующий опыт: __________________________________________________</p>
- <p class="field-note">Записи остаются в этом браузере и не отправляются учителю.</p>
+ <p class="field-note">Замеры остаются в открытой вкладке до её обновления или закрытия. Чтобы сохранить их, перепиши результаты или воспользуйся печатью.</p>
  </section>
  <details class="field-card field-trouble"><summary>Почему робот не попал в цель?</summary><dl>
  <dt>Три результата похожи, но все короче или длиннее цели</dt><dd>Проверь единицы, диаметр и передачу. Если робот перелетает цель, попробуй только снизить скорость, чтобы проверить влияние торможения.</dd>
@@ -774,7 +774,7 @@ function openWeek(i,v=0){
  '<label '+(!current.track.size?'hidden':'')+'>Порог света <input id="light" type="number" value="'+(Number.isFinite(m.light)?m.light:(i===14||i===19?30:50))+'" min="0" max="100"> · тёмное '+current.dark+', светлое '+current.light+'</label></div>'+
  '<div class="tools"><button type="button" class="btn primary" id="run">Запустить</button><button type="button" class="btn" id="step">Шаг</button><button type="button" class="btn" id="undo">Убрать последний</button><button type="button" class="btn" id="clear">Очистить</button></div></section></div>'+
  '<div class="paperonly"><p><strong>Обозначения:</strong> С — старт; ⚑ — финиш; × — стена; ■ — груз; В — выгрузка. К — красная метка; тёмная дорожка — линия. Номера показывают порядок меток.</p><p><strong>Команды:</strong> '+allowed(i).map(k=>COMMANDS[k]).join(' · ')+' · Повтор.</p><p><strong>Моя программа:</strong> ________________________________________________________________</p></div>'+
- '<section class="box reflection"><h3>Объясни свой результат</h3><p><label for="reflection">'+reflect+'</label></p><textarea id="reflection" placeholder="Запиши короткий вывод"></textarea><p class="meta">Заметка сохраняется только в этом браузере, если доступно локальное хранение.</p><p class="paperonly">______________________________________________________________________________________</p></section><div class="footnav no-print">'+navPrev+navNext+'</div>';
+ '<section class="box reflection"><h3>Объясни свой результат</h3><p><label for="reflection">'+reflect+'</label></p><textarea id="reflection" placeholder="Запиши короткий вывод"></textarea><p class="meta">Заметка временная: обновление или закрытие вкладки её удалит.</p><p class="paperonly">______________________________________________________________________________________</p></section><div class="footnav no-print">'+navPrev+navNext+'</div>';
  initField(i);
  byid('reflection').value=m.note||'';byid('reflection').oninput=e=>{record(i,v,true).note=e.target.value;store();};
  for(const key of allowed(i)){
@@ -902,12 +902,12 @@ function weekHTML(row,i){
   '<div class="ev3-steps"><div class="ev3-step"><strong>1 · 15 мин. Разбор.</strong> '+eg(theory)+'</div><div class="ev3-step"><strong>2 · 30 мин. Сборка и программа.</strong> '+eg(logic)+' Если модель уже собрана, проверь крепление, порты и исходное положение.</div><div class="ev3-step"><strong>3 · 35 мин. Практика.</strong> '+eg(task)+'</div><div class="ev3-step"><strong>4 · 10 мин. Приёмка.</strong> '+eg(check)+'</div></div>'+
   '<p><strong>Для тех, кто готов раньше:</strong> '+eg(extra)+'</p><p class="ev3-paper"><strong>Без набора:</strong> нарисуй поле или схему узла; прогони логику на бумаге, укажи ожидаемый результат и один сбой. Бумажная проверка не заменяет замеры на роботе.</p>'+
   '<div class="ev3-book"><label>Журнал: замеры, результат и следующее изменение<textarea maxlength="1500" data-note placeholder="Например: 4 из 5 успешных запусков. В следующий раз меняем только порог.">'+eg(r.result||'')+'</textarea></label>'+
-  '<div class="ev3-strips"><button type="button" data-save>Сохранить запись</button><button type="button" data-done aria-pressed="'+!!r.done+'">'+(r.done?'Снять отметку':'Отметить пройденным')+'</button><button type="button" data-print>Печать занятия</button><a href="#year-'+year+'-week-'+n+'">Ссылка на неделю '+n+'</a></div><small role="status" data-msg></small></div><div class="ev3-print-notes"></div></details>';
+  '<div class="ev3-strips"><button type="button" data-save>Записать до закрытия вкладки</button><button type="button" data-done aria-pressed="'+!!r.done+'">'+(r.done?'Снять отметку':'Отметить пройденным')+'</button><button type="button" data-print>Печать занятия</button><a href="#year-'+year+'-week-'+n+'">Ссылка на неделю '+n+'</a></div><small role="status" data-msg></small></div><div class="ev3-print-notes"></div></details>';
 }
 function render(y){
  year=y;records=get(y);
  const wrap=$('#adv-head'),sub=y===2?'Научись добиваться точности, измерять ошибки и менять механизмы без полной пересборки.':'Собери автономного робота, сравни версии на полигоне и защити свой инженерный проект.';
- wrap.innerHTML='<div class="ev3-unit">EV3 LAB / ГОД '+y+'</div><h2>'+names[y]+'</h2><p>'+sub+'</p><div class="ev3-strips ev3-no-print"><a href="#years">← Выбор года</a><a href="#garage-'+y+'">Гараж ↓</a><a href="#lab-'+y+'">Тренажёр ↓</a><a id="adv-resume" href="#year-'+y+'-week-1"></a></div><div class="ev3-no-print"><label id="adv-count" for="adv-progress"></label><progress id="adv-progress" max="34" value="0"></progress><p>Отметки и записи сохраняются в этом браузере, без учётной записи. Для физической сборки нужен EV3 и знакомая среда блоков. Псевдокод объясняет логику, но не является готовым файлом программы.</p></div>';
+ wrap.innerHTML='<div class="ev3-unit">EV3 LAB / ГОД '+y+'</div><h2>'+names[y]+'</h2><p>'+sub+'</p><div class="ev3-strips ev3-no-print"><a href="#years">← Выбор года</a><a href="#garage-'+y+'">Гараж ↓</a><a href="#lab-'+y+'">Тренажёр ↓</a><a id="adv-resume" href="#year-'+y+'-week-1"></a></div><div class="ev3-no-print"><label id="adv-count" for="adv-progress"></label><progress id="adv-progress" max="34" value="0"></progress><p>Отметки и записи временные: они пропадут при обновлении или закрытии вкладки. Чтобы оставить копию записи, нажми «Печать занятия» и выбери сохранение в PDF или принтер. Для физической сборки нужен EV3 и знакомая среда блоков. Псевдокод объясняет логику, но не является готовым файлом программы.</p></div>';
  let start=0;
  mods.innerHTML=modules[y].map(([end,title],index)=>{
   const first=start;
@@ -994,7 +994,7 @@ adv.addEventListener('click',e=>{
   rec.done=!rec.done;button.setAttribute('aria-pressed',String(rec.done));button.textContent=rec.done?'Снять отметку':'Отметить пройденным';
  }
  const ok=save();progress();
- stat.textContent=ok?'Сохранено в этом браузере.':'Браузер запретил сохранение. Пока запись видна только на открытой странице.';
+ stat.textContent=ok?'Записано до обновления или закрытия вкладки. Для копии нажми «Печать занятия».':'Не удалось добавить запись. Напечатай занятие, пока заметка видна.';
 });
 window.addEventListener('hashchange',()=>openRoute(true));
 window.addEventListener('afterprint',clearPrint);
