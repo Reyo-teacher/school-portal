@@ -91,6 +91,8 @@ function garage(){
  (e?.status==='pending'?'<p class="quiet">В демоверсии можно переключиться в «Вид учителя» и проверить, как работает приёмка. Ничего в интернет не отправлено.</p>':'')+
  '</section>':'';
  return header('КОНСТРУКТОРСКАЯ / ГОД '+mem.year,'Гараж','Схемы LEGO Education, секундомер и журнал выполненных сборок. Время не влияет на рейтинг.')+
+ '<section class="panel"><p class="eyebrow">3D И PDF / НОВОЕ</p><h2>Большой гараж EV3</h2><p>Три модели с обзором на 360° и '+(globalThis.EV3_PDFS?.length||151)+' прямых ссылок на инструкции.</p><a class="btn primary" href="garage-library.html">Открыть 3D и инструкции →</a></section>'+
+
  (current&&!r?'<p class="hint">Таймер сборки запущен. <a href="#garage/'+current[0].split(':')[1]+'">Открыть сборку</a> или <button class="btn outline" data-action="pause-current">Поставить на паузу</button></p>':'')+preview+
  '<label>Фильтр <select id="garage-filter"><option value="year" '+(!any?'selected':'')+'>Для этого года</option><option value="all" '+(any?'selected':'')+'>Все модели</option></select></label><div class="garage-grid">'+
  pool.map(bot=>'<article class="garage-tile" style="background:'+bot[7]+'">'+photo(bot)+'<h3>'+esc(bot[1])+'</h3><p class="quiet">'+esc(bot[3])+' · '+esc(bot[4])+'</p><p>'+esc(stateLabel(mem.build[buildKey(bot[0])]))+'</p><a class="btn outline" href="#garage/'+bot[0]+'">Карточка сборки →</a></article>').join('')+
